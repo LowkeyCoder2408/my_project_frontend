@@ -18,8 +18,6 @@ import {
   getAllImageByAlias,
   getAllImageByProduct,
 } from '../../../../api/ProductImageAPI';
-import ProductColorModel from '../../../../models/ProductColorModel';
-import { getAllColorByAlias } from '../../../../api/ProductColorAPI';
 import FormatPrice from '../ProductProps/FormatPrice';
 import ProductReview from '../ProductReview';
 import BrandModel from '../../../../models/BrandModel';
@@ -36,9 +34,9 @@ function ProductDetail(props: ProductDetailInterface) {
   const [error, setError] = useState<any>(null);
   const [images, setImages] = useState<ProductImageModel[] | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
-  const [colors, setColors] = useState<ProductColorModel[] | null>(null);
   const [category, setCategory] = useState<CategoryModel | null>(null);
   const [brand, setBrand] = useState<BrandModel | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
 
   useEffect(() => {
     if (productAlias) {
@@ -59,25 +57,49 @@ function ProductDetail(props: ProductDetailInterface) {
       setIsLoading(true);
       Promise.all([
         getAllImageByAlias(productAlias),
-        getAllColorByAlias(productAlias),
         getCategoryByAlias(productAlias),
         getBrandByAlias(productAlias),
       ])
-        .then(
-          ([imageResponse, colorResponse, categoryResponse, brandResponse]) => {
-            setImages(imageResponse);
-            setColors(colorResponse);
-            setCategory(categoryResponse.category);
-            setBrand(brandResponse.brand);
-            setIsLoading(false);
-          },
-        )
+        .then(([imageResponse, categoryResponse, brandResponse]) => {
+          setImages(imageResponse);
+          setCategory(categoryResponse.category);
+          setBrand(brandResponse.brand);
+          setIsLoading(false);
+        })
         .catch((error) => {
           setError(error);
           setIsLoading(false);
         });
     }
   }, [productAlias]);
+
+  const increaseQuantity = () => {
+    if (quantity < (product && product.quantity ? product.quantity : 1)) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const descreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuantity = parseInt(e.target.value);
+    const inStockQuantity = product && product.quantity ? product.quantity : 0;
+    if (
+      !isNaN(newQuantity) &&
+      newQuantity >= 1 &&
+      newQuantity <= inStockQuantity
+    ) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  const handleAddToCart = () => {};
+
+  const handleBuyNow = () => {};
 
   if (isLoading) {
     return <Loader />;
@@ -200,22 +222,6 @@ function ProductDetail(props: ProductDetailInterface) {
                 }}
               />
               <div className="mt-4 product-details__information">
-                <div className="product-details__information-color d-flex">
-                  <div className="product-details__title mb-2">
-                    <FontAwesomeIcon icon={faCircleCheck as IconProp} />
-                    <strong> Màu sắc:</strong>
-                  </div>
-                  <div className="product-details__colors">
-                    {colors
-                      ? colors.map((color, index) => (
-                          <div
-                            className="product-details__colors-item"
-                            style={{ backgroundColor: `${color.colorCode}` }}
-                          ></div>
-                        ))
-                      : 'Chưa cập nhật'}
-                  </div>
-                </div>
                 <div className="product-details__information-brand">
                   <div className="product-details__title mb-2">
                     <FontAwesomeIcon icon={faCircleCheck as IconProp} />
@@ -230,13 +236,83 @@ function ProductDetail(props: ProductDetailInterface) {
                     {category ? category.name : 'Chưa cập nhật'}
                   </div>
                 </div>
-                <div className="product-details__information-brand">
-                  <div className="product-details__title mb-2">
-                    <FontAwesomeIcon icon={faCircleCheck as IconProp} />
-                    <strong> Trạng thái:</strong>
-                    {product.isInStock === false ? ' Đã hết hàng' : ' Còn hàng'}
+                {product.quantity !== undefined && product.quantity === 0 ? (
+                  <div className="product-details__information-status">
+                    <div className="product-details__title mb-2">
+                      <FontAwesomeIcon icon={faCircleCheck as IconProp} />
+                      <strong> Trạng thái:</strong> Đã hết hàng
+                    </div>
+                  </div>
+                ) : (
+                  <div className="product-details__information-status">
+                    <div className="product-details__title mb-2">
+                      <FontAwesomeIcon icon={faCircleCheck as IconProp} />
+                      <strong> Trạng thái:</strong> Còn {product.quantity} sản
+                      phẩm
+                    </div>
+                  </div>
+                )}
+                <div className="product-details__information-quantity mt-4 d-flex align-items-center">
+                  <div className="mb-2">
+                    <strong>Số lượng:</strong>
+                  </div>
+                  <div
+                    className="input-group"
+                    style={{
+                      width: '130px',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <button
+                      style={{
+                        width: '35px',
+                        height: '35px',
+                        fontSize: '1.7rem',
+                      }}
+                      onClick={descreaseQuantity}
+                      type="button"
+                      className="input-group-text d-flex justify-content-center align-items-center"
+                    >
+                      -
+                    </button>
+                    <input
+                      style={{ height: '35px' }}
+                      value={quantity}
+                      type="text"
+                      min={1}
+                      className="form-control text-center"
+                      onChange={handleQuantityChange}
+                    />
+                    <button
+                      style={{
+                        width: '35px',
+                        height: '35px',
+                        fontSize: '1.7rem',
+                      }}
+                      onClick={increaseQuantity}
+                      type="button"
+                      className="input-group-text d-flex justify-content-center align-items-center"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
+                <div className="product-details__information-quantity">
+                  <strong className="">Tạm tính: </strong>
+                  {product.currentPrice && (
+                    <strong
+                      className="mt-2"
+                      style={{
+                        fontSize: '2.5rem',
+                        color: '#3737a9',
+                        marginLeft: '5px',
+                      }}
+                    >
+                      <FormatPrice price={quantity * product.currentPrice} />
+                    </strong>
+                  )}
+                </div>
+
                 <div className="product-details__information-freeship mt-3">
                   <div className="product-details__title mb-2">
                     <img
@@ -254,11 +330,17 @@ function ProductDetail(props: ProductDetailInterface) {
             </p>
 
             <div className="product-details__buy mt-5">
-              <button className="product-details__cart">
+              <button
+                className="product-details__cart"
+                onClick={handleAddToCart}
+              >
                 <FontAwesomeIcon icon={faBagShopping as IconProp} />
                 Thêm vào giỏ hàng
               </button>
-              <button className="product-details__buy-now">
+              <button
+                className="product-details__buy-now"
+                onClick={handleBuyNow}
+              >
                 <FontAwesomeIcon icon={faCreditCard as IconProp} />
                 Mua ngay
               </button>

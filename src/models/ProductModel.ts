@@ -12,7 +12,7 @@ class ProductModel {
   createdTime?: Date;
   updatedTime?: Date;
   enabled?: boolean;
-  isInStock?: boolean;
+  quantity?: number;
   listedPrice?: number;
   currentPrice?: number;
   length?: number;
@@ -39,7 +39,7 @@ class ProductModel {
     createdTime: Date,
     updatedTime: Date,
     enabled: boolean,
-    isInStock: boolean,
+    quantity: number,
     listedPrice: number,
     currentPrice: number,
     length: number,
@@ -52,7 +52,7 @@ class ProductModel {
     images: ProductImageModel[],
     details: ProductDetailModel[],
     reviewCount: number,
-  ratingCount: number,
+    ratingCount: number,
     averageRating: number,
     customerCanReview: boolean,
     reviewByCustomer: boolean,
@@ -65,7 +65,7 @@ class ProductModel {
     this.createdTime = createdTime;
     this.updatedTime = updatedTime;
     this.enabled = enabled;
-    this.isInStock = isInStock;
+    this.quantity = quantity;
     this.listedPrice = listedPrice;
     this.currentPrice = currentPrice;
     this.length = length;
