@@ -1,0 +1,14 @@
+@media (max-width: 768px) {
+  .text-center-mobile {
+    text-align: center !important;
+  }
+}
+
+.hover-yellow {
+  font-weight: 600;
+  transition: 0.4s;
+}
+
+.hover-yellow:hover {
+  color: rgb(186, 186, 186) !important;
+}

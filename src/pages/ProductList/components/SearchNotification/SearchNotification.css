@@ -1,0 +1,65 @@
+.toast-notify {
+  position: fixed;
+  top: 100px;
+  right: 10px;
+  border-radius: 5px;
+  background: #fff;
+  padding: 15px 0 15px 0;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  border-right: 6px solid #444;
+  overflow: hidden;
+  z-index: 10;
+  transform: translateX(calc(100% + 30px));
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+}
+
+.toast-notify.active {
+  transform: translateX(0%);
+}
+
+.toast-notify .toast-notify-content {
+  display: flex;
+  align-items: center;
+}
+
+.toast-notify-content .check {
+  /* background-color: #444; */
+  display: block;
+  width: 60px;
+  height: 60px;
+  color: #fff;
+  font-size: 1.7rem;
+}
+
+.toast-notify-content .message {
+  display: flex;
+  /* flex-direction: column; */
+  margin: 0 15px;
+  gap: 10px;
+}
+
+.tost-notify-information {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.toast-notify .progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: #444;
+}
+.progress.active:before {
+  animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+  100% {
+    right: 100%;
+  }
+}

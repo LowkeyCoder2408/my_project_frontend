@@ -1,0 +1,25 @@
+.exchange-return-refund-policy {
+  border-radius: 5px;
+  margin-top: 30px;
+  padding: 30px;
+  line-height: 2.8rem;
+  text-align: justify;
+}
+
+.exchange-return-refund-policy ul {
+  padding-left: 2rem !important;
+}
+
+tr,
+td,
+th {
+  border-collapse: collapse;
+  border: 1px solid #bdbdbd !important;
+  text-align: center;
+  vertical-align: middle;
+}
+
+th,
+td {
+  text-align: center !important;
+}
