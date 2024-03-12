@@ -8,6 +8,7 @@ import ProductList from '../pages/ProductList';
 import ProductDetail from '../pages/ProductList/components/ProductDetail';
 import SecurityPolicy from '../pages/SecurityPolicy';
 import ShippingPolicy from '../pages/ShippingPolicy';
+import Register from '../pages/User/Register';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
 // Layouts
 // import { HeaderOnly } from '../components/GlobalStyles/Layout';
@@ -67,6 +68,11 @@ const publicRoutes = [
   {
     path: '/exchange-return-refund-policy',
     component: ExchangeReturnRefundPolicy,
+    layout: 'default',
+  },
+  {
+    path: '/register',
+    component: Register,
     layout: 'default',
   },
 ];

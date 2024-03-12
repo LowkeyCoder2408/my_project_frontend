@@ -1,0 +1,96 @@
+.register__container {
+  border-radius: 10px;
+  background-color: #fff;
+  margin-top: 30px;
+}
+
+.register__logo {
+  padding: 30px;
+  min-height: 100px;
+}
+
+.register__logo img {
+  width: 70%;
+  object-fit: contain;
+}
+
+.register__logo h3 {
+  margin-top: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.register__error {
+  height: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 0;
+  right: 0;
+  padding: 10px 15px;
+  pointer-events: none;
+  font-size: 1.3rem;
+  transition: 0.8s;
+}
+
+.register__error svg {
+  color: crimson;
+  margin-left: 5px;
+}
+
+.register__form {
+  padding: 30px;
+}
+
+.register__form-title {
+  font-size: 2.7rem;
+  letter-spacing: 1px;
+}
+
+.input-box__field {
+  margin-bottom: 20px;
+}
+
+.input-box {
+  position: relative;
+}
+
+.input-box input {
+  width: 100%;
+  border: 1px solid rgba(41, 41, 41, 0.25);
+  border-radius: 5px;
+  outline: none !important;
+  color: #000;
+  font-size: 1.5rem;
+  padding: 10px 15px;
+  background-color: transparent;
+  letter-spacing: 1px;
+  transition: 0.5s;
+}
+
+.input-box span {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px 15px;
+  pointer-events: none;
+  font-size: 1.6rem;
+  transition: 0.8s;
+}
+
+.input-box input:focus {
+  border: 1px solid #555;
+}
+
+.input-box input:focus + span,
+.input-box input:valid + span {
+  transform: translateX(10px) translateY(-3px);
+  font-size: 1.3rem;
+  height: 8px;
+  padding: 0 5px;
+  background-color: #fff;
+  border-radius: 5px;
+}
