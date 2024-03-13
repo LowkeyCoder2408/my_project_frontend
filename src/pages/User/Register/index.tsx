@@ -222,12 +222,16 @@ function Register() {
                     />
                     <span>Họ và tên</span>{' '}
                     <div className="d-flex">
-                      {fullNameError && (
+                      {fullNameError ? (
                         <div className="register__error">
                           {fullNameError}
                           <FontAwesomeIcon
                             icon={faTriangleExclamation as IconProp}
                           />
+                        </div>
+                      ) : (
+                        <div className="register__success">
+                          <FontAwesomeIcon icon={faCircleCheck as IconProp} />
                         </div>
                       )}
                     </div>
@@ -245,12 +249,16 @@ function Register() {
                     />
                     <span>Số điện thoại</span>
                     <div className="d-flex">
-                      {phoneNumberError && (
+                      {phoneNumberError ? (
                         <div className="register__error">
                           {phoneNumberError}
                           <FontAwesomeIcon
                             icon={faTriangleExclamation as IconProp}
                           />
+                        </div>
+                      ) : (
+                        <div className="register__success">
+                          <FontAwesomeIcon icon={faCircleCheck as IconProp} />
                         </div>
                       )}
                     </div>
@@ -269,12 +277,16 @@ function Register() {
                     />
                     <span>Mật khẩu</span>
                     <div className="d-flex">
-                      {passwordError && (
+                      {passwordError ? (
                         <div className="register__error">
                           {passwordError}
                           <FontAwesomeIcon
                             icon={faTriangleExclamation as IconProp}
                           />
+                        </div>
+                      ) : (
+                        <div className="register__success">
+                          <FontAwesomeIcon icon={faCircleCheck as IconProp} />
                         </div>
                       )}
                     </div>
@@ -291,12 +303,16 @@ function Register() {
                       onChange={handleRepeatPasswordChange}
                     />
                     <span>Nhập lại mật khẩu</span>
-                    {repeatPasswordError && (
+                    {repeatPasswordError ? (
                       <div className="register__error">
                         {repeatPasswordError}
                         <FontAwesomeIcon
                           icon={faTriangleExclamation as IconProp}
                         />
+                      </div>
+                    ) : (
+                      <div className="register__success">
+                        <FontAwesomeIcon icon={faCircleCheck as IconProp} />
                       </div>
                     )}
                   </div>
