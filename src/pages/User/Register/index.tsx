@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { backendEndpoint } from '../../../utils/Constant';
 import './Register.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import {
   faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { Link } from 'react-router-dom';
 
 function Register() {
   const [email, setEmail] = useState<string>('');
@@ -114,14 +115,48 @@ function Register() {
   };
 
   // Password checking
+  const hasUppercase = (str: string): boolean => {
+    const uppercaseRegex = /[A-Z]/;
+    return uppercaseRegex.test(str);
+  };
+
+  const hasLowercase = (str: string): boolean => {
+    const lowercaseRegex = /[a-z]/;
+    return lowercaseRegex.test(str);
+  };
+
+  const hasDigit = (str: string): boolean => {
+    const digitRegex = /[0-9]/;
+    return digitRegex.test(str);
+  };
+
+  const hasSpecialChar = (str: string): boolean => {
+    const specialCharRegex = /[#?!@$%^&*-]/;
+    return specialCharRegex.test(str);
+  };
+
+  const hasMinLength = (str: string, minLength: number): boolean => {
+    return str.length >= minLength;
+  };
+
   const checkValidPassword = (password: string) => {
-    const passwordRegex =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     if (password.trim() === '') {
       setPasswordError('Chưa điền thông tin');
       return false;
-    } else if (!passwordRegex.test(password)) {
-      setPasswordError('Chưa đúng định dạng');
+    } else if (!hasUppercase(password)) {
+      setPasswordError('Chưa có chữ in hoa');
+      return false;
+    } else if (!hasLowercase(password)) {
+      setPasswordError('Chưa có chữ in thường');
+      return false;
+    } else if (!hasDigit(password)) {
+      setPasswordError('Chưa có chữ số');
+      return false;
+    } else if (!hasSpecialChar(password)) {
+      setPasswordError('Chưa có ký tự đặc biệt');
+      return false;
+    } else if (!hasMinLength(password, 8)) {
+      setPasswordError('Chưa đủ ít nhất 8 ký tự');
       return false;
     } else {
       setPasswordError('');
@@ -157,6 +192,11 @@ function Register() {
     checkValidRepeatPassword(repeatPassword);
   };
 
+  useEffect(() => {
+    checkValidPassword(password);
+    checkValidRepeatPassword(repeatPassword);
+  }, [password, repeatPassword]);
+
   const canRegister =
     emailError === '' &&
     fullNameError === '' &&
@@ -177,14 +217,14 @@ function Register() {
           </h3>
         </div>
         <div className="register__form col col-xxl-7 col-xl-7 col-lg-12 col-md-12 col-12">
-          <h1 className="register__form-title text-center my-5">
+          <h1 className="register__form-title text-center mt-5">
             <strong>TẠO TÀI KHOẢN MỚI</strong>
           </h1>
-          <div className="mt-5">
+          <div className="mt-3 mb-5">
             <form onSubmit={handleSubmit} className="form">
-              <div className="row">
-                <div className="input-box__field col col-xxl-12 col-xl-12 col-lg-12  col-md-12">
-                  <div className="input-box">
+              <div className="row mb-0">
+                <div className="register__input-box__field col col-xxl-12 col-xl-12 col-lg-12  col-md-12">
+                  <div className="register__input-box">
                     <input
                       required
                       type="text"
@@ -210,8 +250,8 @@ function Register() {
                     </div>
                   </div>
                 </div>
-                <div className="input-box__field col col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                  <div className="input-box">
+                <div className="register__input-box__field col col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                  <div className="register__input-box">
                     <input
                       required
                       type="text"
@@ -237,8 +277,8 @@ function Register() {
                     </div>
                   </div>
                 </div>
-                <div className="input-box__field col col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                  <div className="input-box">
+                <div className="register__input-box__field col col-xxl-6 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                  <div className="register__input-box">
                     <input
                       required
                       type="tel"
@@ -264,8 +304,8 @@ function Register() {
                     </div>
                   </div>
                 </div>
-                <div className="input-box__field col col-12">
-                  <div className="input-box">
+                <div className="register__input-box__field col col-12">
+                  <div className="register__input-box">
                     <input
                       required
                       type="password"
@@ -292,8 +332,8 @@ function Register() {
                     </div>
                   </div>
                 </div>
-                <div className="input-box__field col col-12">
-                  <div className="input-box">
+                <div className="register__input-box__field col col-12">
+                  <div className="register__input-box">
                     <input
                       required
                       type="password"
@@ -317,6 +357,15 @@ function Register() {
                     )}
                   </div>
                 </div>
+                <div className="register__input-checkbox my-4 d-flex gap-3">
+                  <label htmlFor="privacyAgree">
+                    Bằng việc đăng ký, bạn đã đồng ý với Tech Hub về{' '}
+                    <Link to={'/exchange-return-refund-policy'}>
+                      Điều khoản dịch vụ
+                    </Link>{' '}
+                    & <Link to={'/security-policy'}>Chính sách bảo mật</Link>
+                  </label>
+                </div>
               </div>
               <button
                 className={`container-fluid py-2 btn btn-primary ${
@@ -327,6 +376,12 @@ function Register() {
               >
                 ĐĂNG KÝ
               </button>
+              <div className="register__transfer mb-4">
+                <span>
+                  Bạn đã có tài khoản? Vui lòng chọn{' '}
+                  <Link to={'/login'}>Đăng nhập</Link>
+                </span>
+              </div>
             </form>
           </div>
         </div>
