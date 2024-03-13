@@ -20,7 +20,8 @@
   text-transform: uppercase;
 }
 
-.register__error {
+.register__error,
+.register__success {
   height: 100%;
   position: absolute;
   display: flex;
@@ -35,6 +36,11 @@
 
 .register__error svg {
   color: crimson;
+  margin-left: 5px;
+}
+
+.register__success svg {
+  color: chartreuse;
   margin-left: 5px;
 }
 

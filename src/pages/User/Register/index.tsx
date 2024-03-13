@@ -2,7 +2,10 @@ import { ChangeEvent, useState } from 'react';
 import { backendEndpoint } from '../../../utils/Constant';
 import './Register.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircleCheck,
+  faTriangleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 function Register() {
@@ -189,16 +192,19 @@ function Register() {
                       className=""
                       value={email}
                       onChange={handleEmailChange}
-                      // autoComplete="off"
                     />
                     <span>Email</span>
                     <div className="d-flex">
-                      {emailError && (
+                      {emailError ? (
                         <div className="register__error">
                           {emailError}
                           <FontAwesomeIcon
                             icon={faTriangleExclamation as IconProp}
                           />
+                        </div>
+                      ) : (
+                        <div className="register__success">
+                          <FontAwesomeIcon icon={faCircleCheck as IconProp} />
                         </div>
                       )}
                     </div>
