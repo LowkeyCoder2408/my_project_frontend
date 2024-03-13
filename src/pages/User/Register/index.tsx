@@ -27,6 +27,7 @@ function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {};
 
+  // Email checking
   const checkExistingEmail = async (email: string) => {
     const endpoint =
       backendEndpoint + `/customer/search/existsByEmail?email=${email}`;
@@ -44,58 +45,121 @@ function Register() {
     }
   };
 
-  const checkValidEmail = async (email: string) => {
+  const checkValidEmail = (email: string) => {
     const emailRegex =
       /^[\w!#$%&'*+/=?^`{|}~-]+(?:\.[\w!#$%&'*+/=?^`{|}~-]+)*@(?:[\w-]+(?:\.[\w-]+)*|\[(?:\d{1,3}\.){3}\d{1,3}\])$/;
-    if (!emailRegex.test(email)) {
-      setEmailError('Email không đúng định dạng');
-      return true;
+    if (email.trim() === '') {
+      setEmailError('Chưa điền thông tin');
+      return false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError('Chưa đúng định dạng');
+      return false;
     } else {
       setEmailError('');
-      return false;
+      return true;
     }
   };
 
-  const handleEmailChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    setEmail(email);
     setEmailError('');
-    checkValidEmail(e.target.value);
-    checkExistingEmail(e.target.value);
+    const isValidEmail = checkValidEmail(email);
+    if (isValidEmail) {
+      checkExistingEmail(email);
+    }
   };
 
-  const checkPassword = async (password: string) => {
+  // Full name checking
+  const checkValidFullName = (fullName: string) => {
+    if (fullName.trim() === '') {
+      setFullNameError('Chưa điền thông tin');
+      return false;
+    } else {
+      setFullNameError('');
+      return true;
+    }
+  };
+
+  const handleFullNameChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const fullName = e.target.value;
+    setFullName(fullName);
+    setFullNameError('');
+    checkValidFullName(fullName);
+  };
+
+  // Phone number checking
+  const checkValidPhoneNumber = (phoneNumber: string) => {
+    const phoneNumberRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+    if (phoneNumber.trim() === '') {
+      setPhoneNumberError('Chưa điền thông tin');
+      return false;
+    } else if (!phoneNumberRegex.test(phoneNumber)) {
+      setPhoneNumberError('Chưa đúng định dạng');
+      return false;
+    } else {
+      setPhoneNumberError('');
+      return true;
+    }
+  };
+
+  const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const phoneNumber = e.target.value;
+    setPhoneNumber(phoneNumber);
+    setPhoneNumberError('');
+    checkValidPhoneNumber(phoneNumber);
+  };
+
+  // Password checking
+  const checkValidPassword = (password: string) => {
     const passwordRegex =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setPasswordError('Không đúng định dạng');
-      return true;
+    if (password.trim() === '') {
+      setPasswordError('Chưa điền thông tin');
+      return false;
+    } else if (!passwordRegex.test(password)) {
+      setPasswordError('Chưa đúng định dạng');
+      return false;
     } else {
       setPasswordError('');
-      return false;
+      return true;
     }
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+    const password = e.target.value;
+    setPassword(password);
     setPasswordError('');
-    return checkPassword(e.target.value);
+    checkValidPassword(password);
   };
 
-  const checkRepeatPassword = async (repeatPassword: string) => {
-    if (repeatPassword !== password) {
-      setRepeatPasswordError('Mật khẩu không trùng khớp.');
-      return true;
+  // Repeat password checking
+  const checkValidRepeatPassword = (repeatPassword: string) => {
+    if (repeatPassword.trim() === '') {
+      setRepeatPasswordError('Chưa điền thông tin');
+      return false;
+    } else if (repeatPassword !== password) {
+      setRepeatPasswordError('Mật khẩu không trùng khớp');
+      return false;
     } else {
       setRepeatPasswordError('');
-      return false;
+      return true;
     }
   };
 
   const handleRepeatPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setRepeatPassword(e.target.value);
+    const repeatPassword = e.target.value;
+    setRepeatPassword(repeatPassword);
     setRepeatPasswordError('');
-    return checkRepeatPassword(e.target.value);
+    checkValidRepeatPassword(repeatPassword);
   };
+
+  const canRegister =
+    emailError === '' &&
+    fullNameError === '' &&
+    phoneNumberError === '' &&
+    passwordError === '' &&
+    repeatPasswordError === '';
 
   return (
     <div className="register__container container">
@@ -125,6 +189,7 @@ function Register() {
                       className=""
                       value={email}
                       onChange={handleEmailChange}
+                      // autoComplete="off"
                     />
                     <span>Email</span>
                     <div className="d-flex">
@@ -147,7 +212,7 @@ function Register() {
                       id="fullName"
                       className=""
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      onChange={handleFullNameChange}
                     />
                     <span>Họ và tên</span>{' '}
                     <div className="d-flex">
@@ -166,11 +231,11 @@ function Register() {
                   <div className="input-box">
                     <input
                       required
-                      type="text"
+                      type="tel"
                       id="phoneNumber"
                       className=""
                       value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      onChange={handlePhoneNumberChange}
                     />
                     <span>Số điện thoại</span>
                     <div className="d-flex">
@@ -194,6 +259,7 @@ function Register() {
                       className=""
                       value={password}
                       onChange={handlePasswordChange}
+                      autoComplete="new-password"
                     />
                     <span>Mật khẩu</span>
                     <div className="d-flex">
@@ -231,7 +297,9 @@ function Register() {
                 </div>
               </div>
               <button
-                className="container-fluid py-2 btn btn-primary"
+                className={`container-fluid py-2 btn btn-primary ${
+                  canRegister ? '' : 'disabled'
+                }`}
                 type="submit"
                 style={{ fontSize: '1.6rem' }}
               >
