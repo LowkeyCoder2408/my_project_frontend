@@ -8,6 +8,7 @@ import ProductList from '../pages/ProductList';
 import ProductDetail from '../pages/ProductList/components/ProductDetail';
 import SecurityPolicy from '../pages/SecurityPolicy';
 import ShippingPolicy from '../pages/ShippingPolicy';
+import EnableAccount from '../pages/User/EnableAccount';
 import Register from '../pages/User/Register';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
 // Layouts
@@ -73,6 +74,11 @@ const publicRoutes = [
   {
     path: '/register',
     component: Register,
+    layout: 'default',
+  },
+  {
+    path: '/enable/:email/:verificationCode',
+    component: EnableAccount,
     layout: 'default',
   },
 ];

@@ -8,6 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { Link } from 'react-router-dom';
+import AuthenticationType from '../../../models/AuthenticationType';
 
 function Register() {
   const [email, setEmail] = useState<string>('');
@@ -28,8 +29,48 @@ function Register() {
   const [repeatPasswordError, setRepeatPasswordError] = useState<string>(
     'Chưa điền thông tin',
   );
+  const [authenticationType, setAuthenticationType] =
+    useState<AuthenticationType>(AuthenticationType.DATABASE);
+  const [notification, setNotification] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {};
+  const handleSubmit = async (e: React.FormEvent) => {
+    setEmailError('');
+    setFullNameError('');
+    setPhoneNumberError('');
+    setPasswordError('');
+    setRepeatPasswordError('');
+    setAuthenticationType(AuthenticationType.DATABASE);
+
+    // Tránh tình trạng click liên tục
+    e.preventDefault();
+    try {
+      const endpoint = backendEndpoint + `/account/register`;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          fullName: fullName,
+          phoneNumber: phoneNumber,
+          password: password,
+          authenticationType: authenticationType,
+          createdTime: new Date(),
+          enabled: 0,
+          verificationCode: '',
+        }),
+      });
+      if (response.ok) {
+        setNotification(
+          'Đăng ký thành công, vui lòng kiểm tra email để xác thực và kích hoạt',
+        );
+      } else {
+        console.log(response.json());
+        setNotification('Đã xảy ra lỗi');
+      }
+    } catch (error) {
+      setNotification('Đã xảy ra lỗi');
+    }
+  };
 
   // Email checking
   const checkExistingEmail = async (email: string) => {
@@ -383,6 +424,7 @@ function Register() {
                 </span>
               </div>
             </form>
+            <div className="">{notification}</div>
           </div>
         </div>
       </div>
