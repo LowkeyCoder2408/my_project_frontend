@@ -38,15 +38,11 @@ async function getProducts(url: string): Promise<ResultInterface> {
       height: responseData[key].height,
       weight: responseData[key].weight,
       mainImage: responseData[key].mainImage,
-      category: responseData[key].category,
-      brand: responseData[key].brand,
-      images: responseData[key].images,
-      details: responseData[key].details,
+      categoryId: responseData[key].categoryId,
+      brandId: responseData[key].brandId,
       reviewCount: responseData[key].reviewCount,
       ratingCount: responseData[key].ratingCount,
       averageRating: responseData[key].averageRating,
-      customerCanReview: responseData[key].customerCanReview,
-      reviewByCustomer: responseData[key].reviewByCustomer,
     });
   }
 
@@ -173,15 +169,11 @@ export async function getProductById(
         height: productData.height,
         weight: productData.weight,
         mainImage: productData.mainImage,
-        category: productData.category,
-        brand: productData.brand,
-        images: productData.images,
-        details: productData.details,
+        categoryId: productData.categoryId,
+        brandId: productData.brandId,
         reviewCount: productData.reviewCount,
         ratingCount: productData.ratingCount,
         averageRating: productData.averageRating,
-        customerCanReview: productData.customerCanReview,
-        reviewByCustomer: productData.reviewByCustomer,
       };
     } else {
       throw new Error('Sản phẩm không tồn tại');
@@ -222,15 +214,11 @@ export async function getProductByAlias(
         height: productData.height,
         weight: productData.weight,
         mainImage: productData.mainImage,
-        category: productData.category,
-        brand: productData.brand,
-        images: productData.images,
-        details: productData.details,
+        categoryId: productData.categoryId,
+        brandId: productData.brandId,
         reviewCount: productData.reviewCount,
         ratingCount: productData.ratingCount,
         averageRating: productData.averageRating,
-        customerCanReview: productData.customerCanReview,
-        reviewByCustomer: productData.reviewByCustomer,
       };
     } else {
       throw new Error('Sản phẩm không tồn tại');

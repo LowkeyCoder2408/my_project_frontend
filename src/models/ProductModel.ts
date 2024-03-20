@@ -20,15 +20,11 @@ class ProductModel {
   height?: number;
   weight?: number;
   mainImage?: string;
-  category?: CategoryModel;
-  brand?: BrandModel;
-  images?: ProductImageModel[];
-  details?: ProductDetailModel[];
+  categoryId: number;
+  brandId: number;
   reviewCount?: number;
   ratingCount?: number;
   averageRating?: number;
-  customerCanReview?: boolean;
-  reviewByCustomer?: boolean;
 
   constructor(
     id: number,
@@ -47,15 +43,11 @@ class ProductModel {
     height: number,
     weight: number,
     mainImage: string,
-    category: CategoryModel,
-    brand: BrandModel,
-    images: ProductImageModel[],
-    details: ProductDetailModel[],
+    categoryId: number,
+    brandId: number,
     reviewCount: number,
     ratingCount: number,
     averageRating: number,
-    customerCanReview: boolean,
-    reviewByCustomer: boolean,
   ) {
     this.id = id;
     this.name = name;
@@ -73,15 +65,11 @@ class ProductModel {
     this.height = height;
     this.weight = weight;
     this.mainImage = mainImage;
-    this.category = category;
-    this.brand = brand;
-    this.images = images;
-    this.details = details;
+    this.categoryId = categoryId;
+    this.brandId = brandId;
     this.reviewCount = reviewCount;
     this.ratingCount = ratingCount;
     this.averageRating = averageRating;
-    this.customerCanReview = customerCanReview;
-    this.reviewByCustomer = reviewByCustomer;
   }
 }
 

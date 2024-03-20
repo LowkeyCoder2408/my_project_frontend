@@ -49,15 +49,29 @@ const ProductReview: React.FC<ProductReviewInterface> = (props) => {
   // }
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        {reviewList.map((review, index) => (
-          <div key={index} className="">
-            <h3>{review.rating}</h3>
-            <h3>{review.comment}</h3>
+    <div className="review-list">
+      {reviewList.map((review) => (
+        <div className="review">
+          <div className="review__avatar-wrap">
+            <img
+              src="https://res.cloudinary.com/dgdn13yur/image/upload/v1710904428/avatar_sjugj8.png"
+              alt="Avatar"
+              className="review__avatar"
+            />
           </div>
-        ))}
-      </div>
+          <div className="review__main">
+            <div className="review__info">
+              <div className="review__header">
+                {/* <span className="review__name">{review.}</span> */}
+                <span className="review__time">
+                  {review.reviewTime.toLocaleString()}
+                </span>
+              </div>
+            </div>
+            <p className="review__content">{review.comment}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 // Pages
 import AboutUs from '../pages/AboutUs';
+import ProductForm from '../pages/Admin/ProductForm';
 import Contact from '../pages/Contact';
 import ExchangeReturnRefundPolicy from '../pages/ExchangeReturnRefundPolicy';
 import FAQ from '../pages/FAQ';
@@ -9,7 +10,9 @@ import ProductDetail from '../pages/ProductList/components/ProductDetail';
 import SecurityPolicy from '../pages/SecurityPolicy';
 import ShippingPolicy from '../pages/ShippingPolicy';
 import EnableAccount from '../pages/User/EnableAccount';
+import Login from '../pages/User/Login';
 import Register from '../pages/User/Register';
+import Test from '../pages/User/Test';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
 // Layouts
 // import { HeaderOnly } from '../components/GlobalStyles/Layout';
@@ -72,6 +75,11 @@ const publicRoutes = [
     layout: 'default',
   },
   {
+    path: '/login',
+    component: Login,
+    layout: 'default',
+  },
+  {
     path: '/register',
     component: Register,
     layout: 'default',
@@ -79,6 +87,16 @@ const publicRoutes = [
   {
     path: '/enable/:email/:verificationCode',
     component: EnableAccount,
+    layout: 'default',
+  },
+  {
+    path: '/test',
+    component: Test,
+    layout: 'default',
+  },
+  {
+    path: '/admin/product-form',
+    component: ProductForm,
     layout: 'default',
   },
 ];
