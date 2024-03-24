@@ -78,7 +78,7 @@ function ProductForm() {
 
   const handleCurrentPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value);
-    setProduct({ ...product, currentPrice: newValue });
+    setProduct({ ...product, currentPrice: newValue, brandId: 3 }); // Cập nhật brandId
   };
 
   const handleListedPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {

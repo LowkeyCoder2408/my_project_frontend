@@ -1,6 +1,5 @@
 import BrandModel from './BrandModel';
 import CategoryModel from './CategoryModel';
-import ProductDetailModel from './ProductDetailModel';
 import ProductImageModel from './ProductImageModel';
 
 class ProductModel {
