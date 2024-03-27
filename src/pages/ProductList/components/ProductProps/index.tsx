@@ -31,15 +31,6 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
   //     </div>
   //   );
   // }
-
-  const salePercentage =
-    props.product.listedPrice && props.product.currentPrice
-      ? Math.round(
-          ((props.product.listedPrice - props.product.currentPrice) /
-            props.product.listedPrice) *
-            100,
-        )
-      : 0;
   return (
     <div className="product__item-wrapper">
       <div className="product__item">
@@ -59,13 +50,14 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
               <FontAwesomeIcon icon={faBagShopping as IconProp} />
             </div>
           </div>
-          {salePercentage > 0 && (
-            <div className="box-label">
-              <div className="label-product label_sale">
-                <span>-{salePercentage}%</span>
+          {props.product.discountPercent &&
+            props.product.discountPercent > 0 && (
+              <div className="box-label">
+                <div className="label-product label_sale">
+                  <span>-{props.product.discountPercent}%</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
         <div className="product__item-caption">
           <Link

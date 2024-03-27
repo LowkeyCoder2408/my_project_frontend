@@ -14,6 +14,7 @@ class ProductModel {
   quantity?: number;
   listedPrice?: number;
   currentPrice?: number;
+  discountPercent?: number;
   length?: number;
   width?: number;
   height?: number;
@@ -37,6 +38,7 @@ class ProductModel {
     quantity: number,
     listedPrice: number,
     currentPrice: number,
+    discountPercent: number,
     length: number,
     width: number,
     height: number,
@@ -59,6 +61,7 @@ class ProductModel {
     this.quantity = quantity;
     this.listedPrice = listedPrice;
     this.currentPrice = currentPrice;
+    this.discountPercent = discountPercent;
     this.length = length;
     this.width = width;
     this.height = height;
