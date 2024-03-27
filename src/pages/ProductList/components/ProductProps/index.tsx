@@ -10,27 +10,62 @@ import ProductModel from '../../../../models/ProductModel';
 import ProductImageModel from '../../../../models/ProductImageModel';
 import { getProductImage } from '../../../../api/ProductImageAPI';
 import Loader from '../Loader';
+import {
+  getHottestProducts,
+  getNewestProducts,
+} from '../../../../api/ProductAPI';
+import { toast } from 'react-toastify';
 
 interface ProductPropsInterface {
   product: ProductModel;
 }
 
 const ProductProps: React.FC<ProductPropsInterface> = (props) => {
-  // const id: number = props.product.id;
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [error, setError] = useState(null);
+  const [newestProducts, setNewestProducts] = useState<ProductModel[]>([]);
+  const [hottestProducts, setHottestProducts] = useState<ProductModel[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isInNewestProducts, setIsInNewestProducts] = useState<boolean>(false);
+  const [isInHottestProducts, setIsInHottestProducts] =
+    useState<boolean>(false);
 
-  // if (loading) {
-  //   return <Loader />;
-  // }
+  useEffect(() => {
+    getNewestProducts(12)
+      .then((result) => {
+        setNewestProducts(result.result);
+        setLoading(false);
+        // Kiểm tra xem sản phẩm hiện tại có trong newestProducts không
+        const isInNewest = result.result.some(
+          (product) => product.id === props.product.id,
+        );
+        setIsInNewestProducts(isInNewest);
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error('Lấy danh sách sản phẩm mới không thành công!');
+      });
+  }, []);
 
-  // if (error) {
-  //   return (
-  //     <div>
-  //       <h1>Gặp lỗi: {error}</h1>
-  //     </div>
-  //   );
-  // }
+  // useEffect(() => {
+  //   getHottestProducts(12)
+  //     .then((result) => {
+  //       setHottestProducts(result.result);
+  //       setLoading(false);
+  //       // Kiểm tra xem sản phẩm hiện tại có trong hottestProducts không
+  //       const isInHottest = result.result.some(
+  //         (product) => product.id === props.product.id,
+  //       );
+  //       setIsInHottestProducts(isInHottest);
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       toast.error('Lấy danh sách sản phẩm hot không thành công!');
+  //     });
+  // }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="product__item-wrapper">
       <div className="product__item">
@@ -58,6 +93,22 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
                 </div>
               </div>
             )}
+          {/* {isInHottestProducts && (
+            <div className="box-label-hot">
+              <img
+                src="https://res.cloudinary.com/dgdn13yur/image/upload/v1711559870/hot_label_w9arf3.png"
+                alt=""
+              />
+            </div>
+          )} */}
+          {isInNewestProducts && (
+            <div className="box-label-new">
+              <img
+                src="https://res.cloudinary.com/dgdn13yur/image/upload/v1711558575/new_label_rizpn7.png"
+                alt=""
+              />
+            </div>
+          )}
         </div>
         <div className="product__item-caption">
           <Link

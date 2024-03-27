@@ -21,7 +21,7 @@ import {
 import FormatPrice from '../ProductProps/FormatPrice';
 import ProductReview from '../ProductReview';
 import BrandModel from '../../../../models/BrandModel';
-import { getCategoryByAlias } from '../../../../api/CategoryAPI';
+import { getCategoryByProductAlias } from '../../../../api/CategoryAPI';
 import CategoryModel from '../../../../models/CategoryModel';
 import { getBrandByAlias } from '../../../../api/BrandAPI';
 
@@ -57,7 +57,7 @@ function ProductDetail(props: ProductDetailInterface) {
       setIsLoading(true);
       Promise.all([
         getAllImageByAlias(productAlias),
-        getCategoryByAlias(productAlias),
+        getCategoryByProductAlias(productAlias),
         getBrandByAlias(productAlias),
       ])
         .then(([imageResponse, categoryResponse, brandResponse]) => {

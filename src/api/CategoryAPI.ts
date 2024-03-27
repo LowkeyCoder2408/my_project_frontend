@@ -26,6 +26,11 @@ export async function getAllCategories(): Promise<ResultInterface> {
   return getCategories(url);
 }
 
+export async function getCategoryByAlias(id: number): Promise<ResultInterface> {
+  const endpoint = backendEndpoint + `/product/${id}/category`;
+  return getCategories(endpoint);
+}
+
 export async function getCategoryByProductId(
   id: number,
 ): Promise<ResultInterface> {
@@ -33,7 +38,7 @@ export async function getCategoryByProductId(
   return getCategories(endpoint);
 }
 
-export async function getCategoryByAlias(
+export async function getCategoryByProductAlias(
   productAlias: string,
 ): Promise<ResultInterface> {
   const product = await getProductByAlias(productAlias);
