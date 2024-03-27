@@ -30,7 +30,7 @@ const publicRoutes = [
     layout: 'default',
   },
   {
-    path: '/product-list/:category',
+    path: '/product-list/:categoryId',
     component: ProductList,
     layout: 'default',
   },

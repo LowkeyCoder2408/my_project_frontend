@@ -109,6 +109,7 @@ function ProductList(props: ProductListProps) {
     numberOfProductPerPage,
     props.keyword,
     categoryIdNumber,
+    categoryId,
     filter,
     minPrice,
     maxPrice,
