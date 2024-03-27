@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import ProductModel from '../../models/ProductModel';
 import ProductProps from './components/ProductProps';
-import { findProducts, getAllProducts } from '../../api/ProductAPI';
+import {
+  findProducts,
+  // getAllProducts,
+  getAllProducts,
+} from '../../api/ProductAPI';
 import Loader from './components/Loader';
 import { Pagination } from '../../utils/Pagination';
 import { useLocation, useParams } from 'react-router-dom';
@@ -10,6 +14,7 @@ import DropdownOnly from '../../utils/DropdownOnly';
 import CategoryFilter from './components/CategoryFilter';
 import SearchNotification from './components/SearchNotification';
 import SliderPriceFilter from './components/SliderPriceFilter';
+import { toast } from 'react-toastify';
 
 interface ProductListProps {
   keyword: string;
@@ -27,6 +32,8 @@ function ProductList(props: ProductListProps) {
   const [selected, setSelected] = useState<string>('Chọn cách hiển thị');
   const [sortSelected, setSortSelected] = useState<string>('Chọn cách sắp xếp');
   const [filter, setFilter] = useState<number>(1);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(100000000);
   const location = useLocation();
   const { categoryId } = useParams();
   let categoryIdNumber = 0;
@@ -58,13 +65,19 @@ function ProductList(props: ProductListProps) {
       (props.keyword === '' && categoryIdNumber === 0) ||
       props.keyword === undefined
     ) {
-      getAllProducts(numberOfProductPerPage, currentPage - 1, filter)
+      getAllProducts(
+        numberOfProductPerPage,
+        currentPage - 1,
+        filter,
+        minPrice,
+        maxPrice,
+      )
         .then((result) => {
+          // console.log(result);
           setProductList(result.result);
           setNumberOfPage(result.numberOfPage);
           setLoading(false);
           setNumberOfProductFound(result.numberOfProduct);
-          console.log(result.url);
         })
         .catch((error) => {
           setLoading(false);
@@ -77,13 +90,14 @@ function ProductList(props: ProductListProps) {
         categoryIdNumber,
         currentPage - 1,
         filter,
+        minPrice,
+        maxPrice,
       )
         .then((result) => {
           setProductList(result.result);
           setNumberOfPage(result.numberOfPage);
           setLoading(false);
           setNumberOfProductFound(result.numberOfProduct);
-          console.log(result.url);
         })
         .catch((error) => {
           setLoading(false);
@@ -96,6 +110,8 @@ function ProductList(props: ProductListProps) {
     props.keyword,
     categoryIdNumber,
     filter,
+    minPrice,
+    maxPrice,
   ]);
 
   const pagination = (page: number) => {
@@ -179,28 +195,32 @@ function ProductList(props: ProductListProps) {
                   'Sản phẩm từ cũ - mới',
                   'Tăng dần (theo giá)',
                   'Giảm dần (theo giá)',
-                  'Tên sản phẩm từ A - Z',
-                  'Tên sản phẩm từ Z - A',
+                  'Tỉ lệ giảm từ cao - thấp',
+                  'Tỉ lệ giảm từ thấp - cao',
                 ]}
                 style={{ width: '100%' }}
               />
               <div className="mt-5">
-                <h3>
-                  <strong>LỌC THEO DANH MỤC</strong>
-                </h3>
-                <CategoryFilter categoryIdNumber={categoryIdNumber} />
-              </div>
-              {/* <div className="mt-5">
                 <h3>
                   <strong>LỌC THEO KHOẢNG GIÁ</strong>
                 </h3>
                 <SliderPriceFilter
                   min={0}
                   max={100000000}
-                  step={1000}
+                  step={10000}
                   forid="display1"
+                  minPrice={minPrice}
+                  setMinPrice={setMinPrice}
+                  maxPrice={maxPrice}
+                  setMaxPrice={setMaxPrice}
                 />
-              </div> */}
+              </div>
+              <div className="mt-5">
+                <h3>
+                  <strong>LỌC THEO DANH MỤC</strong>
+                </h3>
+                <CategoryFilter categoryIdNumber={categoryIdNumber} />
+              </div>
             </div>
           </div>
         </div>

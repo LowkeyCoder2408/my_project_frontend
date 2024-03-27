@@ -7,7 +7,6 @@ interface ResultInterface {
   result: ProductModel[];
   numberOfPage: number;
   numberOfProduct: number;
-  url: string;
 }
 
 async function getProducts(url: string): Promise<ResultInterface> {
@@ -51,7 +50,6 @@ async function getProducts(url: string): Promise<ResultInterface> {
     result: result,
     numberOfPage: numberOfPage,
     numberOfProduct: numberOfProduct,
-    url: url,
   };
 }
 
@@ -59,6 +57,8 @@ export async function getAllProducts(
   numberOfProductPerPage: number,
   page: number,
   filter: number,
+  minPrice: number,
+  maxPrice: number,
 ): Promise<ResultInterface> {
   let filterEndpoint = '';
   if (filter === 1) {
@@ -70,14 +70,14 @@ export async function getAllProducts(
   } else if (filter === 4) {
     filterEndpoint = `sort=currentPrice,desc`;
   } else if (filter === 5) {
-    filterEndpoint = `sort=name,asc`;
+    filterEndpoint = `sort=discountPercent,desc`;
   } else if (filter === 6) {
-    filterEndpoint = `sort=name,desc`;
+    filterEndpoint = `sort=discountPercent,asc`;
   }
 
   const url: string =
     backendEndpoint +
-    `/product?size=${numberOfProductPerPage}&page=${page}` +
+    `/product/search/findByCurrentPriceBetween?minPrice=${minPrice}&maxPrice=${maxPrice}&size=${numberOfProductPerPage}&page=${page}` +
     '&' +
     filterEndpoint;
 
@@ -90,6 +90,8 @@ export async function findProducts(
   categoryIdNumber: number,
   page: number,
   filter: number,
+  minPrice: number,
+  maxPrice: number,
 ): Promise<ResultInterface> {
   if (keyword) {
     keyword = keyword.trim();
@@ -97,7 +99,10 @@ export async function findProducts(
 
   const optionToDisplay = `size=${numberOfProductPerPage}&page=${page}`;
 
-  let url = backendEndpoint + `/product?` + optionToDisplay;
+  let url =
+    backendEndpoint +
+    `/product/search/findByCurrentPriceBetween?minPrice=${minPrice}&maxPrice=${maxPrice}&` +
+    optionToDisplay;
   let filterEndpoint = '';
   if (filter === 1) {
     filterEndpoint = `sort=id,desc`;
@@ -108,33 +113,33 @@ export async function findProducts(
   } else if (filter === 4) {
     filterEndpoint = `sort=currentPrice,desc`;
   } else if (filter === 5) {
-    filterEndpoint = `sort=name,asc`;
+    filterEndpoint = `sort=discountPercent,desc`;
   } else if (filter === 6) {
-    filterEndpoint = `sort=name,desc`;
+    filterEndpoint = `sort=discountPercent,asc`;
   }
 
   if (keyword !== '' && categoryIdNumber === 0) {
     url =
       backendEndpoint +
-      `/product/search/findByNameContaining?` +
+      `/product/search/findByNameContainingAndCurrentPriceBetween?` +
       optionToDisplay +
-      `&productName=${keyword}` +
+      `&productName=${keyword}&minPrice=${minPrice}&maxPrice=${maxPrice}` +
       '&' +
       filterEndpoint;
   } else if (keyword === '' && categoryIdNumber > 0) {
     url =
       backendEndpoint +
-      `/product/search/findByCategory_Id?` +
+      `/product/search/findByCategory_IdAndCurrentPriceBetween?` +
       optionToDisplay +
-      `&categoryId=${categoryIdNumber}` +
+      `&categoryId=${categoryIdNumber}&minPrice=${minPrice}&maxPrice=${maxPrice}` +
       '&' +
       filterEndpoint;
   } else {
     url =
       backendEndpoint +
-      `/product/search/findByNameContainingAndCategory_Id?` +
+      `/product/search/findByNameContainingAndCategory_IdAndCurrentPriceBetween?` +
       optionToDisplay +
-      `&categoryId=${categoryIdNumber}&productName=${keyword}` +
+      `&categoryId=${categoryIdNumber}&productName=${keyword}&minPrice=${minPrice}&maxPrice=${maxPrice}` +
       '&' +
       filterEndpoint;
   }

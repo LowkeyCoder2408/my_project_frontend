@@ -6,6 +6,10 @@ interface SliderPriceFilterProps {
   max: number;
   step: number;
   forid: string;
+  minPrice: number;
+  setMinPrice: React.Dispatch<React.SetStateAction<number>>;
+  maxPrice: number;
+  setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function SliderPriceFilter(props: SliderPriceFilterProps) {
@@ -13,16 +17,24 @@ function SliderPriceFilter(props: SliderPriceFilterProps) {
   const [inputTo, setInputTo] = useState<number>(props.max);
 
   useEffect(() => {
+    const minValue = Math.min(inputFrom, inputTo);
+    const maxValue = Math.max(inputFrom, inputTo);
+
+    props.setMinPrice(minValue);
+    props.setMaxPrice(maxValue);
+  }, [inputFrom, inputTo, props]);
+
+  useEffect(() => {
     const display = document.getElementById(props.forid);
     const slider = document.getElementById(`slider-${props.forid}`);
 
     if (display) {
       if (inputFrom > inputTo) {
-        display.innerHTML = `Khoảng giá: ${inputTo
+        display.innerHTML = `(${inputTo
           .toString()
           .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}₫ - ${inputFrom
           .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}₫`;
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}₫)`;
         if (slider) {
           slider.style.right = `${
             100 - ((inputFrom - props.min) / (props.max - props.min)) * 100
@@ -32,11 +44,11 @@ function SliderPriceFilter(props: SliderPriceFilterProps) {
           }%`;
         }
       } else {
-        display.innerHTML = `Khoảng giá: ${inputFrom
+        display.innerHTML = `(${inputFrom
           .toString()
           .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}₫ - ${inputTo
           .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}₫`;
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}₫)`;
         if (slider) {
           slider.style.right = `${
             100 - ((inputTo - props.min) / (props.max - props.min)) * 100
@@ -49,6 +61,11 @@ function SliderPriceFilter(props: SliderPriceFilterProps) {
     }
     console.log(inputFrom, inputTo);
   }, [inputFrom, inputTo, props]);
+
+  useEffect(() => {
+    props.setMinPrice(inputFrom);
+    props.setMaxPrice(inputTo);
+  }, [inputFrom, inputTo]);
 
   return (
     <div>
