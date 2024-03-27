@@ -100,7 +100,7 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
                 </>
               ) : (
                 <div style={{ color: '#444', marginRight: '10px' }}>
-                  Chưa có đánh giá
+                  0 đánh giá
                 </div>
               )}
             </div>

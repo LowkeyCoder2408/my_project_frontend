@@ -1,19 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import Product from '../../../../components/GlobalStyles/Layout/components/Product';
-import './NewestProduct.css';
+import './HottestProduct.css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import ProductList from '../../../ProductList';
 import ProductModel from '../../../../models/ProductModel';
-import { getNewestProducts } from '../../../../api/ProductAPI';
+import { getHottestProducts } from '../../../../api/ProductAPI';
 import { toast } from 'react-toastify';
 import Loader from '../../../ProductList/components/Loader';
 import ProductProps from '../../../ProductList/components/ProductProps';
 
-function NewestProduct() {
+function HottestProduct() {
   const hotProductListRef = useRef<HTMLDivElement>(null);
-  const [newestProducts, setNewestProducts] = useState<ProductModel[]>([]);
+  const [hottestProducts, setHottestProducts] = useState<ProductModel[]>([]);
   const [productsQuantity, setProductsQuantity] = useState<number>(0);
   const [productsPerRow, setProductsPerRow] = useState<number>(0);
   const [slidesQuantity, setSlidesQuantity] = useState<number>(0);
@@ -48,23 +48,23 @@ function NewestProduct() {
   };
 
   useEffect(() => {
-    getNewestProducts(12)
+    getHottestProducts(12)
       .then((result) => {
-        setNewestProducts(result.result);
+        setHottestProducts(result.result);
         setLoading(false);
       })
       .catch((error) => {
         setLoading(false);
-        toast.error('Lấy danh sách sản phẩm mới không thành công!');
+        toast.error('Lấy danh sách sản phẩm hot không thành công!');
       });
   }, []);
 
   useEffect(() => {
     if (hotProductListRef.current) {
-      const childCount = newestProducts.length;
+      const childCount = hottestProducts.length;
       setProductsQuantity(childCount);
     }
-  }, [newestProducts]);
+  }, [hottestProducts]);
 
   useEffect(() => {
     function handleResize() {
@@ -125,13 +125,13 @@ function NewestProduct() {
   return (
     <div className="container">
       <div className="mb-5" style={{ marginTop: '50px' }}>
-        <h2 className="newest-product-title mt-5">
-          <strong>SẢN PHẨM MỚI TRONG TUẦN</strong>
-          <div className="newest-product-owl-controls">
-            <div className="newest-product-owl-nav">
+        <h2 className="hottest-product-title mt-5">
+          <strong>SẢN PHẨM HOT</strong>
+          <div className="hottest-product-owl-controls">
+            <div className="hottest-product-owl-nav">
               <div
                 onClick={handlePrevSlide}
-                className="newest-product-owl-prev"
+                className="hottest-product-owl-prev"
               >
                 <FontAwesomeIcon
                   style={{
@@ -143,7 +143,7 @@ function NewestProduct() {
               </div>
               <div
                 onClick={handleNextSlide}
-                className="newest-product-owl-next"
+                className="hottest-product-owl-next"
               >
                 <FontAwesomeIcon
                   style={{
@@ -157,15 +157,15 @@ function NewestProduct() {
             </div>
           </div>
         </h2>
-        <div className="newest-product-wrapper">
+        <div className="hottest-product-wrapper">
           <div
             ref={hotProductListRef}
             style={{ transform: `translateY(${translateYValue}px)` }}
-            className="row newest-product-list"
+            className="row hottest-product-list"
           >
-            {newestProducts.map((newestProduct, index) => (
+            {hottestProducts.map((hottestProduct, index) => (
               <div className="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6">
-                <ProductProps key={index} product={newestProduct} />
+                <ProductProps key={index} product={hottestProduct} />
               </div>
             ))}
           </div>
@@ -175,4 +175,4 @@ function NewestProduct() {
   );
 }
 
-export default NewestProduct;
+export default HottestProduct;

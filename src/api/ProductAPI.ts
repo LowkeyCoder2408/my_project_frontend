@@ -228,3 +228,22 @@ export async function getProductByAlias(
     return null;
   }
 }
+
+export async function getNewestProducts(
+  numberOfProduct: number,
+): Promise<ResultInterface> {
+  const url: string =
+    backendEndpoint + `/product?sort=id,desc&size=${numberOfProduct}`;
+
+  return getProducts(url);
+}
+
+export async function getHottestProducts(
+  numberOfProduct: number,
+): Promise<ResultInterface> {
+  const url: string =
+    backendEndpoint +
+    `/product?sort=averageRating,desc&size=${numberOfProduct}`;
+
+  return getProducts(url);
+}

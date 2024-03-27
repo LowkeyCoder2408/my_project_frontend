@@ -1,21 +1,21 @@
-.newest-product-wrapper {
+.hottest-product-wrapper {
   margin-top: 20px;
   padding-top: 10px;
   height: calc(var(--product-card-height) + 20px);
   overflow: hidden;
 }
 
-.newest-product-list {
+.hottest-product-list {
   transition: 0.5s;
 }
 
-.newest-product-title {
+.hottest-product-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.newest-product-owl-nav {
+.hottest-product-owl-nav {
   border: 1px solid #cac8c8;
   background-color: #fff;
   border-radius: 25px;
@@ -27,7 +27,7 @@
   align-items: center;
 }
 
-.newest-product-owl-nav svg {
+.hottest-product-owl-nav svg {
   font-size: 1.5rem;
   padding: 0 8px;
   margin-top: 3px;
