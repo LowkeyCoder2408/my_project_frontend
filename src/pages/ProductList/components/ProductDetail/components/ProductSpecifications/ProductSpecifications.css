@@ -1,0 +1,26 @@
+.product-details__specifications__wrapper {
+  padding: 30px;
+  /* border: 3px solid #001d49; */
+  background-color: #fff;
+  border-radius: 10px;
+  transition: 0.5s;
+  position: relative;
+}
+
+.product-details__specifications__heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2rem;
+}
+
+.product-details__specifications__wrapper .table {
+  border-collapse: collapse !important;
+  border: none !important;
+  color: black;
+}
+
+.product-details__specifications__wrapper .table td {
+  text-align: left !important;
+  border: none !important;
+  color: black;
+}

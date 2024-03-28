@@ -205,3 +205,8 @@
     justify-content: center;
   }
 }
+
+.product-details__overview {
+  background-color: #fff;
+  border-radius: 10px;
+}

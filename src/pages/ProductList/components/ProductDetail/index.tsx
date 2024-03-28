@@ -19,11 +19,12 @@ import {
   getAllImageByProduct,
 } from '../../../../api/ProductImageAPI';
 import FormatPrice from '../ProductProps/FormatPrice';
-import ProductReview from '../ProductReview';
 import BrandModel from '../../../../models/BrandModel';
 import { getCategoryByProductAlias } from '../../../../api/CategoryAPI';
 import CategoryModel from '../../../../models/CategoryModel';
 import { getBrandByAlias } from '../../../../api/BrandAPI';
+import ProductReviewList from '../ProductReviewList';
+import ProductSpecifications from './components/ProductSpecifications';
 
 interface ProductDetailInterface {}
 
@@ -125,13 +126,6 @@ function ProductDetail(props: ProductDetailInterface) {
     setSelectedImageIndex(index);
   };
 
-  const salePercentage =
-    product.listedPrice && product.currentPrice
-      ? Math.round(
-          ((product.listedPrice - product.currentPrice) / product.listedPrice) *
-            100,
-        )
-      : 0;
   return (
     <div className="container mt-5">
       <div className="product-details row">
@@ -199,8 +193,8 @@ function ProductDetail(props: ProductDetailInterface) {
                   <FormatPrice price={product.listedPrice} />
                 </div>
                 <div className="product-details__price-label">
-                  {salePercentage > 0 ? (
-                    <span>-{salePercentage}%</span>
+                  {product.discountPercent && product.discountPercent > 0 ? (
+                    <span>-{product.discountPercent}%</span>
                   ) : (
                     <span>KHÔNG GIẢM</span>
                   )}
@@ -208,7 +202,7 @@ function ProductDetail(props: ProductDetailInterface) {
               </div>
             </div>
 
-            <p className="product-details__full-description">
+            <div className="product-details__full-description">
               <div className="product-details__title mb-2">
                 <FontAwesomeIcon icon={faCircleCheck as IconProp} />
 
@@ -327,7 +321,7 @@ function ProductDetail(props: ProductDetailInterface) {
                   </div>
                 </div>
               </div>
-            </p>
+            </div>
 
             <div className="product-details__buy mt-5">
               <button
@@ -341,15 +335,16 @@ function ProductDetail(props: ProductDetailInterface) {
                 className="product-details__buy-now"
                 onClick={handleBuyNow}
               >
-                <FontAwesomeIcon icon={faCreditCard as IconProp} />
+                {/* <FontAwesomeIcon icon={faCreditCard as IconProp} /> */}
                 Mua ngay
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="product-details__review">
-        <ProductReview productId={product.id} />
+      <div className="product-details__overview mt-5">
+        <ProductSpecifications product={product} />
+        <ProductReviewList productId={product.id} />
       </div>
     </div>
   );

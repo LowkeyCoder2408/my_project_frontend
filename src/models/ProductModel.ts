@@ -19,6 +19,7 @@ class ProductModel {
   width?: number;
   height?: number;
   weight?: number;
+  operatingSystem?: string;
   mainImage?: string;
   categoryId: number;
   brandId: number;
@@ -43,6 +44,7 @@ class ProductModel {
     width: number,
     height: number,
     weight: number,
+    operatingSystem: string,
     mainImage: string,
     categoryId: number,
     brandId: number,
@@ -66,6 +68,7 @@ class ProductModel {
     this.width = width;
     this.height = height;
     this.weight = weight;
+    this.operatingSystem = operatingSystem;
     this.mainImage = mainImage;
     this.categoryId = categoryId;
     this.brandId = brandId;
