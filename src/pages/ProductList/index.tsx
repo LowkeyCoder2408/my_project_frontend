@@ -15,6 +15,7 @@ import CategoryFilter from './components/CategoryFilter';
 import SearchNotification from './components/SearchNotification';
 import SliderPriceFilter from './components/SliderPriceFilter';
 import { toast } from 'react-toastify';
+import ProductItem from '../Home/components/DealProduct/components/ProductItem';
 
 interface ProductListProps {
   keyword: string;
@@ -281,6 +282,12 @@ function ProductList(props: ProductListProps) {
               </div>
             )}
           </div>
+          {/* {numberOfProductFound > 0 &&
+            productList.map((product) => (
+              <div className="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
+                <ProductItem key={product.id} product={product} />
+              </div>
+            ))} */}
         </div>
       </div>
     </div>

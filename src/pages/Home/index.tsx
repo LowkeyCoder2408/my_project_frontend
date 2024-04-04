@@ -1,5 +1,6 @@
 import Carousel from './components/Carousel';
 import Category from './components/Category';
+import DealProduct from './components/DealProduct';
 import HottestProduct from './components/HottestProduct';
 import MostLikedProduct from './components/MostLikedProduct';
 import NewestProduct from './components/NewestProduct';
@@ -13,6 +14,7 @@ function Home() {
       <Carousel />
       <Service />
       <Category />
+      <DealProduct />
       <HottestProduct />
       <NewestProduct />
       <SlideShow />

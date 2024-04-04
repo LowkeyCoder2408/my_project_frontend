@@ -1,0 +1,72 @@
+.deals__header {
+  display: flex;
+  padding-top: 20px;
+}
+
+.deals__title {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.deals__countdown {
+  display: flex;
+  align-items: center;
+  margin-left: 60px;
+  font-size: 24px;
+  height: 44px;
+  padding: 0 30px;
+  background-color: #fccc4d;
+  border-radius: 99px;
+}
+
+.deals__countdown .day {
+  margin-left: 10px;
+}
+
+.deals__countdown .word {
+  display: none;
+}
+
+.deals__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 40px;
+  margin-top: 30px;
+  border-radius: 15px;
+  border: 2px solid orangered;
+}
+
+.deals__list .row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 0;
+}
+
+.top-selling__title {
+  font-size: 24px;
+  font-weight: 700;
+  padding-top: 20px;
+}
+
+.top-selling__list {
+  margin-top: 30px;
+}
+
+/* Mobile */
+@media screen and (max-width: 767.98px) {
+  .deals__header {
+    display: inline-block;
+  }
+
+  .deals__countdown {
+    margin-left: 0;
+  }
+
+  .deals__list {
+    grid-template-columns: 1fr;
+  }
+}

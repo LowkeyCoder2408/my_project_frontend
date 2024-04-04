@@ -12,6 +12,7 @@ class ProductModel {
   updatedTime?: Date;
   enabled?: boolean;
   quantity?: number;
+  soldQuantity?: number;
   listedPrice?: number;
   currentPrice?: number;
   discountPercent?: number;
@@ -37,6 +38,7 @@ class ProductModel {
     updatedTime: Date,
     enabled: boolean,
     quantity: number,
+    soldQuantity: number,
     listedPrice: number,
     currentPrice: number,
     discountPercent: number,
@@ -61,6 +63,7 @@ class ProductModel {
     this.updatedTime = updatedTime;
     this.enabled = enabled;
     this.quantity = quantity;
+    this.soldQuantity = soldQuantity;
     this.listedPrice = listedPrice;
     this.currentPrice = currentPrice;
     this.discountPercent = discountPercent;

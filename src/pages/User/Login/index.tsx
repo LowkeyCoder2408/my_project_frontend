@@ -44,6 +44,12 @@ function Login() {
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
+
   if (jwtToken !== null) {
     return null;
   }
@@ -67,6 +73,7 @@ function Login() {
                       value={email}
                       autoComplete="off"
                       onChange={(e) => setEmail(e.target.value)}
+                      onKeyPress={handleKeyPress}
                     />
                     <span>Email</span>
                   </div>
@@ -80,6 +87,7 @@ function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="new-password"
+                      onKeyPress={handleKeyPress}
                     />
                     <span>Mật khẩu</span>
                   </div>

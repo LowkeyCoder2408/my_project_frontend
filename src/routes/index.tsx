@@ -5,6 +5,7 @@ import Contact from '../pages/Contact';
 import ExchangeReturnRefundPolicy from '../pages/ExchangeReturnRefundPolicy';
 import FAQ from '../pages/FAQ';
 import Home from '../pages/Home';
+import ProductItem from '../pages/Home/components/DealProduct/components/ProductItem';
 import ProductList from '../pages/ProductList';
 import ProductDetail from '../pages/ProductList/components/ProductDetail';
 import SecurityPolicy from '../pages/SecurityPolicy';
