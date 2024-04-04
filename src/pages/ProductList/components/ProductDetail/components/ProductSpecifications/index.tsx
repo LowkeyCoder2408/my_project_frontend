@@ -9,6 +9,7 @@ import {
   getCategoryByProductAlias,
   getCategoryByProductId,
 } from '../../../../../../api/CategoryAPI';
+import { format } from 'date-fns';
 
 interface ProductSpecificationsProps {
   product: ProductModel;
@@ -65,128 +66,140 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
       </div>
       <table className="table mt-5">
         <tbody>
-          {props.product.length &&
-            !props.product.width &&
-            !props.product.height && (
+          {props.product.length !== 0 &&
+            props.product.width === 0 &&
+            props.product.height === 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Chiều dài
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.length} cm
                 </td>
               </tr>
             )}
-          {!props.product.length &&
-            props.product.width &&
-            !props.product.height && (
+          {props.product.length === 0 &&
+            props.product.width !== 0 &&
+            props.product.height === 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Chiều rộng
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.width} cm
                 </td>
               </tr>
             )}
-          {!props.product.length &&
-            !props.product.width &&
-            props.product.height && (
+          {props.product.length === 0 &&
+            props.product.width === 0 &&
+            props.product.height !== 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Chiều cao
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.height} cm
                 </td>
               </tr>
             )}
-          {props.product.length &&
-            props.product.width &&
-            !props.product.height && (
+          {props.product.length !== 0 &&
+            props.product.width !== 0 &&
+            props.product.height === 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Chiều dài x chiều rộng
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.length} cm x {props.product.width} cm
                 </td>
               </tr>
             )}
-          {props.product.length &&
-            !props.product.width &&
-            props.product.height && (
+          {props.product.length !== 0 &&
+            props.product.width === 0 &&
+            props.product.height !== 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Chiều dài x chiều cao
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.length} cm x {props.product.height} cm
                 </td>
               </tr>
             )}
-          {!props.product.length &&
-            props.product.width &&
-            props.product.height && (
+          {props.product.length === 0 &&
+            props.product.width !== 0 &&
+            props.product.height !== 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Chiều rộng x chiều cao
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.width} cm x {props.product.height} cm
                 </td>
               </tr>
             )}
-          {props.product.length &&
-            props.product.width &&
-            props.product.height && (
+          {props.product.length !== 0 &&
+            props.product.width !== 0 &&
+            props.product.height !== 0 && (
               <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-                <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                   Kích thước
                 </td>
-                <td style={{ width: '65%', paddingLeft: '20px' }}>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
                   {props.product.length} cm x {props.product.width} cm x{' '}
                   {props.product.height} cm
                 </td>
               </tr>
             )}
-          {props.product.weight && (
+          {props.product.weight !== 0 && (
             <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-              <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+              <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                 Trọng lượng
               </td>
-              <td style={{ width: '65%', paddingLeft: '20px' }}>
+              <td style={{ width: '60%', paddingLeft: '20px' }}>
                 {props.product.weight} g
               </td>
             </tr>
           )}
-          {category && (
+          {category !== null && (
             <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-              <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+              <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                 Danh mục
               </td>
-              <td style={{ width: '65%', paddingLeft: '20px' }}>
+              <td style={{ width: '60%', paddingLeft: '20px' }}>
                 {category.name}
               </td>
             </tr>
           )}
-          {brand && (
+          {brand !== null && (
             <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-              <td style={{ width: '35%', paddingLeft: '20px' }} className="">
+              <td style={{ width: '40%', paddingLeft: '20px' }} className="">
                 Thương hiệu
               </td>
-              <td style={{ width: '65%', paddingLeft: '20px' }}>
+              <td style={{ width: '60%', paddingLeft: '20px' }}>
                 {brand.name}
               </td>
             </tr>
           )}
-          {props.product.operatingSystem && (
+          {props.product.operatingSystem !== '' &&
+            props.product.operatingSystem !== undefined && (
+              <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
+                <td style={{ width: '40%', paddingLeft: '20px' }} className="">
+                  Hệ điều hành
+                </td>
+                <td style={{ width: '60%', paddingLeft: '20px' }}>
+                  {props.product.operatingSystem}
+                </td>
+              </tr>
+            )}
+          {props.product.createdTime && (
             <tr className={rowCount++ % 2 === 0 ? 'table-secondary' : ''}>
-              <td style={{ width: '35%', paddingLeft: '20px' }} className="">
-                Hệ điều hành
+              <td style={{ width: '40%', paddingLeft: '20px' }} className="">
+                Ngày nhập hàng
               </td>
-              <td style={{ width: '65%', paddingLeft: '20px' }}>
-                {props.product.operatingSystem}
+              <td style={{ width: '60%', paddingLeft: '20px' }}>
+                {format(props.product.createdTime, 'dd/MM/yyyy')}, lúc{' '}
+                {format(props.product.createdTime, 'HH:mm')}
               </td>
             </tr>
           )}

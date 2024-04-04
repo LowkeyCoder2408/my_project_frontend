@@ -7,12 +7,12 @@ import ScrollToTop from './components/GlobalStyles/Layout/components/ScrollToTop
 import { getAllProducts } from './api/ProductAPI';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from './utils/AuthContext';
 
 function App() {
   const [keyword, setKeyword] = useState<string>('');
   return (
-    <>
-      {' '}
+    <AuthProvider>
       <Router>
         <ScrollToTop />
         <div className="App">
@@ -55,7 +55,7 @@ function App() {
         pauseOnFocusLoss={false}
         style={{ left: '30px', bottom: '30px', transition: '.5s' }}
       />
-    </>
+    </AuthProvider>
   );
 }
 

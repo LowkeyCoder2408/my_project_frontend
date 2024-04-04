@@ -1,12 +1,22 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { backendEndpoint } from '../../../utils/Constant';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../../utils/AuthContext';
 
 function Login() {
+  const navigation = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const jwtToken = localStorage.getItem('token');
+  const { isLoggedIn, setLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation('/');
+    }
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -24,6 +34,7 @@ function Login() {
         const { jwt } = data;
         localStorage.setItem('token', jwt);
         toast.success('Đăng nhập thành công');
+        window.location.href = '/';
       } else {
         toast.error('Đăng nhập thất bại');
       }
@@ -32,6 +43,10 @@ function Login() {
       toast.error('Đăng nhập thất bại');
     }
   };
+
+  if (jwtToken !== null) {
+    return null;
+  }
 
   return (
     <div className="login__container container">

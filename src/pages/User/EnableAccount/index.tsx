@@ -1,9 +1,19 @@
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import './EnableAccount.css';
 import { useEffect, useState } from 'react';
 import { backendEndpoint } from '../../../utils/Constant';
+import { useAuth } from '../../../utils/AuthContext';
 
 function EnableAccount() {
+  const { isLoggedIn } = useAuth();
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation('/');
+    }
+  });
+
   const { email } = useParams();
   const { verificationCode } = useParams();
   const [isEnabled, setIsEnabled] = useState(false);
@@ -30,18 +40,38 @@ function EnableAccount() {
         setNotification(response.text + '');
       }
     } catch (error) {
-      console.log(error);
+      console.log('Lỗi kích hoạt: ' + error);
     }
   };
 
   return (
-    <div>
-      <h1>Kích hoạt tài khoản</h1>
-      {isEnabled ? (
-        <p>Tài khoản kích hoạt thành công, đăng nhập để tiếp tục!</p>
-      ) : (
-        <p>{notification}</p>
-      )}
+    <div
+      className="container mt-5 bg-white text-center"
+      style={{ borderRadius: '10px', padding: '40px' }}
+    >
+      <div>
+        <h1 className="text-uppercase" style={{ fontWeight: 600 }}>
+          Kích hoạt tài khoản
+        </h1>
+        {isEnabled ? (
+          <p className="mt-4">
+            Tài khoản đã được kích hoạt thành công, vui lòng{' '}
+            <Link
+              to={'/login'}
+              className="text-uppercase"
+              style={{ fontWeight: 600 }}
+            >
+              đăng nhập
+            </Link>{' '}
+            để tiếp tục!
+          </p>
+        ) : (
+          <p className="mt-4">
+            Tài khoản kích hoạt thất bại. Có thể do bạn đã kích hoạt tài khoản
+            trước đó.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

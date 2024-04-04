@@ -6,6 +6,7 @@ class CustomerModel {
   password?: string;
   fullName?: string;
   phoneNumber?: string;
+  avatar?: string;
   verificationCode?: string;
   resetPasswordToken?: string;
   enabled?: boolean;
@@ -18,6 +19,7 @@ class CustomerModel {
     password: string,
     fullName: string,
     phoneNumber: string,
+    avatar: string,
     enabled: boolean,
     authenticationType: AuthenticationType,
     verificationCode: string,
@@ -29,6 +31,7 @@ class CustomerModel {
     this.password = password;
     this.fullName = fullName;
     this.phoneNumber = phoneNumber;
+    this.avatar = avatar;
     this.enabled = enabled;
     this.authenticationType = authenticationType;
     this.verificationCode = verificationCode;

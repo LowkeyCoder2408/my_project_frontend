@@ -7,8 +7,11 @@ import {
   faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthenticationType from '../../../models/AuthenticationType';
+import { useAuth } from '../../../utils/AuthContext';
+import { toast } from 'react-toastify';
+import Loader from '../../ProductList/components/Loader';
 
 function Register() {
   const [email, setEmail] = useState<string>('');
@@ -31,7 +34,18 @@ function Register() {
   );
   const [authenticationType, setAuthenticationType] =
     useState<AuthenticationType>(AuthenticationType.DATABASE);
-  const [notification, setNotification] = useState('');
+
+  const [submitLoading, setSubmitLoading] = useState<boolean | null>(null);
+
+  const jwtToken = localStorage.getItem('token');
+  const { isLoggedIn } = useAuth();
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation('/');
+    }
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     setEmailError('');
@@ -40,6 +54,7 @@ function Register() {
     setPasswordError('');
     setRepeatPasswordError('');
     setAuthenticationType(AuthenticationType.DATABASE);
+    setSubmitLoading(true);
 
     // Tránh tình trạng click liên tục
     e.preventDefault();
@@ -60,15 +75,23 @@ function Register() {
         }),
       });
       if (response.ok) {
-        setNotification(
+        // setNotification(
+        //   'Đăng ký thành công, vui lòng kiểm tra email để xác thực và kích hoạt',
+        // );
+        toast.success(
           'Đăng ký thành công, vui lòng kiểm tra email để xác thực và kích hoạt',
         );
+        setSubmitLoading(false);
       } else {
         console.log(response.json());
-        setNotification('Đã xảy ra lỗi');
+        // setNotification('Đã xảy ra lỗi');
+        toast.error('Đã xảy ra lỗi');
+        setSubmitLoading(false);
       }
     } catch (error) {
-      setNotification('Đã xảy ra lỗi');
+      // setNotification('Đã xảy ra lỗi');
+      toast.error('Đã xảy ra lỗi');
+      setSubmitLoading(false);
     }
   };
 
@@ -245,6 +268,14 @@ function Register() {
     passwordError === '' &&
     repeatPasswordError === '';
 
+  if (jwtToken !== null) {
+    return <></>;
+  }
+
+  // if (submitLoading) {
+  //   return <Loader />;
+  // }
+
   return (
     <div className="register__container container">
       <div className="row">
@@ -408,14 +439,32 @@ function Register() {
                   </label>
                 </div>
               </div>
-              <button
+              {/* <button
                 className={`container-fluid py-2 btn btn-primary ${
                   canRegister ? '' : 'disabled'
                 }`}
                 type="submit"
                 style={{ fontSize: '1.6rem' }}
               >
-                ĐĂNG KÝ
+                {submitLoading === null
+                  ? 'ĐĂNG KÝ'
+                  : submitLoading
+                  ? 'Dữ liệu đang được xử lý...'
+                  : 'ĐĂNG KÝ'}
+              </button> */}
+              <button
+                className={`container-fluid py-2 btn btn-primary ${
+                  (!canRegister || submitLoading) ?? false ? 'disabled' : ''
+                }`}
+                type="submit"
+                style={{ fontSize: '1.6rem' }}
+                disabled={(!canRegister || submitLoading) ?? false}
+              >
+                {submitLoading === null
+                  ? 'ĐĂNG KÝ'
+                  : submitLoading
+                  ? 'Dữ liệu đang được xử lý...'
+                  : 'ĐĂNG KÝ'}
               </button>
               <div className="register__transfer mb-4">
                 <span>
@@ -424,7 +473,6 @@ function Register() {
                 </span>
               </div>
             </form>
-            <div className="">{notification}</div>
           </div>
         </div>
       </div>

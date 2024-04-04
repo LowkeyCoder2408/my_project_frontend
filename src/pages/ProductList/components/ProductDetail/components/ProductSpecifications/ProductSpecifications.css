@@ -19,7 +19,9 @@
   color: black;
 }
 
-.product-details__specifications__wrapper .table td {
+.product-details__specifications__wrapper .table td,
+.product-details__specifications__wrapper .table tr,
+.product-details__specifications__wrapper .table th {
   text-align: left !important;
   border: none !important;
   color: black;
