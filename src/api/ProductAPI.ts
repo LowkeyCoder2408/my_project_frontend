@@ -30,7 +30,7 @@ async function getProducts(url: string): Promise<ResultInterface> {
       updatedTime: new Date(responseData[key].updatedTime),
       enabled: responseData[key].enabled,
       quantity: responseData[key].quantity,
-      soldQuantity: responseData[key].quantity,
+      soldQuantity: responseData[key].soldQuantity,
       listedPrice: responseData[key].listedPrice,
       currentPrice: responseData[key].currentPrice,
       discountPercent: responseData[key].discountPercent,
@@ -170,7 +170,7 @@ export async function getProductById(
         updatedTime: new Date(productData.updatedTime),
         enabled: productData.enabled,
         quantity: productData.quantity,
-        soldQuantity: productData.quantity,
+        soldQuantity: productData.soldQuantity,
         listedPrice: productData.listedPrice,
         currentPrice: productData.currentPrice,
         discountPercent: productData.discountPercent,
@@ -218,7 +218,7 @@ export async function getProductByAlias(
         updatedTime: new Date(productData.updatedTime),
         enabled: productData.enabled,
         quantity: productData.quantity,
-        soldQuantity: productData.quantity,
+        soldQuantity: productData.soldQuantity,
         listedPrice: productData.listedPrice,
         currentPrice: productData.currentPrice,
         discountPercent: productData.discountPercent,
@@ -258,6 +258,45 @@ export async function getHottestProducts(
   const url: string =
     backendEndpoint +
     `/product?sort=averageRating,desc&size=${numberOfProduct}`;
+
+  return getProducts(url);
+}
+
+export async function getDealProducts(
+  numberOfProduct: number,
+): Promise<ResultInterface> {
+  const url: string =
+    backendEndpoint +
+    `/product/search/findProductsByPriceDifferencePrice?size=${numberOfProduct}`;
+
+  return getProducts(url);
+}
+
+// http://localhost:8080/product/search/findByBrand_Id?brandId=12
+
+export async function findProductsByBrandId(
+  brandId: number,
+): Promise<ResultInterface> {
+  const url = `${backendEndpoint}/product/search/findByBrand_Id?brandId=${brandId}`;
+
+  return getProducts(url);
+}
+
+export function getTotalProductQuantity(products: ProductModel[]): number {
+  let totalQuantity = 0;
+  for (const product of products) {
+    if (product.quantity) {
+      totalQuantity += product.quantity;
+    }
+  }
+  return totalQuantity;
+}
+
+export async function getTopSoldProducts(
+  numberOfProduct: number,
+): Promise<ResultInterface> {
+  const url: string =
+    backendEndpoint + `/product?sort=soldQuantity,desc&size=${numberOfProduct}`;
 
   return getProducts(url);
 }

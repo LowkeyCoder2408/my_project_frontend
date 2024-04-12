@@ -1,8 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
-import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 import './ProductItem.css';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import ProductModel from '../../../../../../models/ProductModel';
 import { useEffect, useState } from 'react';
 import BrandModel from '../../../../../../models/BrandModel';
@@ -11,7 +7,9 @@ import { getCategoryByProductAlias } from '../../../../../../api/CategoryAPI';
 import { getBrandByAlias } from '../../../../../../api/BrandAPI';
 import ProductImageModel from '../../../../../../models/ProductImageModel';
 import CategoryModel from '../../../../../../models/CategoryModel';
-// type Props = Product;
+import { Link } from 'react-router-dom';
+import ProductRating from '../../../../../ProductList/components/ProductDetail/components/ProductRating';
+import FormatPrice from '../../../../../ProductList/components/ProductProps/FormatPrice';
 
 interface ProductItemProps {
   product: ProductModel;
@@ -45,65 +43,72 @@ const ProductItem = (props: ProductItemProps) => {
     }
   }, [props.product.alias]);
 
+  const formatCurrency = (number: number) => {
+    return number.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+  };
+
   const percentageSold =
     props.product.soldQuantity && props.product.quantity
       ? (props.product.soldQuantity / props.product.quantity) * 100
       : 0;
   return (
-    <div className="product-item">
-      <div className="product-item__img">
+    <div className="product-deal-item">
+      <Link
+        to={`/product/${props.product.alias}`}
+        className="product-deal-item__img"
+        title="Click để xem thông tin"
+      >
         <img src={props.product.mainImage} alt="Book Image" />
-      </div>
-      <div className="product-item__info">
-        <div className="product-item-meta">
-          <a href="" className="product-item-meta__title">
+      </Link>
+      <div className="product-deal-item__info">
+        <div className="product-deal-item-meta">
+          <Link
+            to={`/product/${props.product.alias}`}
+            className="product-deal-item-meta__title"
+          >
             {props.product.name}
-          </a>
+          </Link>
         </div>
-        <div className="product-item__reference">
+        <div className="product-deal-item__reference">
           <a>
             <div className="rating">
-              <div
-                className="rating__stars"
-                role="img"
-                aria-label="4.0 out of 5.0 stars"
-              >
-                <FontAwesomeIcon
-                  icon={solidStar as IconProp}
-                  className="star-icon"
-                />
-                <FontAwesomeIcon
-                  icon={solidStar as IconProp}
-                  className="star-icon"
-                />
-                <FontAwesomeIcon
-                  icon={solidStar as IconProp}
-                  className="star-icon"
-                />
-                <FontAwesomeIcon
-                  icon={regularStar as IconProp}
-                  className="star-icon"
-                />
-                <FontAwesomeIcon
-                  icon={regularStar as IconProp}
-                  className="star-icon"
-                />
-              </div>
-              <span className="rating__caption show">1</span>
+              {props.product.averageRating && (
+                <ProductRating rating={props.product.averageRating} />
+              )}
             </div>
           </a>
         </div>
-        <div className="product-item__vendor">{brand?.name}</div>
-        <div className="product-item__price">
-          <span> ${props.product.currentPrice}</span>
+        <div className="product-deal-item__vendor">
+          Thương hiệu: {brand?.name}
         </div>
-        <div className="product-item__deal-progress">
-          Already sold: {props.product.soldQuantity}/{props.product.quantity}
+        <div className="product-deal-item__price">
+          <span>
+            <FormatPrice price={props.product.currentPrice} />
+          </span>{' '}
+          {props.product.listedPrice && props.product.currentPrice && (
+            <span
+              style={{ fontSize: '14px', color: '#444', fontWeight: '450' }}
+            >
+              (Giảm{' '}
+              {formatCurrency(
+                props.product.listedPrice - props.product.currentPrice,
+              )}
+              )
+            </span>
+          )}
+        </div>
+        <div className="product-deal-item__deal-progress">
           <div className="progress-bar">
             <div
               className="progress-value"
               style={{ width: `${percentageSold}%` }}
             ></div>
+            <div className="product-deal-item__deal-quantity">
+              Đã bán: {props.product.soldQuantity}/{props.product.quantity}
+            </div>
           </div>
         </div>
       </div>

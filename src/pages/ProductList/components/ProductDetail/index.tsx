@@ -25,6 +25,7 @@ import CategoryModel from '../../../../models/CategoryModel';
 import { getBrandByAlias } from '../../../../api/BrandAPI';
 import ProductReviewList from '../ProductReviewList';
 import ProductSpecifications from './components/ProductSpecifications';
+import ProductRating from './components/ProductRating';
 
 interface ProductDetailInterface {}
 
@@ -157,32 +158,12 @@ function ProductDetail(props: ProductDetailInterface) {
             <div className="row">
               <h2 className="product-details__name">{product.name}</h2>
               <div className="product-details__rating">
-                {product.averageRating && product.averageRating > 0 ? (
-                  <>
-                    {[...Array(Math.floor(product.averageRating))].map(
-                      (_, index) => (
-                        <FontAwesomeIcon
-                          key={index}
-                          icon={faStar as IconProp}
-                        />
-                      ),
-                    )}
-                    {product.averageRating % 1 >= 0.5 &&
-                      product.averageRating % 1 < 1 && (
-                        <FontAwesomeIcon icon={faStarHalfStroke as IconProp} />
-                      )}
-                    <div className="product-details__rating-count">
-                      ({product.averageRating})
-                    </div>
-                    <div className="product-details__rating-quantity">
-                      {product.ratingCount} lượt đánh giá
-                    </div>
-                  </>
-                ) : (
-                  <div className="product-details__no-rating">
-                    Sản phẩm chưa có đánh giá
-                  </div>
+                {product.averageRating && (
+                  <ProductRating rating={product.averageRating} />
                 )}
+                <div className="product-details__rating-count">
+                  ({product.averageRating})
+                </div>
               </div>
 
               <div className="product-details__price">

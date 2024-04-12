@@ -7,66 +7,74 @@
   font-size: 2.5rem;
   text-transform: uppercase;
   font-weight: 700;
+  margin-bottom: 30px;
 }
 
 .deals__countdown {
+  margin: 0 0 10px 10px;
   display: flex;
+  gap: 10px;
   align-items: center;
-  margin-left: 60px;
-  font-size: 24px;
-  height: 44px;
-  padding: 0 30px;
-  background-color: #fccc4d;
+  justify-content: center;
   border-radius: 99px;
 }
 
-.deals__countdown .day {
-  margin-left: 10px;
+.deals__countdown-title {
+  font-size: 2.1rem;
+  font-weight: 450;
+}
+
+.deals__countdown-item {
+  border-radius: 8px;
+  width: 40px;
+  height: 50px;
+  background-image: linear-gradient(90deg, #444, #444);
+  position: relative;
+  color: #fff;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+}
+
+.deals__countdown-item span {
+  font-size: 2.1rem;
+  font-weight: 500;
+  margin-bottom: -4px;
 }
 
 .deals__countdown .word {
-  display: none;
+  font-size: 1.3rem;
+  font-weight: 400;
 }
 
 .deals__list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  padding: 40px;
-  margin-top: 30px;
+  padding: 20px;
+  padding-left: 0;
   border-radius: 15px;
-  border: 2px solid orangered;
+  border: 3px solid #000;
+  position: relative;
+  min-height: 500px;
 }
 
-.deals__list .row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  padding: 0;
+.deals__list:hover {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .top-selling__title {
-  font-size: 24px;
+  font-size: 2.5rem;
   font-weight: 700;
   padding-top: 20px;
+  margin-bottom: 30px;
 }
 
 .top-selling__list {
-  margin-top: 30px;
+  border-radius: 5px;
 }
 
 /* Mobile */
 @media screen and (max-width: 767.98px) {
   .deals__header {
     display: inline-block;
-  }
-
-  .deals__countdown {
-    margin-left: 0;
-  }
-
-  .deals__list {
-    grid-template-columns: 1fr;
   }
 }
