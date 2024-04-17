@@ -10,6 +10,7 @@ import ProductList from '../pages/ProductList';
 import ProductDetail from '../pages/ProductList/components/ProductDetail';
 import SecurityPolicy from '../pages/SecurityPolicy';
 import ShippingPolicy from '../pages/ShippingPolicy';
+import ShoppingCart from '../pages/ShoppingCart';
 import EnableAccount from '../pages/User/EnableAccount';
 import Login from '../pages/User/Login';
 import Register from '../pages/User/Register';
@@ -83,6 +84,11 @@ const publicRoutes = [
   {
     path: '/register',
     component: Register,
+    layout: 'default',
+  },
+  {
+    path: '/shopping-cart',
+    component: ShoppingCart,
     layout: 'default',
   },
   {

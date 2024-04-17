@@ -3,24 +3,26 @@ import { faBagShopping, faStar } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './ProductProps.css';
 import FormatPrice from './FormatPrice';
 import ProductModel from '../../../../models/ProductModel';
-import ProductImageModel from '../../../../models/ProductImageModel';
-import { getProductImage } from '../../../../api/ProductImageAPI';
 import Loader from '../Loader';
-import {
-  getHottestProducts,
-  getNewestProducts,
-} from '../../../../api/ProductAPI';
+import { getNewestProducts } from '../../../../api/ProductAPI';
 import { toast } from 'react-toastify';
+import { useCartItem } from '../../../../utils/CartItemContext';
+import { getUserIdByToken, isToken } from '../../../../utils/JwtService';
+import { backendEndpoint } from '../../../../utils/Constant';
 
 interface ProductPropsInterface {
   product: ProductModel;
 }
 
 const ProductProps: React.FC<ProductPropsInterface> = (props) => {
+  const { setTotalCart, cartList } = useCartItem();
+  const [isFavoriteProduct, setIsFavoriteProduct] = useState(false);
+  const navigation = useNavigate();
+
   const [newestProducts, setNewestProducts] = useState<ProductModel[]>([]);
   const [hottestProducts, setHottestProducts] = useState<ProductModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,22 +47,83 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   getHottestProducts(12)
-  //     .then((result) => {
-  //       setHottestProducts(result.result);
-  //       setLoading(false);
-  //       // Kiểm tra xem sản phẩm hiện tại có trong hottestProducts không
-  //       const isInHottest = result.result.some(
-  //         (product) => product.id === props.product.id,
-  //       );
-  //       setIsInHottestProducts(isInHottest);
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       toast.error('Lấy danh sách sản phẩm hot không thành công!');
-  //     });
-  // }, []);
+  const handleAddProduct = async (newProduct: ProductModel) => {
+    // cái isExistProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
+    let isExistProduct = cartList.find(
+      (cartItem) => cartItem.product.id === newProduct.id,
+    );
+    // Thêm 1 sản phẩm vào giỏ hàng
+    if (isExistProduct) {
+      // nếu có rồi thì sẽ tăng số lượng
+      if (isExistProduct && isExistProduct.quantity !== undefined) {
+        isExistProduct.quantity += 1;
+      }
+
+      // Lưu vào csdl
+      if (isToken()) {
+        const request = {
+          idCart: isExistProduct.id,
+          quantity: isExistProduct.quantity,
+        };
+        const token = localStorage.getItem('token');
+        fetch(backendEndpoint + `/cart-item/update-item`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(request),
+        }).catch((err) => console.log(err));
+      }
+    } else {
+      // Lưu vào db
+      if (isToken()) {
+        try {
+          const request = [
+            {
+              quantity: 1,
+              product: newProduct,
+              customerId: parseInt(getUserIdByToken() + ''),
+            },
+          ];
+          const token = localStorage.getItem('token');
+          const response = await fetch(
+            backendEndpoint + '/cart-item/add-item',
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'content-type': 'application/json',
+              },
+              body: JSON.stringify(request),
+            },
+          );
+
+          if (response.ok) {
+            const idCart = await response.json();
+            cartList.push({
+              id: idCart,
+              quantity: 1,
+              product: newProduct,
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        cartList.push({
+          quantity: 1,
+          product: newProduct,
+        });
+      }
+    }
+    // Lưu vào localStorage
+    localStorage.setItem('cart', JSON.stringify(cartList));
+    // Thông báo toast
+    toast.success('Thêm vào giỏ hàng thành công');
+    setTotalCart(cartList.length);
+    // console.log(newProduct, localStorage.setItem('cart'));
+  };
 
   if (loading) {
     return <Loader />;
@@ -81,7 +144,11 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             <div title="Yêu thích" className="product__item-quick-link-item">
               <FontAwesomeIcon icon={faHeart as IconProp} />
             </div>
-            <div title="Thêm vào giỏ" className="product__item-quick-link-item">
+            <div
+              title="Thêm vào giỏ"
+              onClick={() => handleAddProduct(props.product)}
+              className="product__item-quick-link-item"
+            >
               <FontAwesomeIcon icon={faBagShopping as IconProp} />
             </div>
           </div>

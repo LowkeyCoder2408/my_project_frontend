@@ -282,6 +282,14 @@ export async function findProductsByBrandId(
   return getProducts(url);
 }
 
+export async function findProductsByCategoryId(
+  categoryId: number,
+): Promise<ResultInterface> {
+  const url = `${backendEndpoint}/product/search/findByCategory_Id?categoryId=${categoryId}`;
+
+  return getProducts(url);
+}
+
 export function getTotalProductQuantity(products: ProductModel[]): number {
   let totalQuantity = 0;
   for (const product of products) {
@@ -299,4 +307,26 @@ export async function getTopSoldProducts(
     backendEndpoint + `/product?sort=soldQuantity,desc&size=${numberOfProduct}`;
 
   return getProducts(url);
+}
+
+export async function getProductByCartItemId(
+  idCart: number,
+): Promise<ProductModel | null> {
+  const endpoint = backendEndpoint + `/cart-item/${idCart}/product`;
+
+  try {
+    // Gọi phương thức request()
+    const response = await myRequest(endpoint);
+
+    // Kiểm tra xem dữ liệu endpoint trả về có dữ liệu không
+    if (response) {
+      // Trả về sản phẩm
+      return response;
+    } else {
+      throw new Error('Sản phẩm không tồn tại');
+    }
+  } catch (error) {
+    console.error('Error: ', error);
+    return null;
+  }
 }

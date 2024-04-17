@@ -2,19 +2,12 @@ import CustomerModel from './CustomerModel';
 import ProductModel from './ProductModel';
 
 class CartItemModel {
-  id: number;
-  customer?: CustomerModel;
-  product?: ProductModel;
+  id?: number;
+  customerId?: number;
+  product: ProductModel;
   quantity?: number;
 
-  constructor(
-    id: number,
-    customer: CustomerModel,
-    product: ProductModel,
-    quantity: number,
-  ) {
-    this.id = id;
-    this.customer = customer;
+  constructor(product: ProductModel, quantity: number) {
     this.product = product;
     this.quantity = quantity;
   }

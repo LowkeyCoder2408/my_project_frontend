@@ -78,22 +78,15 @@ const DealProduct = () => {
       const currentDate = new Date().getTime();
       const difference = targetDate - currentDate;
 
-      console.log('Difference:', difference);
-
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      console.log('Days:', days);
 
       const hours = Math.floor(
         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
       );
-      console.log('Hours:', hours);
 
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      console.log('Minutes:', minutes);
 
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-      console.log('Seconds:', seconds);
-
       const dayElement = countdownElement.querySelector('.day .num');
       const hourElement = countdownElement.querySelector('.hour .num');
       const minElement = countdownElement.querySelector('.min .num');

@@ -16,6 +16,7 @@ import SearchNotification from './components/SearchNotification';
 import SliderPriceFilter from './components/SliderPriceFilter';
 import { toast } from 'react-toastify';
 import ProductItem from '../Home/components/DealProduct/components/ProductItem';
+import CartItemModel from '../../models/CartItemModel';
 
 interface ProductListProps {
   keyword: string;
@@ -180,6 +181,13 @@ function ProductList(props: ProductListProps) {
       default:
         break;
     }
+  };
+
+  const myObject: CartItemModel = {
+    customerId: 1,
+    id: 1,
+    product: productList[2],
+    quantity: 3,
   };
 
   return (
