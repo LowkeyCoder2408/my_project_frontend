@@ -4,13 +4,18 @@ import { useEffect, useState } from 'react';
 import { backendEndpoint } from '../../../utils/Constant';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../../utils/AuthContext';
+import { jwtDecode } from 'jwt-decode';
+import { JwtPayload } from '../../Admin/AdminRequirement';
+import CartItemModel from '../../../models/CartItemModel';
+import { getCartAllByIdUser } from '../../../api/CartItemAPI';
+import { useCartItem } from '../../../utils/CartItemContext';
 
 function Login() {
   const navigation = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const jwtToken = localStorage.getItem('token');
   const { isLoggedIn, setLoggedIn } = useAuth();
+  const { setTotalCart, setCartList } = useCartItem();
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -32,9 +37,69 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         const { jwt } = data;
-        localStorage.setItem('token', jwt);
+        const decodedToken = jwtDecode(jwt) as JwtPayload;
+        // Kiểm tra xem tài khoản kích hoạt chưa
+        if (decodedToken.enabled === false) {
+          toast.warning(
+            'Tài khoản của bạn chưa kích hoạt hoặc đã bị vô hiệu hoá',
+          );
+          return;
+        }
         toast.success('Đăng nhập thành công');
+        setLoggedIn(true); // Đã đăng nhập
+        localStorage.setItem('token', jwt);
         window.location.href = '/';
+
+        const cartData: string | null = localStorage.getItem('cart');
+        let cart: CartItemModel[] = cartData ? JSON.parse(cartData) : [];
+        // Khi đăng nhập thành công mà trước đó đã thêm sản phẩm vào giỏ hàng thì các sản phẩm đó sẽ được thêm vào db
+        if (cart.length !== 0) {
+          cart = cart.map((c) => ({ ...c, idUser: decodedToken.id }));
+
+          const endpoint = backendEndpoint + '/cart-item/add-item';
+          fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify(cart),
+          })
+            .then((response) => {
+              // Lấy giỏ hàng của user khi đăng nhâp thành công
+              async function getCart() {
+                const response = await getCartAllByIdUser();
+                // Xoá cart mà lúc chưa đăng nhập
+                localStorage.removeItem('cart');
+                cart = response;
+                // Thêm cart lúc đăng nhập
+                localStorage.setItem('cart', JSON.stringify(cart));
+                setTotalCart(cart.length);
+                setCartList(cart);
+              }
+              getCart();
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          // Lấy giỏ hàng của user khi đăng nhâp thành công
+          const response = await getCartAllByIdUser();
+          // Xoá cart mà lúc chưa đăng nhập
+          localStorage.removeItem('cart');
+          cart = response;
+          // Thêm cart lúc đăng nhập
+          localStorage.setItem('cart', JSON.stringify(cart));
+          setTotalCart(cart.length);
+          setCartList(cart);
+        }
+
+        // Kiểm tra role để chuyển về link
+        // if (decodedToken.role === 'ADMIN') {
+        //   navigation('/admin/dashboard');
+        // } else {
+        //   navigation('/');
+        // }
       } else {
         toast.error('Đăng nhập thất bại');
       }
@@ -49,10 +114,6 @@ function Login() {
       handleLogin();
     }
   };
-
-  if (jwtToken !== null) {
-    return null;
-  }
 
   return (
     <div className="login__container container">

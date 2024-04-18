@@ -131,7 +131,7 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
             'content-type': 'application/json',
           },
           body: JSON.stringify({
-            idCart: props.cartItem.id,
+            id: props.cartItem.id,
             quantity: isExistProduct.quantity,
           }),
         }).catch((err) => console.log(err));

@@ -138,7 +138,10 @@ const DealProduct = () => {
               </div>
             </div>
             {dealProductList.map((product) => (
-              <div className="col col-xxl-6 col-xl-6 col-lg-6 col-12">
+              <div
+                key={product.id}
+                className="col col-xxl-6 col-xl-6 col-lg-6 col-12"
+              >
                 <ProductItem key={product.id} product={product} />
               </div>
             ))}

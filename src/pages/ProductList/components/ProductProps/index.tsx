@@ -48,22 +48,22 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
   }, []);
 
   const handleAddProduct = async (newProduct: ProductModel) => {
-    // cái isExistProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
-    let isExistProduct = cartList.find(
+    // cái existingProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
+    let existingProduct = cartList.find(
       (cartItem) => cartItem.product.id === newProduct.id,
     );
     // Thêm 1 sản phẩm vào giỏ hàng
-    if (isExistProduct) {
+    if (existingProduct) {
       // nếu có rồi thì sẽ tăng số lượng
-      if (isExistProduct && isExistProduct.quantity !== undefined) {
-        isExistProduct.quantity += 1;
+      if (existingProduct && existingProduct.quantity !== undefined) {
+        existingProduct.quantity += 1;
       }
 
       // Lưu vào csdl
       if (isToken()) {
         const request = {
-          idCart: isExistProduct.id,
-          quantity: isExistProduct.quantity,
+          id: existingProduct.id,
+          quantity: existingProduct.quantity,
         };
         const token = localStorage.getItem('token');
         fetch(backendEndpoint + `/cart-item/update-item`, {
@@ -79,13 +79,11 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
       // Lưu vào db
       if (isToken()) {
         try {
-          const request = [
-            {
-              quantity: 1,
-              product: newProduct,
-              customerId: parseInt(getUserIdByToken() + ''),
-            },
-          ];
+          const request = {
+            quantity: 1,
+            product: newProduct,
+            customerId: getUserIdByToken(),
+          };
           const token = localStorage.getItem('token');
           const response = await fetch(
             backendEndpoint + '/cart-item/add-item',
@@ -93,13 +91,14 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${token}`,
-                'content-type': 'application/json',
+                'Content-type': 'application/json',
               },
               body: JSON.stringify(request),
             },
           );
 
           if (response.ok) {
+            console.log(response);
             const idCart = await response.json();
             cartList.push({
               id: idCart,
@@ -108,7 +107,7 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             });
           }
         } catch (error) {
-          console.log(error);
+          console.log('Lỗi là', error);
         }
       } else {
         cartList.push({

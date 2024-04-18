@@ -19,6 +19,7 @@ export async function getCartAllByIdUser(): Promise<CartItemModel[]> {
           return { ...item, product: productResponse };
         }),
       );
+      console.log('Ca =>', cartsResponseList);
       return cartsResponseList;
     }
   } catch (error) {

@@ -271,7 +271,10 @@ function ProductList(props: ProductListProps) {
             </div>
             {numberOfProductFound > 0 ? (
               productList.map((product) => (
-                <div className="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
+                <div
+                  key={product.id}
+                  className="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6"
+                >
                   <ProductProps key={product.id} product={product} />
                 </div>
               ))
@@ -290,12 +293,6 @@ function ProductList(props: ProductListProps) {
               </div>
             )}
           </div>
-          {/* {numberOfProductFound > 0 &&
-            productList.map((product) => (
-              <div className="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
-                <ProductItem key={product.id} product={product} />
-              </div>
-            ))} */}
         </div>
       </div>
     </div>

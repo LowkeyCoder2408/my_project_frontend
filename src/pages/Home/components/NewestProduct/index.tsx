@@ -164,7 +164,10 @@ function NewestProduct() {
             className="row newest-product-list"
           >
             {newestProducts.map((newestProduct, index) => (
-              <div className="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6">
+              <div
+                key={index}
+                className="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6"
+              >
                 <ProductProps key={index} product={newestProduct} />
               </div>
             ))}
