@@ -14,7 +14,7 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
 
   useEffect(() => {
     const total = cartList.reduce((totalPrice, cartItem) => {
-      const itemQuantity = cartItem.quantity ?? 0; // Gánnp giá trị mặc định là 0 nếu cartItem.quantity là undefined
+      const itemQuantity = cartItem.quantity ?? 0; // Gán giá trị mặc định là 0 nếu cartItem.quantity là undefined
       const itemPrice = cartItem.product?.currentPrice ?? 0; // Gán giá trị mặc định là 0 nếu cartItem.product hoặc cartItem.product.currentPrice là undefined
       return totalPrice + itemQuantity * itemPrice;
     }, 0);
@@ -26,6 +26,12 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
   const navigation = useNavigate();
   // Xử lý xoá sách
   function handleRemoveProduct(idProduct: number) {
+    // Kiểm tra nếu chưa đăng nhập
+    if (!isToken()) {
+      // Hiển thị thông báo yêu cầu đăng nhập
+      toast.error('Bạn cần đăng nhập để thực hiện chức năng này!');
+      return;
+    }
     const newCartList = cartList.filter(
       (cartItem) => cartItem.product.id !== idProduct,
     );
@@ -39,7 +45,7 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
   const [isCheckout, setIsCheckout] = useState(false);
 
   return (
-    <>
+    <div className="container">
       {!isCheckout ? (
         <div style={{ overflow: 'hidden' }}>
           {cartList.length !== 0 ? (
@@ -61,13 +67,13 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
             </div>
           )}
           <div
-            className="row my-4 pb-5 px-5"
+            className="row my-4"
             style={
               cartList.length === 0 ? { display: 'none' } : { display: 'flex' }
             }
           >
             {/* Bên trái */}
-            <h2 className="mt-2 px-3 py-3 mb-0">
+            <h2 className="">
               GIỎ HÀNG <span>({cartList.length} sản phẩm)</span>
             </h2>
             <div className="col-lg-8 col-md-12 col-sm-12 ">
@@ -95,8 +101,7 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
               </div>
             </div>
 
-            {/* Bên phải */}
-            <div
+            {/* <div
               className="container-product bg-light col-lg col-md-12 col-sm-12 px-5 pb-4 mt-lg-0 mt-md-3 mt-sm-3"
               style={{ height: 'fit-content' }}
             >
@@ -132,7 +137,7 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
               >
                 Thanh toán
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       ) : (
@@ -143,7 +148,7 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
         //   totalPriceProduct={totalPriceProduct}
         // />
       )}
-    </>
+    </div>
   );
 };
 

@@ -5,6 +5,13 @@ import ProductModel from '../../../../../models/ProductModel';
 import CartItemModel from '../../../../../models/CartItemModel';
 import { isToken } from '../../../../../utils/JwtService';
 import { backendEndpoint } from '../../../../../utils/Constant';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPlus,
+  faRemove,
+  faSubtract,
+} from '@fortawesome/free-solid-svg-icons';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface SelectQuantityProps {
   max: number | undefined;
@@ -60,18 +67,21 @@ const SelectQuantity: React.FC<SelectQuantityProps> = (props) => {
   return (
     <div
       className="wrapper-select-quantity d-flex align-items-center rounded"
-      style={{ width: '110px' }}
+      // style={{ width: '110px' }}
     >
       <button
         type="button"
-        className="d-flex align-items-center justify-content-center"
+        className="d-flex align-items-center justify-content-center p-2 btn-dark btn"
         onClick={() => props.reduce()}
         style={{
           backgroundColor: 'transparent',
           borderColor: 'transparent',
         }}
       >
-        <Icon>remove</Icon>
+        <FontAwesomeIcon
+          style={{ fontSize: '12px', color: '#000' }}
+          icon={faSubtract as IconProp}
+        />
       </button>
       <input
         type="number"
@@ -83,14 +93,18 @@ const SelectQuantity: React.FC<SelectQuantityProps> = (props) => {
       />
       <button
         type="button"
-        className="d-flex align-items-center justify-content-center"
+        className="d-flex align-items-center justify-content-center p-2 btn-dark btn"
+        disabled={props.quantity === props.max}
         onClick={() => props.add()}
         style={{
           backgroundColor: 'transparent',
           borderColor: 'transparent',
         }}
       >
-        <Icon>thêm</Icon>
+        <FontAwesomeIcon
+          style={{ fontSize: '12px', color: '#000' }}
+          icon={faPlus as IconProp}
+        />
       </button>
     </div>
   );

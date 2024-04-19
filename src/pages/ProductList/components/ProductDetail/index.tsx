@@ -26,6 +26,10 @@ import { getBrandByAlias } from '../../../../api/BrandAPI';
 import ProductReviewList from '../ProductReviewList';
 import ProductSpecifications from './components/ProductSpecifications';
 import ProductRating from './components/ProductRating';
+import { useCartItem } from '../../../../utils/CartItemContext';
+import { getUserIdByToken, isToken } from '../../../../utils/JwtService';
+import { toast } from 'react-toastify';
+import { backendEndpoint } from '../../../../utils/Constant';
 
 interface ProductDetailInterface {}
 
@@ -39,6 +43,7 @@ function ProductDetail(props: ProductDetailInterface) {
   const [category, setCategory] = useState<CategoryModel | null>(null);
   const [brand, setBrand] = useState<BrandModel | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  const { setTotalCart, cartList } = useCartItem();
 
   useEffect(() => {
     if (productAlias) {
@@ -99,7 +104,98 @@ function ProductDetail(props: ProductDetailInterface) {
     }
   };
 
-  const handleAddToCart = () => {};
+  // Xử lý thêm sản phẩm vào giỏ hàng
+  const handleAddProductsToCart = async (newProduct: ProductModel) => {
+    const inStockQuantity = product && product.quantity ? product.quantity : 0;
+
+    // Kiểm tra nếu chưa đăng nhập
+    if (!isToken()) {
+      // Hiển thị thông báo yêu cầu đăng nhập
+      toast.error('Bạn cần đăng nhập để thực hiện chức năng này!');
+      return;
+    }
+
+    // cái existingProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
+    let existingProduct = cartList.find(
+      (cartItem) => cartItem.product.id === newProduct.id,
+    );
+
+    // Thêm 1 sản phẩm vào giỏ hàng
+    if (existingProduct) {
+      if (
+        existingProduct.quantity &&
+        existingProduct.quantity + quantity <= inStockQuantity
+      ) {
+        if (existingProduct.quantity !== undefined) {
+          // nếu có rồi thì sẽ tăng số lượng
+          existingProduct.quantity += quantity;
+        }
+        // Lưu vào db
+        const request = {
+          id: existingProduct.id,
+          quantity: existingProduct.quantity,
+        };
+        const token = localStorage.getItem('token');
+        fetch(backendEndpoint + `/cart-item/update-item`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(request),
+        }).catch((err) => console.log(err));
+        // Thông báo toast
+        toast.success('Thêm vào giỏ hàng thành công');
+      } else {
+        toast.error(
+          `Số lượng sản phẩm trong giỏ vượt quá số lượng tồn kho (${inStockQuantity})`,
+        );
+      }
+    } else {
+      if (quantity <= inStockQuantity) {
+        // Lưu vào db
+        try {
+          const request = {
+            quantity: quantity,
+            product: newProduct,
+            customerId: getUserIdByToken(),
+          };
+          const token = localStorage.getItem('token');
+          const response = await fetch(
+            backendEndpoint + '/cart-item/add-item',
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-type': 'application/json',
+              },
+              body: JSON.stringify(request),
+            },
+          );
+
+          if (response.ok) {
+            const idCart = await response.json();
+            cartList.push({
+              id: idCart,
+              quantity: quantity,
+              product: newProduct,
+            });
+          }
+        } catch (error) {
+          console.log('Lỗi là', error);
+        }
+        // Thông báo toast
+        toast.success('Thêm vào giỏ hàng thành công');
+      } else {
+        toast.error(
+          `Số lượng sản phẩm trong giỏ vượt quá số lượng tồn kho (${inStockQuantity})`,
+        );
+      }
+    }
+    // Lưu vào localStorage
+    localStorage.setItem('cart', JSON.stringify(cartList));
+    setTotalCart(cartList.length);
+  };
 
   const handleBuyNow = () => {};
 
@@ -307,7 +403,7 @@ function ProductDetail(props: ProductDetailInterface) {
             <div className="product-details__buy mt-5">
               <button
                 className="product-details__cart"
-                onClick={handleAddToCart}
+                onClick={() => handleAddProductsToCart(product)}
               >
                 <FontAwesomeIcon icon={faBagShopping as IconProp} />
                 Thêm vào giỏ hàng

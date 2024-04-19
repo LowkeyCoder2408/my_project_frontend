@@ -21,11 +21,13 @@ import {
 import { Avatar, Button } from '@mui/material';
 import { useConfirm } from 'material-ui-confirm';
 import { toast } from 'react-toastify';
+import { useCartItem } from '../../../../../utils/CartItemContext';
 
 function Information() {
   const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const confirm = useConfirm();
+  const { cartList } = useCartItem();
 
   return (
     <div className="container-fluid bg-dark text-white">
@@ -61,15 +63,19 @@ function Information() {
                 <span className="badge rounded-pill badge-notification bg-danger">
                   0
                 </span> */}
-              <div className="information__cart">
+              <Link to={'/shopping-cart'} className="information__cart">
                 <div className="information__cart-wrap">
                   <FontAwesomeIcon
                     style={{ color: '#fff', width: '20px', height: '20px' }}
                     className="me-3"
                     icon={faCartShopping as IconProp}
                   />
-                  <span className="information__cart-notice">5</span>
-                  <div className="information__cart-list">
+                  {cartList.length > 0 && (
+                    <span className="information__cart-notice text-white">
+                      {cartList.length}
+                    </span>
+                  )}
+                  {/* <div className="information__cart-list">
                     <img
                       src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
                       alt=""
@@ -161,9 +167,9 @@ function Information() {
                         Xem giỏ hàng
                       </button>
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
-              </div>
+              </Link>
               <div className="information__notify">
                 <div className="information__notify-wrap">
                   <FontAwesomeIcon
@@ -172,7 +178,7 @@ function Information() {
                     icon={faBell as IconProp}
                   />
                   <span className="information__notify-notice">5</span>
-                  <div className="information__notify-list">
+                  {/* <div className="information__notify-list">
                     <img
                       src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
                       alt=""
@@ -264,7 +270,7 @@ function Information() {
                         Xem tất cả thông báo
                       </button>
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div>{getFullNameByToken()}</div>

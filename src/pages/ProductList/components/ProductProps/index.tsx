@@ -47,20 +47,33 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
       });
   }, []);
 
-  const handleAddProduct = async (newProduct: ProductModel) => {
+  const handleAddAProductToCart = async (newProduct: ProductModel) => {
+    const inStockQuantity =
+      props.product && props.product.quantity ? props.product.quantity : 0;
+
+    // Kiểm tra nếu chưa đăng nhập
+    if (!isToken()) {
+      // Hiển thị thông báo yêu cầu đăng nhập
+      toast.error('Bạn cần đăng nhập để thực hiện chức năng này!');
+      return;
+    }
+
     // cái existingProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
     let existingProduct = cartList.find(
       (cartItem) => cartItem.product.id === newProduct.id,
     );
     // Thêm 1 sản phẩm vào giỏ hàng
     if (existingProduct) {
-      // nếu có rồi thì sẽ tăng số lượng
-      if (existingProduct && existingProduct.quantity !== undefined) {
-        existingProduct.quantity += 1;
-      }
+      if (
+        existingProduct.quantity &&
+        existingProduct.quantity + 1 <= inStockQuantity
+      ) {
+        if (existingProduct.quantity !== undefined) {
+          // nếu có rồi thì sẽ tăng số lượng
+          existingProduct.quantity += 1;
+        }
 
-      // Lưu vào csdl
-      if (isToken()) {
+        // Lưu vào csdl
         const request = {
           id: existingProduct.id,
           quantity: existingProduct.quantity,
@@ -74,10 +87,16 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
           },
           body: JSON.stringify(request),
         }).catch((err) => console.log(err));
+        // Thông báo toast
+        toast.success('Thêm vào giỏ hàng thành công');
+      } else {
+        toast.error(
+          `Số lượng sản phẩm trong giỏ vượt quá số lượng tồn kho (${inStockQuantity})`,
+        );
       }
     } else {
-      // Lưu vào db
-      if (isToken()) {
+      if (inStockQuantity >= 1) {
+        // Lưu vào db
         try {
           const request = {
             quantity: 1,
@@ -98,7 +117,6 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
           );
 
           if (response.ok) {
-            console.log(response);
             const idCart = await response.json();
             cartList.push({
               id: idCart,
@@ -109,19 +127,17 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
         } catch (error) {
           console.log('Lỗi là', error);
         }
+        // Thông báo toast
+        toast.success('Thêm vào giỏ hàng thành công');
       } else {
-        cartList.push({
-          quantity: 1,
-          product: newProduct,
-        });
+        toast.error(
+          `Số lượng sản phẩm trong giỏ vượt quá số lượng tồn kho (${inStockQuantity})`,
+        );
       }
     }
     // Lưu vào localStorage
     localStorage.setItem('cart', JSON.stringify(cartList));
-    // Thông báo toast
-    toast.success('Thêm vào giỏ hàng thành công');
     setTotalCart(cartList.length);
-    // console.log(newProduct, localStorage.setItem('cart'));
   };
 
   if (loading) {
@@ -145,7 +161,7 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             </div>
             <div
               title="Thêm vào giỏ"
-              onClick={() => handleAddProduct(props.product)}
+              onClick={() => handleAddAProductToCart(props.product)}
               className="product__item-quick-link-item"
             >
               <FontAwesomeIcon icon={faBagShopping as IconProp} />

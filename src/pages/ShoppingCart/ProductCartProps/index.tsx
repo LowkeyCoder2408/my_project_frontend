@@ -11,6 +11,7 @@ import { backendEndpoint } from '../../../utils/Constant';
 import { Link } from 'react-router-dom';
 import TextEllipsis from '../../../components/GlobalStyles/Layout/components/text-ellipsis/TextEllipsis';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { toast } from 'react-toastify';
 
 interface ProductCartProps {
   cartItem: CartItemModel;
@@ -40,7 +41,7 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
       title: <span style={{ fontSize: '20px' }}>XÓA SẢN PHẨM</span>,
       description: (
         <span style={{ fontSize: '16px' }}>
-          Bạn có chắc chắn là sẽ loại bỏ sản phẩm này khỏi giỏ hàng chứ?
+          Bạn có chắc chắn rằng sẽ loại bỏ sản phẩm này khỏi giỏ hàng?
         </span>
       ),
       confirmationText: <span style={{ fontSize: '15px' }}>Đồng ý</span>,
@@ -56,7 +57,10 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
               Authorization: `Bearer ${token}`,
               'content-type': 'application/json',
             },
-          }).catch((err) => console.log(err));
+          }).catch((err) => console.log('Lỗi khi xóa:', err));
+        } else {
+          toast.error('Bạn cần đăng nhập để thực hiện chức năng này!');
+          return;
         }
       })
       .catch(() => {});
@@ -74,13 +78,6 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
         setErroring(error.message);
       });
   }, [props.cartItem.product.id]);
-
-  // Loading ảnh thumbnail
-  // let dataImage;
-  // if (imageList[0]) {
-  //   const thumbnail = imageList.filter((i) => i.thumbnail);
-  //   dataImage = thumbnail[0].urlImage || thumbnail[0].dataImage;
-  // }
 
   // Xử lý tăng số lượng
   const add = () => {
@@ -112,13 +109,13 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
   function handleModifiedQuantity(id: number, quantity: number) {
     const cartData: string | null = localStorage.getItem('cart');
     const cart: CartItemModel[] = cartData ? JSON.parse(cartData) : [];
-    // cái isExistProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
-    let isExistProduct = cart.find((cartItem) => cartItem.product.id === id);
+    // cái existingProduct này sẽ tham chiếu đến cái cart ở trên, nên khi update thì cart nó cũng update theo
+    let existingProduct = cart.find((cartItem) => cartItem.product.id === id);
     // Thêm 1 sản phẩm vào giỏ hàng
-    if (isExistProduct) {
+    if (existingProduct) {
       // nếu có rồi thì sẽ tăng số lượng
-      if (isExistProduct && isExistProduct.quantity !== undefined) {
-        isExistProduct.quantity += quantity;
+      if (existingProduct && existingProduct.quantity !== undefined) {
+        existingProduct.quantity += quantity;
       }
 
       // Cập nhật trong db
@@ -132,7 +129,7 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
           },
           body: JSON.stringify({
             id: props.cartItem.id,
-            quantity: isExistProduct.quantity,
+            quantity: existingProduct.quantity,
           }),
         }).catch((err) => console.log(err));
       }
@@ -161,7 +158,7 @@ const ProductCartProps: React.FC<ProductCartProps> = (props) => {
     <>
       <div className="col">
         <div className="d-flex">
-          <Link to={`/product/${props.cartItem.product.id}`}>
+          <Link to={`/product/${props.cartItem.product.alias}`}>
             <img
               src={props.cartItem.product.mainImage}
               className="card-img-top"
