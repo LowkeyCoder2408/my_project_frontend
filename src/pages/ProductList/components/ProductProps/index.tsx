@@ -175,14 +175,7 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
                 </div>
               </div>
             )}
-          {/* {isInHottestProducts && (
-            <div className="box-label-hot">
-              <img
-                src="https://res.cloudinary.com/dgdn13yur/image/upload/v1711559870/hot_label_w9arf3.png"
-                alt=""
-              />
-            </div>
-          )} */}
+
           {isInNewestProducts && (
             <div className="box-label-new">
               <img
@@ -231,7 +224,7 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             </div>
 
             <div className="product__item-caption-sell-quantity">
-              Đã bán: 73
+              Đã bán: {props.product.soldQuantity}
             </div>
           </div>
           <div title="Mua và thanh toán ngay" className="btn-cart btn btn-dark">

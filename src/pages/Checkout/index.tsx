@@ -1,0 +1,531 @@
+import { FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import React, { FormEvent, useEffect, useState } from 'react';
+import './Checkout.css';
+import CartItemModel from '../../models/CartItemModel';
+import { useCartItem } from '../../utils/CartItemContext';
+import CustomerModel from '../../models/CustomerModel';
+import { backendEndpoint } from '../../utils/Constant';
+import { getCustomerById } from '../../api/CustomerAPI';
+import { toast } from 'react-toastify';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ProductCartProps from '../ShoppingCart/ProductCartProps';
+import FormatPrice from '../ProductList/components/ProductProps/FormatPrice';
+import { useNavigate } from 'react-router-dom';
+import { getUserIdByToken } from '../../utils/JwtService';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import ProvinceModel from '../../models/ProvinceModel';
+import { getAllProvince, getProvinceById } from '../../api/ProvinceAPI';
+import { getAllDistrictsByProvinceId } from '../../api/DistrictAPI';
+import { NonNullExpression } from 'typescript';
+import DistrictModel from '../../models/DistrictModel';
+import WardModel from '../../models/WardModel';
+import { getAllWardsByDistrictId } from '../../api/Ward';
+
+interface CheckoutProps {
+  setIsCheckout: any;
+  cartList: CartItemModel[];
+  totalPriceProduct: number;
+  isBuyNow?: boolean;
+}
+
+export const Checkout: React.FC<CheckoutProps> = (props) => {
+  const { setCartList, setTotalCart } = useCartItem();
+  const [isSuccessPayment, setIsSuccessPayment] = useState(false);
+
+  // Xử lý phương thức thanh toán
+  const [payment, setPayment] = React.useState(1);
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const [provinceList, setProvinceList] = useState<ProvinceModel[] | null>([]);
+  const [provinceId, setProvinceId] = useState<number | null>(null);
+  const [provinceAddress, setProvinceAddress] = useState('');
+
+  const [districtList, setDistrictList] = useState<DistrictModel[] | null>([]);
+  const [districtId, setDistrictId] = useState<number | null>(null);
+  const [districtAddress, setDistrictAddress] = useState('');
+
+  const [wardList, setWardList] = useState<WardModel[] | null>([]);
+  const [wardId, setWardId] = useState<number | null>(null);
+  const [wardAddress, setWardAddress] = useState('');
+
+  const [note, setNote] = useState('');
+
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    getAllProvince().then((result) => {
+      setProvinceList(result);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (provinceId !== null) {
+      getAllDistrictsByProvinceId(provinceId)
+        .then((result) => {
+          setDistrictList(result);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [provinceId]);
+
+  useEffect(() => {
+    if (districtId !== null) {
+      getAllWardsByDistrictId(districtId)
+        .then((result) => {
+          setWardList(result);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [districtId]);
+
+  // Báo lỗi
+  const [errorPhoneNumber, setErrorPhoneNumber] = useState('');
+
+  const handleChangePayment = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPayment(parseInt((event.target as HTMLInputElement).value));
+  };
+
+  // Lấy dữ liệu của người dùng lên
+  const [customer, setCustomer] = useState<CustomerModel>();
+  useEffect(() => {
+    const idCustomer = getUserIdByToken();
+    getCustomerById(idCustomer)
+      .then((response) => {
+        if (response !== undefined) {
+          setCustomer(response);
+          if (response.fullName !== undefined) {
+            setFullName(response.fullName);
+          }
+          if (response.phoneNumber !== undefined) {
+            setPhoneNumber(response.phoneNumber);
+          }
+          // setDeliveryAddress(response.);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+
+    const productsRequest: any[] = [];
+
+    props.cartList.forEach((cartItem) => {
+      productsRequest.push({
+        product: cartItem.product,
+        quantity: cartItem.quantity,
+      });
+    });
+
+    const request = {
+      idCustomer: getUserIdByToken(),
+      idPayment: payment,
+      fullName,
+      phoneNumber,
+      email: customer?.email,
+      // deliveryAddress,
+      totalPriceProduct: props.totalPriceProduct,
+      product: productsRequest,
+      note,
+    };
+
+    // Khi thanh toán bằng vnpay
+    if (payment === 2) {
+      try {
+        const response = await fetch(
+          backendEndpoint +
+            '/vnpay/create-payment?amount=' +
+            props.totalPriceProduct,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'content-type': 'application/json',
+            },
+          },
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const paymentUrl = await response.text();
+
+        // Lưu order vào csdl
+        const isPayNow = true;
+        handleSaveOrder(request, isPayNow);
+
+        window.location.replace(paymentUrl);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      // Khi nhận hàng mới thanh toán
+      handleSaveOrder(request);
+    }
+  }
+
+  // Hàm check số điện thoại có đúng định dạng không
+  const checkPhoneNumber = (setErrorPhoneNumber: any, phoneNumber: string) => {
+    const phoneNumberRegex = /^(0[1-9]|84[1-9])[0-9]{8}$/;
+    if (phoneNumber.trim() === '') {
+      return false;
+    } else if (!phoneNumberRegex.test(phoneNumber.trim())) {
+      setErrorPhoneNumber('Số điện thoại không đúng định dạng.');
+      return true;
+    } else {
+      setErrorPhoneNumber('');
+      return false;
+    }
+  };
+
+  const handleSaveOrder = (request: any, isPayNow?: boolean) => {
+    const token = localStorage.getItem('token');
+    fetch(backendEndpoint + '/order/add-order', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    })
+      .then((response) => {
+        localStorage.removeItem('cart');
+        if (!isPayNow) {
+          setIsSuccessPayment(true);
+        }
+        if (!props.isBuyNow) {
+          setCartList([]);
+          setTotalCart(0);
+        }
+        toast.success('Thanh toán thành công');
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error('Thanh toán thất bại');
+      });
+  };
+
+  return (
+    <>
+      {!isSuccessPayment ? (
+        <form onSubmit={handleSubmit} className="mt-4">
+          <div className="bg-white rounded-4 p-5">
+            <div className="container p-0">
+              <h2 className="mb-3 mt-4">THÔNG TIN GIAO HÀNG</h2>
+              <div className="row">
+                <div className="mb-4 col-xxl-4 col-lg-6 col-md-6 col-sm-12">
+                  <TextField
+                    required
+                    fullWidth
+                    type="text"
+                    id="standard-required"
+                    label="Họ và tên"
+                    value={fullName}
+                    variant="standard"
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="input-field"
+                    style={{ fontSize: '170px !important' }}
+                  />
+                </div>
+                <div className="mb-4 col-xxl-4 col-lg-6 col-md-6 col-sm-12">
+                  <TextField
+                    error={errorPhoneNumber.length > 0 ? true : false}
+                    helperText={errorPhoneNumber}
+                    required={true}
+                    fullWidth
+                    type="text"
+                    label="Số điện thoại"
+                    variant="standard"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onBlur={(e: any) => {
+                      checkPhoneNumber(setErrorPhoneNumber, e.target.value);
+                    }}
+                    className="input-field"
+                  />
+                </div>
+                <div className="mb-4 col-xxl-4 col-lg-6 col-md-6 col-sm-12">
+                  {customer && customer.email !== undefined && (
+                    <TextField
+                      error={errorPhoneNumber.length > 0 ? true : false}
+                      disabled
+                      fullWidth
+                      type="text"
+                      variant="standard"
+                      label="Email"
+                      value={customer.email}
+                      defaultValue={customer.email}
+                      // className="input-field"
+                    />
+                  )}
+                </div>
+                <div className="col-lg-6 col-md-6 col-sm-12">
+                  <h2 className="mb-3 mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
+                  <div className="row">
+                    <div className="col col-xxl-4">
+                      <FormControl fullWidth variant="standard">
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Tỉnh/Thành phố
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={provinceId}
+                          onChange={(e) => {
+                            setProvinceId(parseInt(e.target.value + ''));
+                          }}
+                          // label="Tỉnh"
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {provinceList?.map((province) => (
+                            <MenuItem key={province.id} value={province.id}>
+                              {province.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <div className="col col-xxl-4">
+                      <FormControl fullWidth variant="standard">
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Quận/Huyện
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={districtId}
+                          disabled={
+                            districtList?.length && districtList?.length > 0
+                              ? false
+                              : true
+                          }
+                          onChange={(e) =>
+                            setDistrictId(parseInt(e.target.value + ''))
+                          }
+                          // label="Tỉnh"
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {districtList?.map((district) => (
+                            <MenuItem key={district.id} value={district.id}>
+                              {district.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <div className="col col-xxl-4">
+                      <FormControl fullWidth variant="standard">
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Phường/Xã
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={wardId}
+                          disabled={
+                            wardList?.length && wardList?.length > 0
+                              ? false
+                              : true
+                          }
+                          onChange={(e) =>
+                            setWardId(parseInt(e.target.value + ''))
+                          }
+                          // label="Tỉnh"
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {wardList?.map((ward) => (
+                            <MenuItem key={ward.id} value={ward.id}>
+                              {ward.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-6 col-md-6 col-sm-12">
+                  <h2 className="mb-2 mt-4">PHƯƠNG THỨC THANH TOÁN</h2>
+
+                  <FormControl>
+                    <RadioGroup
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name="controlled-radio-buttons-group"
+                      value={payment}
+                      onChange={handleChangePayment}
+                    >
+                      <FormControlLabel
+                        value={1}
+                        control={<Radio />}
+                        label={
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <img
+                              src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686301/cod_payment_owh4ih.png"
+                              alt="Thanh toán ngay khi nhận hàng"
+                              style={{
+                                width: '40px',
+                                marginRight: '10px',
+                              }}
+                            />
+                            Thanh toán tiền mặt khi nhận hàng (COD)
+                          </div>
+                        }
+                      />
+
+                      <FormControlLabel
+                        value={2}
+                        control={<Radio />}
+                        label={
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <img
+                              src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686269/vnpay_payment_p5eiis.png"
+                              alt="Thanh toán qua VNPay"
+                              style={{
+                                width: '40px',
+                                marginRight: '10px',
+                              }}
+                            />
+                            Thanh toán bằng VNPAY
+                          </div>
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-12 col-md-6 col-sm-12">
+              <TextField
+                className="w-100"
+                id="standard-basic"
+                label="Ghi chú"
+                variant="outlined"
+                multiline
+                minRows={3}
+                maxRows={4}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="container my-3 rounded-3 p-0">
+            <h2 className="mb-4 mt-4">TỔNG KẾT ĐƠN HÀNG</h2>
+            <div className="row">
+              <div className="col col-xxl-4 col-12">
+                <div className="confirm-information bg-light px-4 py-5 mt-3">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <span>Thành tiền:</span>
+                    <span>
+                      <strong>
+                        {props.totalPriceProduct && (
+                          <FormatPrice price={props.totalPriceProduct} />
+                        )}
+                      </strong>
+                    </span>
+                  </div>
+                  <div className="d-flex align-items-center justify-content-between mt-3">
+                    <span>Phí giao hàng:</span>
+                    <span>
+                      <strong>
+                        {props.totalPriceProduct && <FormatPrice price={0} />}
+                      </strong>
+                    </span>
+                  </div>
+                  <hr className="my-3" />
+                  <div className="d-flex align-items-center justify-content-between">
+                    <span>
+                      <strong>Tổng cộng:</strong>
+                    </span>
+                    <span className="text-danger">
+                      <strong>
+                        {props.totalPriceProduct && (
+                          <FormatPrice price={props.totalPriceProduct} />
+                        )}
+                      </strong>
+                    </span>
+                  </div>
+                  <button
+                    className="confirm-information-btn btn w-100 py-2 mt-4"
+                    style={{
+                      fontSize: '1.4rem',
+                      background: '#3b71ca',
+                      color: '#fff',
+                    }}
+                    type="submit"
+                  >
+                    XÁC NHẬN THANH TOÁN
+                  </button>
+                  <div className="mt-4">
+                    Tech Hub hỗ trợ các phương thức thanh toán:
+                    <div className="confirm-information__payment-method d-flex gap-3 mt-2">
+                      <img
+                        src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686301/cod_payment_owh4ih.png"
+                        alt=""
+                      />
+                      <img
+                        src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686269/visa_payment_bbuee2.png"
+                        alt=""
+                      />
+                      <img
+                        src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686269/vnpay_payment_p5eiis.png"
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                  <div className="col d-flex align-items-center mt-3">
+                    <span
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => props.setIsCheckout(false)}
+                    >
+                      <ArrowBackIcon />
+                      <strong className="ms-2">Quay về giỏ hàng</strong>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col col-xxl-8 col-12">
+                {props.cartList.map((cartItem) => (
+                  <ProductCartProps
+                    key={cartItem.id}
+                    canChangeQuantity={false}
+                    handleRemoveProduct={null}
+                    cartItem={cartItem}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </form>
+      ) : (
+        <></>
+        // <CheckoutSuccess />
+      )}
+    </>
+  );
+};

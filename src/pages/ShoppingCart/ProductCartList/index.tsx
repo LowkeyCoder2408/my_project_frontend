@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import { Button } from '@mui/material';
 import ProductCartProps from '../ProductCartProps';
 import { isToken } from '../../../utils/JwtService';
+import FormatPrice from '../../ProductList/components/ProductProps/FormatPrice';
+import './ProductCartList.css';
+import { Checkout } from '../../Checkout';
 
 interface ProductCartListProps {}
 
@@ -45,108 +48,137 @@ const ProductCartList: React.FC<ProductCartListProps> = () => {
   const [isCheckout, setIsCheckout] = useState(false);
 
   return (
-    <div className="container">
+    <div className="container" style={{ marginTop: '50px' }}>
       {!isCheckout ? (
-        <div style={{ overflow: 'hidden' }}>
+        <div>
           {cartList.length !== 0 ? (
             ''
           ) : (
-            <div className="d-flex align-items-center justify-content-center flex-column position-relative">
+            <div
+              style={{ marginTop: '50px' }}
+              className="d-flex align-items-center justify-content-center flex-column"
+            >
               <img
-                src="https://newnet.vn/themes/newnet/assets/img/empty-cart.png"
+                src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713619417/cart_empty_hxwhlc.png"
                 alt=""
-                width="63%"
+                width="35%"
               />
-              <Link
-                to={'/product-list'}
-                className="position-absolute"
-                style={{ bottom: '100px' }}
-              >
-                <Button variant="contained">Mua sắm ngay</Button>
+              <h2 className="mt-5 text-center" style={{ fontWeight: '550' }}>
+                GIỎ HÀNG CỦA BẠN CHƯA CÓ SẢN PHẨM NÀO
+              </h2>
+              <Link to={'/product-list'} className="mt-5">
+                <div
+                  className="btn btn-dark py-2 px-4"
+                  style={{ fontSize: '16px', fontWeight: '450' }}
+                >
+                  MUA SẮM NGAY
+                </div>
               </Link>
             </div>
           )}
           <div
-            className="row my-4"
+            className="row"
             style={
               cartList.length === 0 ? { display: 'none' } : { display: 'flex' }
             }
           >
-            {/* Bên trái */}
-            <h2 className="">
-              GIỎ HÀNG <span>({cartList.length} sản phẩm)</span>
-            </h2>
-            <div className="col-lg-8 col-md-12 col-sm-12 ">
-              <div className="container-product bg-light ">
-                <div className="row px-4 py-3">
-                  <div className="col">Sản phẩm</div>
-                  <div className="col-3 text-center">Số lượng</div>
-                  <div className="col-2 text-center">Số tiền</div>
-                  <div className="col-2 text-center">Thao tác</div>
+            <div className="col col-xxl-8 col-xl-8 col-12">
+              <h2 className="mb-4 mt-4">GIỎ HÀNG CỦA BẠN</h2>
+              {cartList.map((cartItem) => {
+                return (
+                  <ProductCartProps
+                    cartItem={cartItem}
+                    handleRemoveProduct={handleRemoveProduct}
+                    canChangeQuantity={true}
+                    key={cartItem.product.id}
+                  />
+                );
+              })}
+            </div>
+            <div
+              className="col col-xxl-4 col-xl-4 col-12"
+              style={{ height: 'fit-content' }}
+            >
+              <h2 className="mb-4 mt-4">THÔNG TIN XÁC NHẬN</h2>
+              <div className="confirm-information bg-white px-4 py-5">
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>Thành tiền:</span>
+                  <span>
+                    <strong>
+                      {totalPriceProduct && (
+                        <FormatPrice price={totalPriceProduct} />
+                      )}
+                    </strong>
+                  </span>
                 </div>
-              </div>
-              <div className="container-product bg-light mt-lg-0 mt-md-3 mt-sm-3 px-3">
-                <div className="row px-4 py-3">
-                  {cartList.map((cartItem) => {
-                    return (
-                      <ProductCartProps
-                        cartItem={cartItem}
-                        handleRemoveProduct={handleRemoveProduct}
-                        // setTotalCart={props.setTotalCart}
-                        key={cartItem.product.id}
-                      />
-                    );
-                  })}
+                <div className="d-flex align-items-center justify-content-between mt-3">
+                  <span>Phí giao hàng:</span>
+                  <span>
+                    <strong>
+                      {totalPriceProduct && <FormatPrice price={0} />}
+                    </strong>
+                  </span>
+                </div>
+                <hr className="my-3" />
+                <div className="d-flex align-items-center justify-content-between">
+                  <span>
+                    <strong>Tổng cộng:</strong>
+                  </span>
+                  <span className="text-danger">
+                    <strong>
+                      {totalPriceProduct && (
+                        <FormatPrice price={totalPriceProduct} />
+                      )}
+                    </strong>
+                  </span>
+                </div>
+                <div
+                  className="confirm-information-btn btn w-100 py-2 mt-4"
+                  style={{
+                    fontSize: '1.4rem',
+                    background: '#3b71ca',
+                    color: '#fff',
+                  }}
+                  onClick={() => {
+                    if (isToken()) {
+                      setIsCheckout(true);
+                    } else {
+                      toast.warning(
+                        'Bạn cần đăng nhập để thực hiện chức năng này',
+                      );
+                      navigation('/login');
+                    }
+                  }}
+                >
+                  ĐẶT HÀNG NGAY
+                </div>
+                <div className="mt-4">
+                  Tech Hub hỗ trợ các phương thức thanh toán:
+                  <div className="confirm-information__payment-method d-flex gap-3 mt-2">
+                    <img
+                      src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686301/cod_payment_owh4ih.png"
+                      alt=""
+                    />
+                    <img
+                      src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686269/visa_payment_bbuee2.png"
+                      alt=""
+                    />
+                    <img
+                      src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686269/vnpay_payment_p5eiis.png"
+                      alt=""
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-
-            {/* <div
-              className="container-product bg-light col-lg col-md-12 col-sm-12 px-5 pb-4 mt-lg-0 mt-md-3 mt-sm-3"
-              style={{ height: 'fit-content' }}
-            >
-              <div className="d-flex align-items-center justify-content-between mt-3">
-                <span>Thành tiền:</span>
-                <span>
-                  <strong>{totalPriceProduct.toLocaleString()} đ</strong>
-                </span>
-              </div>
-              <hr className="my-2" />
-              <div className="d-flex align-items-center justify-content-between">
-                <span>
-                  <strong>Tổng số tiền (gồm VAT):</strong>
-                </span>
-                <span className="text-danger fs-5">
-                  <strong>{totalPriceProduct.toLocaleString()} đ</strong>
-                </span>
-              </div>
-
-              <Button
-                variant="contained"
-                sx={{ width: '100%', marginTop: '30px' }}
-                onClick={() => {
-                  if (isToken()) {
-                    setIsCheckout(true);
-                  } else {
-                    toast.warning(
-                      'Bạn cần đăng nhập để thực hiện chức năng này',
-                    );
-                    navigation('/login');
-                  }
-                }}
-              >
-                Thanh toán
-              </Button>
-            </div> */}
           </div>
         </div>
       ) : (
-        <></>
-        // <CheckoutPage
-        //   setIsCheckout={setIsCheckout}
-        //   cartList={cartList}
-        //   totalPriceProduct={totalPriceProduct}
-        // />
+        <Checkout
+          setIsCheckout={setIsCheckout}
+          cartList={cartList}
+          totalPriceProduct={totalPriceProduct}
+        />
       )}
     </div>
   );
