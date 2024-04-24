@@ -1,6 +1,7 @@
 .css-1x51dt5-MuiInputBase-input-MuiInput-input,
 .css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input,
-.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input {
+.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input,
+.css-66dh3a-MuiInputBase-input-MuiInput-input {
   font-size: 1.6rem !important;
   font-weight: 500 !important;
   display: flex;
@@ -19,4 +20,22 @@
 
 .css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root {
   font-size: 1.5rem !important;
+}
+
+.css-q8hpuo-MuiFormControl-root {
+  margin-top: 3px !important;
+}
+
+.MuiFormControl-root.css-1nrlq1o-MuiFormControl-root {
+  width: 100% !important;
+}
+
+.css-j204z7-MuiFormControlLabel-root .MuiFormControlLabel-label {
+  font-size: 1.4rem;
+}
+
+.MuiFormControlLabel-root.MuiFormControlLabel-labelPlacementEnd.css-j204z7-MuiFormControlLabel-root {
+  display: flex !important;
+  align-items: center !important;
+  margin-top: 10px;
 }

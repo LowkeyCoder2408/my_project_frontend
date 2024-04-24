@@ -13,7 +13,7 @@ class AddressModel {
   district?: DistrictModel;
   ward?: WardModel;
   customer?: CustomerModel;
-  defaultForShipping?: boolean;
+  // isDefaultAddress?: boolean;
 
   constructor(
     id: number,
@@ -25,7 +25,7 @@ class AddressModel {
     district: DistrictModel,
     ward: WardModel,
     customer: CustomerModel,
-    defaultForShipping: boolean,
+    // isDefaultAddress: boolean,
   ) {
     this.id = id;
     this.fullName = fullName;
@@ -36,7 +36,7 @@ class AddressModel {
     this.district = district;
     this.ward = ward;
     this.customer = customer;
-    this.defaultForShipping = defaultForShipping;
+    // this.isDefaultAddress = isDefaultAddress;
   }
 }
 

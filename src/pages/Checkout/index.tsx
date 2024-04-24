@@ -17,12 +17,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import ProvinceModel from '../../models/ProvinceModel';
-import { getAllProvince, getProvinceById } from '../../api/ProvinceAPI';
+import { getAllProvince } from '../../api/ProvinceAPI';
 import { getAllDistrictsByProvinceId } from '../../api/DistrictAPI';
-import { NonNullExpression } from 'typescript';
 import DistrictModel from '../../models/DistrictModel';
 import WardModel from '../../models/WardModel';
 import { getAllWardsByDistrictId } from '../../api/Ward';
+import { getAddressByIdUser } from '../../api/AddressAPI';
+import { CheckoutSuccess } from './components/CheckoutSuccess';
 
 interface CheckoutProps {
   setIsCheckout: any;
@@ -115,14 +116,37 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
       });
   }, []);
 
+  // useEffect(() => {
+  //   const idCustomer = getUserIdByToken();
+  //   getAddressByIdUser(idCustomer).then((resultList) => {
+  //     resultList.map((result) => {
+  //       if (result.isDefaultAddress === true) {
+  //         if (result.province !== undefined) {
+  //           setProvinceId(result.province.id);
+  //         }
+  //         if (result.district !== undefined) {
+  //           setProvinceId(result.district.id);
+  //         }
+  //         if (result.ward !== undefined) {
+  //           setProvinceId(result.ward.id);
+  //         }
+  //       }
+  //     });
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    console.log(provinceId, districtId, wardId);
+  }, [provinceId, districtId, wardId]);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const token = localStorage.getItem('token');
 
-    const productsRequest: any[] = [];
+    const productCartRequest: any[] = [];
 
     props.cartList.forEach((cartItem) => {
-      productsRequest.push({
+      productCartRequest.push({
         product: cartItem.product,
         quantity: cartItem.quantity,
       });
@@ -136,7 +160,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
       email: customer?.email,
       // deliveryAddress,
       totalPriceProduct: props.totalPriceProduct,
-      product: productsRequest,
+      product: productCartRequest,
       note,
     };
 
@@ -145,7 +169,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
       try {
         const response = await fetch(
           backendEndpoint +
-            '/vnpay/create-payment?amount=' +
+            '/api/payment/create-payment?amount=' +
             props.totalPriceProduct,
           {
             method: 'POST',
@@ -156,13 +180,13 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
           },
         );
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`HTTP error is: ${response.status}`);
         }
         const paymentUrl = await response.text();
 
         // Lưu order vào csdl
         const isPayNow = true;
-        handleSaveOrder(request, isPayNow);
+        // handleSaveOrder(request, isPayNow);
 
         window.location.replace(paymentUrl);
       } catch (error) {
@@ -170,7 +194,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
       }
     } else {
       // Khi nhận hàng mới thanh toán
-      handleSaveOrder(request);
+      // handleSaveOrder(request);
     }
   }
 
@@ -223,7 +247,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
             <div className="container p-0">
               <h2 className="mb-3 mt-4">THÔNG TIN GIAO HÀNG</h2>
               <div className="row">
-                <div className="mb-4 col-xxl-4 col-lg-6 col-md-6 col-sm-12">
+                <div className="mb-4 col-xxl-4 col-xl-4 col-lg-4 col-12">
                   <TextField
                     required
                     fullWidth
@@ -237,7 +261,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                     style={{ fontSize: '170px !important' }}
                   />
                 </div>
-                <div className="mb-4 col-xxl-4 col-lg-6 col-md-6 col-sm-12">
+                <div className="mb-4 col-xxl-4 col-xl-4 col-lg-4 col-12">
                   <TextField
                     error={errorPhoneNumber.length > 0 ? true : false}
                     helperText={errorPhoneNumber}
@@ -254,7 +278,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                     className="input-field"
                   />
                 </div>
-                <div className="mb-4 col-xxl-4 col-lg-6 col-md-6 col-sm-12">
+                <div className="mb-4 col-xxl-4 col-xl-4 col-lg-4 col-12">
                   {customer && customer.email !== undefined && (
                     <TextField
                       error={errorPhoneNumber.length > 0 ? true : false}
@@ -269,10 +293,10 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                     />
                   )}
                 </div>
-                <div className="col-lg-6 col-md-6 col-sm-12">
-                  <h2 className="mb-3 mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
+                <div className="col col-xxl-6 col-12">
+                  <h2 className="mb-1 mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
                   <div className="row">
-                    <div className="col col-xxl-4">
+                    <div className="col col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
                       <FormControl fullWidth variant="standard">
                         <InputLabel id="demo-simple-select-standard-label">
                           Tỉnh/Thành phố
@@ -297,7 +321,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                         </Select>
                       </FormControl>
                     </div>
-                    <div className="col col-xxl-4">
+                    <div className="col col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
                       <FormControl fullWidth variant="standard">
                         <InputLabel id="demo-simple-select-standard-label">
                           Quận/Huyện
@@ -327,7 +351,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                         </Select>
                       </FormControl>
                     </div>
-                    <div className="col col-xxl-4">
+                    <div className="col col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
                       <FormControl fullWidth variant="standard">
                         <InputLabel id="demo-simple-select-standard-label">
                           Phường/Xã
@@ -359,9 +383,8 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-6 col-md-6 col-sm-12">
-                  <h2 className="mb-2 mt-4">PHƯƠNG THỨC THANH TOÁN</h2>
-
+                <div className="col col-xxl-6 col-12">
+                  <h2 className="mt-4">PHƯƠNG THỨC THANH TOÁN</h2>
                   <FormControl>
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
@@ -369,62 +392,51 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                       value={payment}
                       onChange={handleChangePayment}
                     >
-                      <FormControlLabel
-                        value={1}
-                        control={<Radio />}
-                        label={
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <img
-                              src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686301/cod_payment_owh4ih.png"
-                              alt="Thanh toán ngay khi nhận hàng"
-                              style={{
-                                width: '40px',
-                                marginRight: '10px',
-                              }}
-                            />
-                            Thanh toán tiền mặt khi nhận hàng (COD)
-                          </div>
-                        }
-                      />
-
-                      <FormControlLabel
-                        value={2}
-                        control={<Radio />}
-                        label={
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <img
-                              src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713686269/vnpay_payment_p5eiis.png"
-                              alt="Thanh toán qua VNPay"
-                              style={{
-                                width: '40px',
-                                marginRight: '10px',
-                              }}
-                            />
-                            Thanh toán bằng VNPAY
-                          </div>
-                        }
-                      />
+                      <div className="row">
+                        <div className="col col-xxl-6 col-xl-6 col-lg-6 col-sm-6 col-12">
+                          <FormControlLabel
+                            value={1}
+                            control={<Radio />}
+                            label={
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Thanh toán ngay khi nhận hàng
+                              </div>
+                            }
+                          />
+                        </div>
+                        <div className="col col-xxl-6 col-xl-6 col-lg-6 col-sm-6 col-12">
+                          <FormControlLabel
+                            value={2}
+                            control={<Radio />}
+                            label={
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                Thanh toán bằng ví điện tử VNPay
+                              </div>
+                            }
+                          />
+                        </div>
+                      </div>
                     </RadioGroup>
                   </FormControl>
                 </div>
               </div>
             </div>
-            <div className="col-lg-12 col-md-6 col-sm-12">
+            <div className="mt-4 col-12">
               <TextField
                 className="w-100"
                 id="standard-basic"
                 label="Ghi chú"
-                variant="outlined"
+                variant="standard"
                 multiline
                 minRows={3}
                 maxRows={4}
@@ -523,8 +535,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
           </div>
         </form>
       ) : (
-        <></>
-        // <CheckoutSuccess />
+        <CheckoutSuccess />
       )}
     </>
   );

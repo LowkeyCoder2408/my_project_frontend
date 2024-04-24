@@ -1,6 +1,7 @@
 // Pages
 import AboutUs from '../pages/AboutUs';
 import ProductForm from '../pages/Admin/ProductForm';
+import CheckoutStatus from '../pages/Checkout/components/CheckoutStatus';
 import Contact from '../pages/Contact';
 import ExchangeReturnRefundPolicy from '../pages/ExchangeReturnRefundPolicy';
 import FAQ from '../pages/FAQ';
@@ -94,6 +95,11 @@ const publicRoutes = [
   {
     path: '/enable/:email/:verificationCode',
     component: EnableAccount,
+    layout: 'default',
+  },
+  {
+    path: '/check-out/status',
+    component: CheckoutStatus,
     layout: 'default',
   },
   {
