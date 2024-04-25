@@ -20,7 +20,7 @@ export const CheckoutSuccess = () => {
         </p>
         <Link to={'/product-list'} className="mt-5">
           <div
-            className="btn btn-success py-2 px-4"
+            className="btn btn-dark py-2 px-4"
             style={{ fontSize: '16px', fontWeight: '450' }}
           >
             TIẾP TỤC MUA SẮM

@@ -40,18 +40,19 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
   const [payment, setPayment] = React.useState(1);
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [addressLine, setAddressLine] = useState('');
 
   const [provinceList, setProvinceList] = useState<ProvinceModel[] | null>([]);
   const [provinceId, setProvinceId] = useState<number | null>(null);
-  const [provinceAddress, setProvinceAddress] = useState('');
+  const [province, setProvince] = useState('');
 
   const [districtList, setDistrictList] = useState<DistrictModel[] | null>([]);
   const [districtId, setDistrictId] = useState<number | null>(null);
-  const [districtAddress, setDistrictAddress] = useState('');
+  const [district, setDistrict] = useState('');
 
   const [wardList, setWardList] = useState<WardModel[] | null>([]);
   const [wardId, setWardId] = useState<number | null>(null);
-  const [wardAddress, setWardAddress] = useState('');
+  const [ward, setWard] = useState('');
 
   const [note, setNote] = useState('');
 
@@ -97,8 +98,8 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
   // Lấy dữ liệu của người dùng lên
   const [customer, setCustomer] = useState<CustomerModel>();
   useEffect(() => {
-    const idCustomer = getUserIdByToken();
-    getCustomerById(idCustomer)
+    const customerId = getUserIdByToken();
+    getCustomerById(customerId)
       .then((response) => {
         if (response !== undefined) {
           setCustomer(response);
@@ -116,25 +117,6 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   const idCustomer = getUserIdByToken();
-  //   getAddressByIdUser(idCustomer).then((resultList) => {
-  //     resultList.map((result) => {
-  //       if (result.isDefaultAddress === true) {
-  //         if (result.province !== undefined) {
-  //           setProvinceId(result.province.id);
-  //         }
-  //         if (result.district !== undefined) {
-  //           setProvinceId(result.district.id);
-  //         }
-  //         if (result.ward !== undefined) {
-  //           setProvinceId(result.ward.id);
-  //         }
-  //       }
-  //     });
-  //   });
-  // }, []);
-
   useEffect(() => {
     console.log(provinceId, districtId, wardId);
   }, [provinceId, districtId, wardId]);
@@ -143,25 +125,29 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
     event.preventDefault();
     const token = localStorage.getItem('token');
 
-    const productCartRequest: any[] = [];
+    const productRequest: any[] = [];
 
     props.cartList.forEach((cartItem) => {
-      productCartRequest.push({
+      productRequest.push({
         product: cartItem.product,
         quantity: cartItem.quantity,
       });
     });
 
     const request = {
-      idCustomer: getUserIdByToken(),
+      addressLine: addressLine,
+      payment: payment,
       idPayment: payment,
-      fullName,
-      phoneNumber,
+      districtId: districtId,
       email: customer?.email,
-      // deliveryAddress,
-      totalPriceProduct: props.totalPriceProduct,
-      product: productCartRequest,
-      note,
+      fullName: fullName,
+      note: note,
+      phoneNumber: phoneNumber,
+      provinceId: provinceId,
+      total: props.totalPriceProduct,
+      wardId: wardId,
+      customerId: getUserIdByToken(),
+      product: productRequest,
     };
 
     // Khi thanh toán bằng vnpay
@@ -169,7 +155,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
       try {
         const response = await fetch(
           backendEndpoint +
-            '/api/payment/create-payment?amount=' +
+            '/payment/create-payment?amount=' +
             props.totalPriceProduct,
           {
             method: 'POST',
@@ -184,17 +170,16 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
         }
         const paymentUrl = await response.text();
 
-        // Lưu order vào csdl
-        const isPayNow = true;
-        // handleSaveOrder(request, isPayNow);
-
         window.location.replace(paymentUrl);
+        // Lưu order vào DB ngay khi thanh toán thành công
+        const isPayNow = true;
+        handleSaveOrder(request, isPayNow);
       } catch (error) {
         console.log(error);
       }
     } else {
-      // Khi nhận hàng mới thanh toán
-      // handleSaveOrder(request);
+      // Khi admin cập nhật trạng thái nhận hàng sẽ thêm vào DB
+      handleSaveOrder(request);
     }
   }
 
@@ -231,11 +216,9 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
           setCartList([]);
           setTotalCart(0);
         }
-        toast.success('Thanh toán thành công');
       })
       .catch((error) => {
         console.log(error);
-        toast.error('Thanh toán thất bại');
       });
   };
 
@@ -293,15 +276,30 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                     />
                   )}
                 </div>
-                <div className="col col-xxl-6 col-12">
+                <div className="col col-xxl-12 col-12">
                   <h2 className="mb-1 mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
                   <div className="row">
-                    <div className="col col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
+                    <div className="mb-4 col-xxl-3 col-xl-3 col-lg-6 col-12">
+                      <TextField
+                        required
+                        fullWidth
+                        type="text"
+                        id="standard-required"
+                        label="Địa chỉ cụ thể/Số nhà"
+                        value={addressLine}
+                        variant="standard"
+                        onChange={(e) => setAddressLine(e.target.value)}
+                        className="input-field"
+                        style={{ fontSize: '170px !important' }}
+                      />
+                    </div>
+                    <div className="col col-xxl-3 col-xl-3 col-lg-6 col-md-4 col-12">
                       <FormControl fullWidth variant="standard">
                         <InputLabel id="demo-simple-select-standard-label">
                           Tỉnh/Thành phố
                         </InputLabel>
                         <Select
+                          required
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
                           value={provinceId}
@@ -321,12 +319,13 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                         </Select>
                       </FormControl>
                     </div>
-                    <div className="col col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
+                    <div className="col col-xxl-3 col-xl-3 col-lg-6 col-md-4 col-12">
                       <FormControl fullWidth variant="standard">
                         <InputLabel id="demo-simple-select-standard-label">
                           Quận/Huyện
                         </InputLabel>
                         <Select
+                          required
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
                           value={districtId}
@@ -351,12 +350,13 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                         </Select>
                       </FormControl>
                     </div>
-                    <div className="col col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-12">
+                    <div className="col col-xxl-3 col-xl-3 col-lg-6 col-md-4 col-12">
                       <FormControl fullWidth variant="standard">
                         <InputLabel id="demo-simple-select-standard-label">
                           Phường/Xã
                         </InputLabel>
                         <Select
+                          required
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
                           value={wardId}
@@ -383,7 +383,7 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="col col-xxl-6 col-12">
+                <div className="col col-xxl-12 col-12">
                   <h2 className="mt-4">PHƯƠNG THỨC THANH TOÁN</h2>
                   <FormControl>
                     <RadioGroup
@@ -445,8 +445,8 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
               />
             </div>
           </div>
-          <div className="container my-3 rounded-3 p-0">
-            <h2 className="mb-4 mt-4">TỔNG KẾT ĐƠN HÀNG</h2>
+          <div className="container mt-5 rounded-3 p-0">
+            <h2 className="mb-3 mt-5">TỔNG KẾT ĐƠN HÀNG</h2>
             <div className="row">
               <div className="col col-xxl-4 col-12">
                 <div className="confirm-information bg-light px-4 py-5 mt-3">
