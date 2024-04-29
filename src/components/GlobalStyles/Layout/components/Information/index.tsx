@@ -7,6 +7,7 @@ import {
   faCartFlatbed,
   faCartShopping,
   faExchange,
+  faMoneyBill,
   faSignOut,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -307,6 +308,26 @@ function Information() {
                       />
                       Thông tin cá nhân
                     </button>
+                  </li>
+                  <li
+                    style={{
+                      fontSize: '15px',
+                      padding: '4px 6px',
+                      color: '#666',
+                    }}
+                  >
+                    <Link to={'/my-order'}>
+                      <button
+                        className="dropdown-item d-flex gap-3 align-items-center"
+                        type="button"
+                      >
+                        <FontAwesomeIcon
+                          style={{ width: '12px', height: '12px' }}
+                          icon={faMoneyBill as IconProp}
+                        />
+                        Đơn hàng của tôi
+                      </button>
+                    </Link>
                   </li>
                   <li
                     style={{

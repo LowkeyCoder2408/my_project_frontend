@@ -1,0 +1,40 @@
+.MuiDataGrid-root.MuiDataGrid-root--densityStandard.MuiDataGrid-withBorderColor.css-n3fyjk-MuiDataGrid-root {
+  background-color: #fff;
+  margin-top: 60px;
+}
+.css-2pbtu6-MuiTypography-root {
+  font-size: 20px !important;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  text-align: center !important;
+}
+
+.MuiDataGrid-columnHeaderTitle.css-t89xny-MuiDataGrid-columnHeaderTitle {
+  font-size: 1.5rem !important;
+}
+
+.MuiDataGrid-cell {
+  font-size: 1.4rem !important;
+}
+
+.MuiDataGrid-cell:nth-child(2),
+.MuiDataGrid-cell:nth-child(8) {
+  text-align: center !important;
+}
+
+.MuiDataGrid-cell:nth-child(2) {
+  font-weight: 500 !important;
+}
+
+.MuiDataGrid-row {
+  display: flex;
+  align-items: center;
+}
+
+.MuiDataGrid-selectedRowCount.css-de9k3v-MuiDataGrid-selectedRowCount,
+.MuiTablePagination-selectLabel.css-pdct74-MuiTablePagination-selectLabel,
+.MuiSelect-select.MuiTablePagination-select.MuiSelect-standard.MuiInputBase-input.css-194a1fa-MuiSelect-select-MuiInputBase-input,
+.MuiTablePagination-displayedRows.css-levciy-MuiTablePagination-displayedRows {
+  font-size: 1.5rem !important;
+  font-weight: 500;
+}

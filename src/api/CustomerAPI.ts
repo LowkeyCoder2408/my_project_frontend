@@ -37,3 +37,10 @@ export async function getCustomerByReviewId(
 
   return getCustomerById(endpoint);
 }
+
+export async function getCustomerByOrderId(id: number): Promise<CustomerModel> {
+  // Xác định endpoint
+  const endpoint: string = backendEndpoint + `/order/${id}/customer`;
+
+  return getCustomer(endpoint);
+}

@@ -89,10 +89,11 @@
 }
 
 .product-details__review__show-option {
-  cursor: pointer;
+  cursor: pointer !important;
   margin-top: 20px;
   transition: 0.5s;
   color: #666;
+  z-index: 1;
 }
 
 .product-details__review__show-option:hover {

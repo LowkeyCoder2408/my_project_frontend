@@ -7,6 +7,7 @@ import ExchangeReturnRefundPolicy from '../pages/ExchangeReturnRefundPolicy';
 import FAQ from '../pages/FAQ';
 import Home from '../pages/Home';
 import ProductItem from '../pages/Home/components/DealProduct/components/ProductItem';
+import MyOrder from '../pages/MyOrder';
 import ProductList from '../pages/ProductList';
 import ProductDetail from '../pages/ProductList/components/ProductDetail';
 import SecurityPolicy from '../pages/SecurityPolicy';
@@ -100,6 +101,11 @@ const publicRoutes = [
   {
     path: '/check-out/status',
     component: CheckoutStatus,
+    layout: 'default',
+  },
+  {
+    path: '/my-order',
+    component: MyOrder,
     layout: 'default',
   },
   {

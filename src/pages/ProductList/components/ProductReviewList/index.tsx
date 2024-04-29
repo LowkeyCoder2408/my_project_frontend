@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import avatar from './avatar.png';
 import './ProductReviewList.css';
 import StarRating from './components/StarRating';
 import ProductModel from '../../../../models/ProductModel';
@@ -7,6 +6,9 @@ import ReviewModel from '../../../../models/ReviewModel';
 import { format } from 'date-fns';
 import { getAllReviewByProductId } from '../../../../api/ReviewAPI';
 import Loader from '../Loader';
+import { ReviewModal } from '../ProductDetail/components/ReviewModal';
+import { FadeModal } from '../../../../utils/FadeModal';
+import { getProductById } from '../../../../api/ProductAPI';
 
 interface ProductReviewListProps {
   productId: number;
@@ -16,14 +18,23 @@ const ProductReviewList = (props: ProductReviewListProps) => {
   const [visibleProductReviews, setVisibleProductReviews] = useState(4);
   const [hiddenProductReviews, setHiddenProductReviews] = useState(0);
   const [reviewsList, setReviewsList] = useState<ReviewModel[]>([]);
-
+  const [product, setProduct] = useState<ProductModel | null>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
   useEffect(() => {
-    getAllReviewByProductId(props.productId)
-      .then((reviewListResponse) => {
+    Promise.all([
+      getAllReviewByProductId(props.productId),
+      getProductById(props.productId),
+    ])
+      .then(([reviewListResponse, productResponse]) => {
         setReviewsList(reviewListResponse);
+        setProduct(productResponse);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -125,10 +136,20 @@ const ProductReviewList = (props: ProductReviewListProps) => {
             </div>
           )}
         </div>
-        <div className="product-details__review__show-option">
+        <div
+          onClick={() => setOpenModal(true)}
+          className="product-details__review__show-option"
+        >
           Viết đánh giá
         </div>
       </div>
+      <FadeModal
+        open={openModal}
+        handleOpen={handleOpenModal}
+        handleClose={handleCloseModal}
+      >
+        {product && <ReviewModal product={product} />}
+      </FadeModal>
     </div>
   );
 };

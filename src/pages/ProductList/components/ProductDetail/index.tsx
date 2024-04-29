@@ -30,6 +30,8 @@ import { useCartItem } from '../../../../utils/CartItemContext';
 import { getUserIdByToken, isToken } from '../../../../utils/JwtService';
 import { toast } from 'react-toastify';
 import { backendEndpoint } from '../../../../utils/Constant';
+import { ReviewModal } from './components/ReviewModal';
+import { FadeModal } from '../../../../utils/FadeModal';
 
 interface ProductDetailInterface {}
 

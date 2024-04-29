@@ -41,3 +41,13 @@ export async function getAllReviewByProductAlias(
     return [];
   }
 }
+
+export async function getAllReviewByCustomerId(
+  id: number,
+): Promise<ReviewModel[]> {
+  // Xác định endpoint
+  const endpoint: string =
+    backendEndpoint + `/review/search/findByProduct_Id?productId=${id}`;
+
+  return getReview(endpoint);
+}
