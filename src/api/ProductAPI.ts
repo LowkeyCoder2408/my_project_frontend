@@ -330,3 +330,25 @@ export async function getProductByCartItemId(
     return null;
   }
 }
+
+export async function getProductByReviewId(
+  id: number,
+): Promise<ProductModel | null> {
+  const endpoint = backendEndpoint + `/review/${id}/product`;
+
+  try {
+    // Gọi phương thức request()
+    const response = await myRequest(endpoint);
+
+    // Kiểm tra xem dữ liệu endpoint trả về có dữ liệu không
+    if (response) {
+      // Trả về sản phẩm
+      return response;
+    } else {
+      throw new Error('Sản phẩm không tồn tại');
+    }
+  } catch (error) {
+    console.error('Error: ', error);
+    return null;
+  }
+}

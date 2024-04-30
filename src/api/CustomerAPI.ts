@@ -29,18 +29,18 @@ export async function getCustomerById(id: any): Promise<CustomerModel> {
   return customer;
 }
 
+export async function getCustomerByOrderId(id: number): Promise<CustomerModel> {
+  // Xác định endpoint
+  const endpoint: string = backendEndpoint + `/order/${id}/customer`;
+
+  return getCustomer(endpoint);
+}
+
 export async function getCustomerByReviewId(
   id: number,
 ): Promise<CustomerModel> {
   // Xác định endpoint
   const endpoint: string = backendEndpoint + `/review/${id}/customer`;
-
-  return getCustomerById(endpoint);
-}
-
-export async function getCustomerByOrderId(id: number): Promise<CustomerModel> {
-  // Xác định endpoint
-  const endpoint: string = backendEndpoint + `/order/${id}/customer`;
 
   return getCustomer(endpoint);
 }

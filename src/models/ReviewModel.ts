@@ -3,7 +3,6 @@ import ProductModel from './ProductModel';
 
 class ReviewModel {
   id: number;
-  headline: string;
   comment: string;
   rating: number;
   reviewTime: Date;
@@ -12,7 +11,6 @@ class ReviewModel {
 
   constructor(
     id: number,
-    headline: string,
     comment: string,
     rating: number,
     reviewTime: Date,
@@ -20,7 +18,6 @@ class ReviewModel {
     customer: CustomerModel,
   ) {
     this.id = id;
-    this.headline = headline;
     this.comment = comment;
     this.rating = rating;
     this.reviewTime = reviewTime;

@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './ProductReviewList.css';
-import StarRating from './components/StarRating';
 import ProductModel from '../../../../models/ProductModel';
 import ReviewModel from '../../../../models/ReviewModel';
 import { format } from 'date-fns';
-import { getAllReviewByProductId } from '../../../../api/ReviewAPI';
+import {
+  getAllReviewByProductId,
+  getCustomerReviewByProduct,
+} from '../../../../api/ReviewAPI';
 import Loader from '../Loader';
 import { ReviewModal } from '../ProductDetail/components/ReviewModal';
 import { FadeModal } from '../../../../utils/FadeModal';
 import { getProductById } from '../../../../api/ProductAPI';
+import ProductReviewItem from './components/ProductReviewItem';
+import { getUserIdByToken, isToken } from '../../../../utils/JwtService';
+import { toast } from 'react-toastify';
 
 interface ProductReviewListProps {
   productId: number;
 }
 
 const ProductReviewList = (props: ProductReviewListProps) => {
+  const [customerReview, setCustomerReview] = useState<ReviewModel | null>(
+    null,
+  );
   const [visibleProductReviews, setVisibleProductReviews] = useState(4);
   const [hiddenProductReviews, setHiddenProductReviews] = useState(0);
   const [reviewsList, setReviewsList] = useState<ReviewModel[]>([]);
@@ -27,13 +35,15 @@ const ProductReviewList = (props: ProductReviewListProps) => {
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     Promise.all([
       getAllReviewByProductId(props.productId),
       getProductById(props.productId),
     ])
       .then(([reviewListResponse, productResponse]) => {
-        setReviewsList(reviewListResponse);
+        setReviewsList(reviewListResponse.reviewList);
         setProduct(productResponse);
         setIsLoading(false);
       })
@@ -41,7 +51,19 @@ const ProductReviewList = (props: ProductReviewListProps) => {
         setIsLoading(false);
         setError(error.message);
       });
-  }, []);
+  }, [reviewsList]);
+
+  useEffect(() => {
+    const customerId = getUserIdByToken();
+    getCustomerReviewByProduct(customerId, props.productId)
+      .then((result) => {
+        console.log(result);
+        setCustomerReview(result.review);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [reviewsList]);
 
   if (isLoading) {
     return <Loader />;
@@ -70,7 +92,7 @@ const ProductReviewList = (props: ProductReviewListProps) => {
   return (
     <div className="product-details__review__wrapper">
       <div className="product-details__review__heading">
-        <strong>Đánh giá sản phẩm</strong> ({reviewsList.length} đánh giá)
+        <strong>Đánh giá sản phẩm</strong> ({reviewsList.length} lượt đánh giá)
       </div>
       <div className="product-details__review__list-wrapper">
         {reviewsList.length > 0 ? (
@@ -78,33 +100,7 @@ const ProductReviewList = (props: ProductReviewListProps) => {
             {reviewsList
               .slice(0, visibleProductReviews)
               .map((review, index) => (
-                <div key={index} className="product-details__review">
-                  <div className="product-details__review__avatar-wrap">
-                    <img
-                      src="https://res.cloudinary.com/dgdn13yur/image/upload/v1710904428/avatar_sjugj8.png"
-                      alt="Avatar"
-                      className="product-details__review__avatar"
-                    />
-                  </div>
-                  <div className="product-details__review__main">
-                    <div className="product-details__review__info">
-                      <div className="product-details__review__header">
-                        <span className="product-details__review__name">
-                          {/* {review.customer} */}
-                          Lâm
-                        </span>
-                        <span className="product-details__review__time">
-                          {format(review.reviewTime, 'dd/MM/yyyy')}, lúc{' '}
-                          {format(review.reviewTime, 'HH:mm:ss')}
-                        </span>
-                      </div>
-                      <StarRating rating={review.rating} />
-                    </div>
-                    <p className="product-details__review__content">
-                      {review.comment}
-                    </p>
-                  </div>
-                </div>
+                <ProductReviewItem key={index} review={review} />
               ))}
           </div>
         ) : (
@@ -136,12 +132,21 @@ const ProductReviewList = (props: ProductReviewListProps) => {
             </div>
           )}
         </div>
-        <div
-          onClick={() => setOpenModal(true)}
-          className="product-details__review__show-option"
-        >
-          Viết đánh giá
-        </div>
+        {customerReview === null ||
+          (customerReview === undefined && (
+            <div
+              onClick={() => {
+                if (!isToken()) {
+                  toast.error('Bạn cần đăng nhập để đánh giá!');
+                  return;
+                }
+                setOpenModal(true);
+              }}
+              className="product-details__review__show-option"
+            >
+              Viết đánh giá
+            </div>
+          ))}
       </div>
       <FadeModal
         open={openModal}
