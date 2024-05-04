@@ -111,7 +111,16 @@ function ProductReviewItem(props: ProductReviewItemProps) {
   }
 
   return (
-    <div className="product-details__review">
+    <div
+      className={`product-details__review ${
+        customerReview?.id === props.review.id ? 'yourRating' : ''
+      }`}
+    >
+      {customerReview?.id === props.review.id && (
+        <div className="product-details__review-your-rating">
+          Đánh giá của bạn
+        </div>
+      )}
       <div className="product-details__review__avatar-wrap">
         <img
           src={customer?.avatar}
@@ -166,7 +175,9 @@ function ProductReviewItem(props: ProductReviewItemProps) {
         handleOpen={handleOpenModal}
         handleClose={handleCloseModal}
       >
-        {product && <ReviewModal product={product} />}
+        {product && (
+          <ReviewModal product={product} handleCloseModal={handleCloseModal} />
+        )}
       </FadeModal>
     </div>
   );

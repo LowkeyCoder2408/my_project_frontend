@@ -1,5 +1,22 @@
 .product-details__review {
-  margin-bottom: 15px;
+  margin-top: 15px;
+  padding: 10px;
+  position: relative;
+}
+
+.product-details__review-your-rating {
+  font-size: 1.3rem;
+  position: absolute;
+  top: -10px;
+  right: 40px;
+  background-color: #fff;
+  padding: 0 5px;
+  color: rgb(70, 70, 70);
+  font-weight: 450;
+}
+
+.product-details__review.yourRating {
+  border: 1.5px solid rgb(70, 70, 70);
 }
 
 .product-details__review__avatar {

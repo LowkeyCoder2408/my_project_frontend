@@ -153,7 +153,9 @@ const ProductReviewList = (props: ProductReviewListProps) => {
         handleOpen={handleOpenModal}
         handleClose={handleCloseModal}
       >
-        {product && <ReviewModal product={product} />}
+        {product && (
+          <ReviewModal product={product} handleCloseModal={handleCloseModal} />
+        )}
       </FadeModal>
     </div>
   );

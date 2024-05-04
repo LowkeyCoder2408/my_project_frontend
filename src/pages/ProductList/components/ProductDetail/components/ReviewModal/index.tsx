@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 
 interface ReviewModalProps {
   product?: ProductModel;
+  handleCloseModal: any;
 }
 
 export const ReviewModal: React.FC<ReviewModalProps> = (props) => {
@@ -95,7 +96,14 @@ export const ReviewModal: React.FC<ReviewModalProps> = (props) => {
 
   return (
     <div className="container">
-      <form onSubmit={handleSubmitReviewForm}>
+      <form
+        onSubmit={(event: FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+          event.stopPropagation();
+          props.handleCloseModal(true);
+          handleSubmitReviewForm(event);
+        }}
+      >
         <div className="text-center">
           <h2 className="mb-0">
             <strong>ĐÁNH GIÁ SẢN PHẨM</strong>
@@ -103,8 +111,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = (props) => {
           <br />
           <h4 className="mt-0" style={{ fontWeight: '400' }}>
             <strong>Tên sản phẩm: </strong>
-            {props.product?.name} - <strong>Đánh giá trung bình: </strong>
-            {props.product?.averageRating}
+            {props.product?.name}
           </h4>
         </div>
         <div className="d-flex align-items-center mb-2">
@@ -130,6 +137,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = (props) => {
             type="submit"
             className="btn btn-dark mt-4 px-4 py-2 rounded-5"
             style={{ fontSize: '1.6rem' }}
+            onClick={() => props.handleCloseModal(true)}
           >
             {customerReview === null || customerReview === undefined
               ? 'ĐÁNH GIÁ'
