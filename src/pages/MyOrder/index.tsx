@@ -8,9 +8,10 @@ import FormatPrice from '../ProductList/components/ProductProps/FormatPrice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import OrderModal from './OrderModal';
+import OrderModal from './components/OrderModal';
 import { useEffect, useState } from 'react';
 import { FadeModal } from '../../utils/FadeModal';
+import { Link } from 'react-router-dom';
 export default function MyOrder() {
   // Tạo biến để lấy tất cả data đơn hàng
   const [data, setData] = useState<OrderModel[]>([]);
@@ -213,25 +214,53 @@ export default function MyOrder() {
 
   return (
     <div className="container">
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={data}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-        />
-      </div>
-      <FadeModal
-        open={openModal}
-        handleOpen={handleOpenModal}
-        handleClose={handleCloseModal}
-      >
-        {order && <OrderModal order={order} />}
-      </FadeModal>
+      {data.length > 0 ? (
+        <>
+          <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={data}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+            />
+          </div>
+          <FadeModal
+            open={openModal}
+            handleOpen={handleOpenModal}
+            handleClose={handleCloseModal}
+          >
+            {order && <OrderModal order={order} />}
+          </FadeModal>
+        </>
+      ) : (
+        <>
+          <div
+            style={{ marginTop: '50px' }}
+            className="d-flex align-items-center justify-content-center flex-column"
+          >
+            <img
+              src="https://res.cloudinary.com/dgdn13yur/image/upload/v1713619417/cart_empty_hxwhlc.png"
+              alt=""
+              width="35%"
+            />
+            <h2 className="mt-5 text-center" style={{ fontWeight: '550' }}>
+              BẠN CHƯA CÓ ĐƠN HÀNG NÀO, BẠN CẦN MUA SẢN PHẨM
+            </h2>
+            <Link to={'/product-list'} className="mt-5">
+              <div
+                className="btn btn-dark py-2 px-4"
+                style={{ fontSize: '16px', fontWeight: '450' }}
+              >
+                MUA SẮM NGAY
+              </div>
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 }

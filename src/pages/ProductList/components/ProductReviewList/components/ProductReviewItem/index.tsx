@@ -118,7 +118,7 @@ function ProductReviewItem(props: ProductReviewItemProps) {
     >
       {customerReview?.id === props.review.id && (
         <div className="product-details__review-your-rating">
-          Đánh giá của bạn
+          ** Đánh giá của bạn
         </div>
       )}
       <div className="product-details__review__avatar-wrap">

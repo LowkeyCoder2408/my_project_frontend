@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './OrderModal.css';
-import OrderModel from '../../../models/OrderModel';
-import CustomerModel from '../../../models/CustomerModel';
-import { getCustomerByOrderId } from '../../../api/CustomerAPI';
+import OrderModel from '../../../../models/OrderModel';
+import CustomerModel from '../../../../models/CustomerModel';
+import { getCustomerByOrderId } from '../../../../api/CustomerAPI';
 import { format } from 'date-fns';
+import OrderStatus from '../OrderStatus';
 
 interface OrderModalProps {
   order: OrderModel;
@@ -58,47 +59,8 @@ const OrderModal = (props: OrderModalProps) => {
             <div className="track-order__heading">THEO DÕI ĐƠN HÀNG</div>
           </div>
           <div className="order-info">
-            <div className="track-order__progress-bar">
-              <ul id="progressbar">
-                <li className="active step0"></li>
-                <li className="active step0"></li>
-                <li className="active step0"></li>
-                <li className="step0"></li>
-              </ul>
-            </div>
-            <div className="track-order__list">
-              <div className="track-order__item">
-                <img
-                  src="https://res.cloudinary.com/dmuoa2owy/image/upload/v1714005305/x081amdttouh3opkbg3b.png"
-                  alt="Processed"
-                  className="track-order__img"
-                />
-                <p className="track-order__name">Xử Lý</p>
-              </div>
-              <div className="track-order__item">
-                <img
-                  src="https://res.cloudinary.com/dmuoa2owy/image/upload/v1714005305/owxhq16efygulpbj4xqn.png"
-                  alt="Packed"
-                  className="track-order__img"
-                />
-                <p className="track-order__name">Đóng Gói</p>
-              </div>
-              <div className="track-order__item">
-                <img
-                  src="https://res.cloudinary.com/dmuoa2owy/image/upload/v1714005305/rasydpdl8ax2qgmfnnsk.png"
-                  alt="Shipped"
-                  className="track-order__img"
-                />
-                <p className="track-order__name">Vận Chuyển</p>
-              </div>
-              <div className="track-order__item">
-                <img
-                  src="https://res.cloudinary.com/dmuoa2owy/image/upload/v1714005305/x1gaxxtae5w9hsbrmtn6.png"
-                  alt="Delivered"
-                  className="track-order__img"
-                />
-                <p className="track-order__name">Đến Nơi</p>
-              </div>
+            <div className="mt-5">
+              <OrderStatus order={props.order} />
             </div>
           </div>
         </div>

@@ -285,7 +285,7 @@ export async function findProductsByBrandId(
 export async function findProductsByCategoryId(
   categoryId: number,
 ): Promise<ResultInterface> {
-  const url = `${backendEndpoint}/product/search/findByCategory_Id?categoryId=${categoryId}`;
+  const url = `${backendEndpoint}/product/search/findByCategory_Id?categoryId=${categoryId}&size=1000`;
 
   return getProducts(url);
 }
