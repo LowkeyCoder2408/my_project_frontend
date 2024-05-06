@@ -19,6 +19,7 @@ import StepConnector, {
 import { StepIconProps } from '@mui/material/StepIcon';
 import './OrderStatus.css';
 import OrderModel from '../../../../models/OrderModel';
+import OrderStatusModel from '../../../../models/OrderStatusModel';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -130,18 +131,17 @@ const ColorlibStepIconRoot = styled('div')<{
   }),
 }));
 
-function ColorlibStepIcon(props: StepIconProps) {
+function ColorlibStepIconCOD(props: StepIconProps) {
   const { active, completed, className } = props;
 
-  const icons: { [index: string]: React.ReactElement } = {
+  const CODIcons: { [index: string]: React.ReactElement } = {
     1: <FiberNewIcon />,
     2: <SettingsIcon />,
     3: <InventoryIcon />,
     4: <HailIcon />,
     5: <LocalShippingIcon />,
     6: <RadarIcon />,
-    7: <CallReceivedIcon />,
-    8: <PaidIcon />,
+    7: <PaidIcon />,
   };
 
   return (
@@ -149,50 +149,117 @@ function ColorlibStepIcon(props: StepIconProps) {
       ownerState={{ completed, active }}
       className={className}
     >
-      {icons[String(props.icon)]}
+      {CODIcons[String(props.icon)]}
     </ColorlibStepIconRoot>
   );
 }
 
-const steps = [
+function ColorlibStepIconVNPay(props: StepIconProps) {
+  const { active, completed, className } = props;
+
+  const VNPayIcons: { [index: string]: React.ReactElement } = {
+    1: <PaidIcon />,
+    2: <FiberNewIcon />,
+    3: <SettingsIcon />,
+    4: <InventoryIcon />,
+    5: <HailIcon />,
+    6: <LocalShippingIcon />,
+    7: <RadarIcon />,
+  };
+
+  return (
+    <ColorlibStepIconRoot
+      ownerState={{ completed, active }}
+      className={className}
+    >
+      {VNPayIcons[String(props.icon)]}
+    </ColorlibStepIconRoot>
+  );
+}
+
+const CODSteps = [
   'Mới',
   'Đang xử lý',
   'Đã đóng gói',
   'Shipper nhận hàng',
   'Đang giao hàng',
   'Đã được giao',
-  'Đã nhận hàng',
   'Đã thanh toán',
 ];
 
-// const step2 = [
-//   'Đã thanh toán',
-//   'Mới',
-//   'Đang xử lý',
-//   'Đã đóng gói',
-//   'Shipper nhận hàng',
-//   'Đang giao hàng',
-//   'Đã được giao',
-//   'Đã nhận hàng',
-// ];
+const VNPaySteps = [
+  'Đã thanh toán',
+  'Mới',
+  'Đang xử lý',
+  'Đã đóng gói',
+  'Shipper nhận hàng',
+  'Đang giao hàng',
+  'Đã được giao',
+];
 
 interface OrderStatusProps {
   order?: OrderModel;
 }
 
 export default function OrderStatus(props: OrderStatusProps) {
+  let activeStep = 0;
+
+  if (props.order?.paymentMethod === 'COD') {
+    if (props.order?.status === OrderStatusModel.NEW) {
+      activeStep = 0;
+    } else if (props.order?.status === OrderStatusModel.PROCESSING) {
+      activeStep = 1;
+    } else if (props.order?.status === OrderStatusModel.PACKAGED) {
+      activeStep = 2;
+    } else if (props.order?.status === OrderStatusModel.PICKED) {
+      activeStep = 3;
+    } else if (props.order?.status === OrderStatusModel.SHIPPING) {
+      activeStep = 4;
+    } else if (props.order?.status === OrderStatusModel.DELIVERED) {
+      activeStep = 5;
+    } else if (props.order?.status === OrderStatusModel.PAID) {
+      activeStep = 6;
+    }
+  } else {
+    if (props.order?.status === OrderStatusModel.PAID) {
+      activeStep = 0;
+    } else if (props.order?.status === OrderStatusModel.NEW) {
+      activeStep = 1;
+    } else if (props.order?.status === OrderStatusModel.PROCESSING) {
+      activeStep = 2;
+    } else if (props.order?.status === OrderStatusModel.PACKAGED) {
+      activeStep = 3;
+    } else if (props.order?.status === OrderStatusModel.PICKED) {
+      activeStep = 4;
+    } else if (props.order?.status === OrderStatusModel.SHIPPING) {
+      activeStep = 5;
+    } else if (props.order?.status === OrderStatusModel.DELIVERED) {
+      activeStep = 6;
+    }
+  }
+
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
       <Stepper
         alternativeLabel
-        activeStep={5}
+        activeStep={activeStep}
         connector={<ColorlibConnector />}
       >
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-          </Step>
-        ))}
+        {props.order?.paymentMethod === 'COD'
+          ? CODSteps.map((label) => (
+              <Step key={label}>
+                <StepLabel StepIconComponent={ColorlibStepIconCOD}>
+                  {label}
+                </StepLabel>
+              </Step>
+            ))
+          : VNPaySteps.map((label) => (
+              <Step key={label}>
+                <StepLabel StepIconComponent={ColorlibStepIconVNPay}>
+                  {label}
+                </StepLabel>
+              </Step>
+            ))}
       </Stepper>
     </Stack>
   );

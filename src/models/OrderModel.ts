@@ -1,6 +1,6 @@
 import CustomerModel from './CustomerModel';
 import OrderDetailModel from './OrderDetailModel';
-import OrderStatus from './OrderStatus';
+import OrderStatus from './OrderStatusModel';
 import OrderTrackModel from './OrderTrackModel';
 import PaymentMethod from './PaymentMethod';
 

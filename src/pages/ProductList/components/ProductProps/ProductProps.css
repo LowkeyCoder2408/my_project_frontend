@@ -15,6 +15,13 @@
   height: 180px !important;
 }
 
+.product__item-thumb a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 .product__item-link {
   position: relative;
   display: block;
@@ -66,7 +73,7 @@
 
 .product__item-img {
   width: 180px;
-  margin-left: calc(50% - 90px);
+  /* margin-left: calc(50% - 90px); */
   vertical-align: middle;
   border-style: none;
   transition: 0.6s;

@@ -91,7 +91,7 @@ export default function MyOrder() {
             break;
           case 'PICKED':
             color = '#ff9800'; // Màu cam
-            statusText = 'Đã nhận hàng';
+            statusText = 'Shipper nhận hàng';
             break;
           case 'SHIPPING':
             color = '#2196f3'; // Màu xanh dương

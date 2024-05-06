@@ -1,55 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import './OrderModal.css';
 import OrderModel from '../../../../models/OrderModel';
-import CustomerModel from '../../../../models/CustomerModel';
-import { getCustomerByOrderId } from '../../../../api/CustomerAPI';
 import { format } from 'date-fns';
 import OrderStatus from '../OrderStatus';
+import OrderDetailModel from '../../../../models/OrderDetailModel';
+import { getOrderDetailsByOrderId } from '../../../../api/ProductOrderDetailAPI';
+import { toast } from 'react-toastify';
+import OrderDetailRow from '../OrderDetailRow';
 
 interface OrderModalProps {
   order: OrderModel;
 }
 
 const OrderModal = (props: OrderModalProps) => {
-  // const [customer, setCustomer] = useState<CustomerModel | null>(null);
+  const [orderDetails, setOrderDetails] = useState<OrderDetailModel[]>([]);
 
   // useEffect(() => {
-  //   getCustomerByOrderId(props.order.id)
-  //     .then((result) => {
-  //       setCustomer(result);
-  //     })
-  //     .catch((error) => {
-  //       console.log('Lỗi khi lấy khách hàng của đơn hàng: ', error);
-  //     });
+  //   const rows =
+  //     document.querySelectorAll<HTMLTableRowElement>('.table tbody tr');
+
+  //   let totalPrice = 0;
+
+  //   rows.forEach((row) => {
+  //     const priceElement = row.querySelector('td:nth-child(4)');
+  //     const quantityElement = row.querySelector('td:nth-child(5)');
+  //     const totalPriceElement = row.querySelector('td:nth-child(6)');
+
+  //     if (priceElement && quantityElement && totalPriceElement) {
+  //       const price = parseFloat(priceElement.textContent!.replace(/\D/g, ''));
+  //       const quantity = parseFloat(quantityElement.textContent!);
+  //       const subtotal = price * quantity;
+  //       totalPriceElement.textContent = subtotal.toLocaleString();
+  //       totalPrice += subtotal;
+  //     }
+  //   });
+
+  //   const totalElement = document.querySelector<HTMLTableCellElement>(
+  //     '.table tbody tr:last-child td:last-child',
+  //   );
+  //   if (totalElement) {
+  //     totalElement.textContent = totalPrice.toLocaleString();
+  //   }
   // }, []);
 
   useEffect(() => {
-    const rows =
-      document.querySelectorAll<HTMLTableRowElement>('.table tbody tr');
-
-    let totalPrice = 0;
-
-    rows.forEach((row) => {
-      const priceElement = row.querySelector('td:nth-child(4)');
-      const quantityElement = row.querySelector('td:nth-child(5)');
-      const totalPriceElement = row.querySelector('td:nth-child(6)');
-
-      if (priceElement && quantityElement && totalPriceElement) {
-        const price = parseFloat(priceElement.textContent!.replace(/\D/g, ''));
-        const quantity = parseFloat(quantityElement.textContent!);
-        const subtotal = price * quantity;
-        totalPriceElement.textContent = subtotal.toLocaleString();
-        totalPrice += subtotal;
-      }
-    });
-
-    const totalElement = document.querySelector<HTMLTableCellElement>(
-      '.table tbody tr:last-child td:last-child',
-    );
-    if (totalElement) {
-      totalElement.textContent = totalPrice.toLocaleString();
-    }
-  }, []);
+    getOrderDetailsByOrderId(props.order.id)
+      .then((result) => {
+        console.log(result.orderDetailList);
+        setOrderDetails(result.orderDetailList);
+      })
+      .catch((error) => {
+        toast.error('Đã xảy ra lỗi khi truy xuất đến chi tiết đơn hàng!');
+        console.log(error);
+      });
+  }, [props.order.id]);
 
   return (
     <div className="container">
@@ -128,48 +132,14 @@ const OrderModal = (props: OrderModalProps) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>
-                      <img
-                        src="https://images.olx.com.pk/thumbnails/448365461-600x450.jpeg"
-                        alt=""
-                        className="table__img"
+                  {orderDetails.map((orderDetail, index) => (
+                    <>
+                      <OrderDetailRow
+                        orderNumber={index + 1}
+                        orderDetail={orderDetail}
                       />
-                    </td>
-                    <td>Điện thoại Oppo</td>
-                    <td>2.200.000</td>
-                    <td>1</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>
-                      <img
-                        src="https://bizweb.dktcdn.net/100/184/165/files/1441283015-sac-zin-iphone-full.jpg?v=1505964010220"
-                        alt=""
-                        className="table__img"
-                      />
-                    </td>
-                    <td>Sạc Nhanh Iphone 20W</td>
-                    <td>100.000</td>
-                    <td>2</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>
-                      <img
-                        src="https://indexiq.ru/storage/photo/resized/xy_1500x1500/c/d25fepigm12mb3r_edaa1ded.jpg.webp"
-                        alt=""
-                        className="table__img"
-                      />
-                    </td>
-                    <td>Ốp Lưng Iphone</td>
-                    <td>50.000</td>
-                    <td>6</td>
-                    <td></td>
-                  </tr>
+                    </>
+                  ))}
                   <tr>
                     <td className="table__total" colSpan={5}>
                       Tổng:

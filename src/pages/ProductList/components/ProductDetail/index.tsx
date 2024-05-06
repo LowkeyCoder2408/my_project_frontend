@@ -8,9 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBagShopping,
   faCircleCheck,
-  faCreditCard,
-  faStar,
-  faStarHalfStroke,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import ProductImageModel from '../../../../models/ProductImageModel';
@@ -30,8 +27,6 @@ import { useCartItem } from '../../../../utils/CartItemContext';
 import { getUserIdByToken, isToken } from '../../../../utils/JwtService';
 import { toast } from 'react-toastify';
 import { backendEndpoint } from '../../../../utils/Constant';
-import { ReviewModal } from './components/ReviewModal';
-import { FadeModal } from '../../../../utils/FadeModal';
 
 interface ProductDetailInterface {}
 
@@ -230,10 +225,8 @@ function ProductDetail(props: ProductDetailInterface) {
       <div className="product-details row">
         <div className="col col-xxl-6 col-12">
           <div className="product-details__big-img">
-            {images ? (
-              images.length > 0 && (
-                <img src={images[selectedImageIndex].url} alt="Ảnh chủ đạo" />
-              )
+            {images && images.length > 0 ? (
+              <img src={images[selectedImageIndex].url} alt="Ảnh chủ đạo" />
             ) : (
               <img src={product.mainImage} alt="Ảnh chủ đạo" />
             )}

@@ -1,5 +1,5 @@
 import OrderModel from './OrderModel';
-import OrderStatus from './OrderStatus';
+import OrderStatus from './OrderStatusModel';
 
 class OrderTrackModel {
   id: number;
