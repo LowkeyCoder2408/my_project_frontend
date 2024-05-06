@@ -1,4 +1,10 @@
-import { FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
+import {
+  Checkbox,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from '@mui/material';
 import React, { FormEvent, useEffect, useState } from 'react';
 import './Checkout.css';
 import CartItemModel from '../../models/CartItemModel';
@@ -44,15 +50,13 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
 
   const [provinceList, setProvinceList] = useState<ProvinceModel[] | null>([]);
   const [provinceId, setProvinceId] = useState<number | null>(null);
-  const [province, setProvince] = useState('');
 
   const [districtList, setDistrictList] = useState<DistrictModel[] | null>([]);
   const [districtId, setDistrictId] = useState<number | null>(null);
-  const [district, setDistrict] = useState('');
 
   const [wardList, setWardList] = useState<WardModel[] | null>([]);
   const [wardId, setWardId] = useState<number | null>(null);
-  const [ward, setWard] = useState('');
+  const [isDefaultAddress, setIsDefaultAddress] = useState<boolean>(false);
 
   const [note, setNote] = useState('');
 
@@ -277,7 +281,19 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                   )}
                 </div>
                 <div className="col col-xxl-12 col-12">
-                  <h2 className="mb-1 mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
+                  <h2 className="mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={isDefaultAddress}
+                        onChange={() => {
+                          console.log(!isDefaultAddress);
+                          setIsDefaultAddress(!isDefaultAddress);
+                        }}
+                      />
+                    }
+                    label="Đặt làm địa chỉ mặc định"
+                  />
                   <div className="row">
                     <div className="mb-4 col-xxl-3 col-xl-3 col-lg-6 col-12">
                       <TextField

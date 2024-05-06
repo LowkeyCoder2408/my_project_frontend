@@ -7,6 +7,7 @@ import OrderDetailModel from '../../../../models/OrderDetailModel';
 import { getOrderDetailsByOrderId } from '../../../../api/ProductOrderDetailAPI';
 import { toast } from 'react-toastify';
 import OrderDetailRow from '../OrderDetailRow';
+import FormatPrice from '../../../ProductList/components/ProductProps/FormatPrice';
 
 interface OrderModalProps {
   order: OrderModel;
@@ -15,33 +16,10 @@ interface OrderModalProps {
 const OrderModal = (props: OrderModalProps) => {
   const [orderDetails, setOrderDetails] = useState<OrderDetailModel[]>([]);
 
-  // useEffect(() => {
-  //   const rows =
-  //     document.querySelectorAll<HTMLTableRowElement>('.table tbody tr');
-
-  //   let totalPrice = 0;
-
-  //   rows.forEach((row) => {
-  //     const priceElement = row.querySelector('td:nth-child(4)');
-  //     const quantityElement = row.querySelector('td:nth-child(5)');
-  //     const totalPriceElement = row.querySelector('td:nth-child(6)');
-
-  //     if (priceElement && quantityElement && totalPriceElement) {
-  //       const price = parseFloat(priceElement.textContent!.replace(/\D/g, ''));
-  //       const quantity = parseFloat(quantityElement.textContent!);
-  //       const subtotal = price * quantity;
-  //       totalPriceElement.textContent = subtotal.toLocaleString();
-  //       totalPrice += subtotal;
-  //     }
-  //   });
-
-  //   const totalElement = document.querySelector<HTMLTableCellElement>(
-  //     '.table tbody tr:last-child td:last-child',
-  //   );
-  //   if (totalElement) {
-  //     totalElement.textContent = totalPrice.toLocaleString();
-  //   }
-  // }, []);
+  const totalSubtotal = orderDetails.reduce(
+    (total, orderDetail) => total + (orderDetail.subtotal ?? 0),
+    0,
+  );
 
   useEffect(() => {
     getOrderDetailsByOrderId(props.order.id)
@@ -144,7 +122,9 @@ const OrderModal = (props: OrderModalProps) => {
                     <td className="table__total" colSpan={5}>
                       Tổng:
                     </td>
-                    <td></td>
+                    <td>
+                      <FormatPrice price={totalSubtotal} />
+                    </td>
                   </tr>
                 </tbody>
               </table>

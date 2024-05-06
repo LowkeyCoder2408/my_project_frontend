@@ -6,22 +6,28 @@ import { getAllOrdersByIdUser, getOrderById } from '../../api/ProductOrderAPI';
 import { format } from 'date-fns';
 import FormatPrice from '../ProductList/components/ProductProps/FormatPrice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faHistory } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import OrderModal from './components/OrderModal';
 import { useEffect, useState } from 'react';
 import { FadeModal } from '../../utils/FadeModal';
 import { Link } from 'react-router-dom';
+import OrderTrack from './components/OrderTrack';
 export default function MyOrder() {
   // Tạo biến để lấy tất cả data đơn hàng
   const [data, setData] = useState<OrderModel[]>([]);
   // Xử lý order table
   const [id, setId] = useState<number>(0);
   const [order, setOrder] = useState<OrderModel>();
-  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
+  const [openOrderTrackModal, setOpenOrderTrackModal] =
+    useState<boolean>(false);
 
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleOpenOrderModal = () => setOpenOrderModal(true);
+  const handleCloseOrderModal = () => setOpenOrderModal(false);
+  const handleOpenOrderTrackModal = () => setOpenOrderTrackModal(true);
+  const handleCloseOrderTrackModal = () => setOpenOrderTrackModal(false);
+
   const columns: GridColDef[] = [
     {
       field: 'id',
@@ -167,14 +173,43 @@ export default function MyOrder() {
       type: 'actions',
       renderCell: (item) => {
         return (
-          <div style={{ cursor: 'pointer', padding: '10px', color: '#4646a1' }}>
-            <FontAwesomeIcon
-              onClick={() => {
-                setId(Number(item.id));
-                handleOpenModal();
+          <div className="d-flex gap-2">
+            <div
+              style={{
+                cursor: 'pointer',
+                padding: '10px',
+                color: '#4646a1',
+                display: 'flex',
+                gap: '20px',
               }}
-              icon={faEye as IconProp}
-            />
+            >
+              <FontAwesomeIcon
+                title="Xem chi tiết đơn hàng"
+                onClick={() => {
+                  setId(Number(item.id));
+                  handleOpenOrderModal();
+                }}
+                icon={faEye as IconProp}
+              />
+            </div>
+            <div
+              style={{
+                cursor: 'pointer',
+                padding: '10px',
+                color: '#4646a1',
+                display: 'flex',
+                gap: '20px',
+              }}
+            >
+              <FontAwesomeIcon
+                title="Theo dõi lịch sử đơn hàng"
+                onClick={() => {
+                  setId(Number(item.id));
+                  handleOpenOrderTrackModal();
+                }}
+                icon={faHistory as IconProp}
+              />
+            </div>
           </div>
         );
       },
@@ -229,11 +264,18 @@ export default function MyOrder() {
             />
           </div>
           <FadeModal
-            open={openModal}
-            handleOpen={handleOpenModal}
-            handleClose={handleCloseModal}
+            open={openOrderModal}
+            handleOpen={handleOpenOrderModal}
+            handleClose={handleCloseOrderModal}
           >
             {order && <OrderModal order={order} />}
+          </FadeModal>
+          <FadeModal
+            open={openOrderTrackModal}
+            handleOpen={handleOpenOrderTrackModal}
+            handleClose={handleCloseOrderTrackModal}
+          >
+            {order && <OrderTrack order={order} />}
           </FadeModal>
         </>
       ) : (
