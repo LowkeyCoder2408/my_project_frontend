@@ -2,20 +2,34 @@ import AddressModel from '../models/AddressModel';
 import { backendEndpoint } from '../utils/Constant';
 import { myRequest } from './MyRequest';
 
-export async function getAddress(endpoint: string): Promise<AddressModel[]> {
-  const response = await myRequest(endpoint);
+interface ResultInterface {
+  addressList: AddressModel[];
+  address: AddressModel | null;
+}
 
-  const addressDatas = response._embedded.addresses;
+async function getAddresses(url: string): Promise<ResultInterface> {
+  const response = await myRequest(url);
 
-  return addressDatas.map((addressData: any) => ({
-    ...addressData,
+  const addressList: any = response._embedded.addresses.map((address: any) => ({
+    ...address,
   }));
+
+  return { addressList: addressList, address: addressList[0] };
 }
 
 export async function getAddressByIdUser(
   idUser: number,
-): Promise<AddressModel[]> {
+): Promise<ResultInterface> {
   const endpoint =
     backendEndpoint + `/address/search/findByCustomer_Id?customerId=${idUser}`;
-  return getAddress(endpoint);
+  return getAddresses(endpoint);
+}
+
+export async function getDefaultAddressByIdUser(
+  idUser: number,
+): Promise<ResultInterface> {
+  const endpoint =
+    backendEndpoint +
+    `/address/search/findByIsDefaultAddressTrueAndCustomer_id?customerId=${idUser}`;
+  return getAddresses(endpoint);
 }

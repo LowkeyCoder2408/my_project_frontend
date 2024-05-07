@@ -47,3 +47,29 @@ export async function getProvinceById(
     return null;
   }
 }
+
+export async function getProvinceByAddressId(
+  addressId?: number,
+): Promise<ProvinceModel | null> {
+  const endpoint = backendEndpoint + `/address/${addressId}/province`;
+  try {
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error('Gặp lỗi API');
+    }
+    const provinceData = await response.json();
+
+    if (provinceData) {
+      return {
+        id: provinceData.id,
+        name: provinceData.name,
+        districts: provinceData.districts,
+      };
+    } else {
+      throw new Error('Sản phẩm không tồn tại');
+    }
+  } catch (error) {
+    console.error('Error', error);
+    return null;
+  }
+}

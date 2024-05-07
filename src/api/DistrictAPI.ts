@@ -51,3 +51,30 @@ export async function getDistrictById(
     return null;
   }
 }
+
+export async function getDistrictByAddressId(
+  addressId?: number,
+): Promise<DistrictModel | null> {
+  const endpoint = backendEndpoint + `/address/${addressId}/district`;
+  try {
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error('Gặp lỗi API');
+    }
+    const districtData = await response.json();
+
+    if (districtData) {
+      return {
+        id: districtData.id,
+        name: districtData.name,
+        province: districtData.province,
+        wards: districtData.wards,
+      };
+    } else {
+      throw new Error('Sản phẩm không tồn tại');
+    }
+  } catch (error) {
+    console.error('Error', error);
+    return null;
+  }
+}

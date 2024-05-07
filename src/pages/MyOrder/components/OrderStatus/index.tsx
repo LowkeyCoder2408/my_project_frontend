@@ -19,7 +19,7 @@ import StepConnector, {
 import { StepIconProps } from '@mui/material/StepIcon';
 import './OrderStatus.css';
 import OrderModel from '../../../../models/OrderModel';
-import OrderStatusModel from '../../../../models/OrderStatusModel';
+import OrderStatusModel from '../../../../models/OrderStatus';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {

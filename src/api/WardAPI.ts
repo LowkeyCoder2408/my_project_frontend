@@ -22,3 +22,29 @@ export async function getAllWardsByDistrictId(
 
   return getWard(endpoint);
 }
+
+export async function getWardByAddressId(
+  addressId?: number,
+): Promise<WardModel | null> {
+  const endpoint = backendEndpoint + `/address/${addressId}/ward`;
+  try {
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error('Gặp lỗi API');
+    }
+    const wardData = await response.json();
+
+    if (wardData) {
+      return {
+        id: wardData.id,
+        district: wardData.district,
+        name: wardData.name,
+      };
+    } else {
+      throw new Error('Ward không tồn tại');
+    }
+  } catch (error) {
+    console.error('Error', error);
+    return null;
+  }
+}

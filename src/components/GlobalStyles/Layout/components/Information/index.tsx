@@ -3,8 +3,6 @@ import './Information.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBell,
-  faCartArrowDown,
-  faCartFlatbed,
   faCartShopping,
   faExchange,
   faMoneyBill,
@@ -16,6 +14,7 @@ import { useAuth } from '../../../../../utils/AuthContext';
 import {
   getAvatarByToken,
   getFullNameByToken,
+  getUserIdByToken,
   isToken,
   logout,
 } from '../../../../../utils/JwtService';
@@ -25,6 +24,7 @@ import { toast } from 'react-toastify';
 import { useCartItem } from '../../../../../utils/CartItemContext';
 
 function Information() {
+  const customerId = getUserIdByToken();
   const { setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const confirm = useConfirm();
@@ -178,7 +178,9 @@ function Information() {
                     className="me-3"
                     icon={faBell as IconProp}
                   />
-                  <span className="information__notify-notice">5</span>
+                  <span className="information__notify-notice">
+                    {customerId}
+                  </span>
                   {/* <div className="information__notify-list">
                     <img
                       src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
