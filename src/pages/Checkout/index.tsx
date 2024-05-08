@@ -54,12 +54,16 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
 
   const [provinceList, setProvinceList] = useState<ProvinceModel[] | null>([]);
   const [provinceId, setProvinceId] = useState<number | null>(null);
+  const [provinceName, setProvinceName] = useState<string>('');
 
   const [districtList, setDistrictList] = useState<DistrictModel[] | null>([]);
   const [districtId, setDistrictId] = useState<number | null>(null);
+  const [districtName, setDistrictName] = useState<string>('');
 
   const [wardList, setWardList] = useState<WardModel[] | null>([]);
   const [wardId, setWardId] = useState<number | null>(null);
+  const [wardName, setWardName] = useState<string>('');
+
   const [isDefaultAddress, setIsDefaultAddress] = useState<boolean>(false);
   const [isUseDefaultAddress, setIsUseDefaultAddress] =
     useState<boolean>(false);
@@ -88,6 +92,24 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
         getWardByAddressId(address?.id),
       ]);
 
+      if (provinceResult?.name !== undefined) {
+        setProvinceName(provinceResult.name);
+      } else {
+        setProvinceName('');
+      }
+
+      if (districtResult?.name !== undefined) {
+        setDistrictName(districtResult.name);
+      } else {
+        setDistrictName('');
+      }
+
+      if (wardResult?.name !== undefined) {
+        setWardName(wardResult.name);
+      } else {
+        setWardName('');
+      }
+
       if (isUseDefaultAddress) {
         if (provinceResult?.id !== undefined) {
           setProvinceId(provinceResult.id);
@@ -99,6 +121,10 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
 
         if (wardResult?.id !== undefined) {
           setWardId(wardResult.id);
+        }
+
+        if (address?.addressLine !== undefined) {
+          setAddressLine(address?.addressLine);
         }
       }
     };
@@ -335,22 +361,34 @@ export const Checkout: React.FC<CheckoutProps> = (props) => {
                 <div className="col col-xxl-12 col-12">
                   <h2 className="mt-4">ĐỊA CHỈ NHẬN HÀNG</h2>
                   <div className="row">
-                    <div className="col col-6">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isUseDefaultAddress}
-                            onChange={() => {
-                              setIsUseDefaultAddress(!isUseDefaultAddress);
-                            }}
-                          />
-                        }
-                        label="Sử dụng địa chỉ mặc định"
-                      />
-                    </div>
+                    {address && (
+                      <div className="col col-6">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isUseDefaultAddress}
+                              onChange={() => {
+                                setIsUseDefaultAddress(!isUseDefaultAddress);
+                              }}
+                            />
+                          }
+                          label={`Sử dụng địa chỉ mặc định (${
+                            address?.addressLine +
+                            ', ' +
+                            wardName +
+                            ', ' +
+                            districtName +
+                            ', ' +
+                            provinceName +
+                            ')'
+                          }`}
+                        />
+                      </div>
+                    )}
+
                     {isUseDefaultAddress === false && (
                       <>
-                        <div className="col col-6">
+                        <div className={`col ${address ? 'col-6' : 'col-12'}`}>
                           <FormControlLabel
                             control={
                               <Checkbox

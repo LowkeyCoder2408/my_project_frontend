@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .product-deal-item__img {
@@ -13,7 +14,7 @@
 .product-deal-item__img img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .product-deal-item__img::before {

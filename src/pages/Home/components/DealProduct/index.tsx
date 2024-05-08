@@ -108,12 +108,12 @@ const DealProduct = () => {
 
   return (
     <div className="container ">
-      <div className="row">
-        <div className="deals col-lg-9 col-sm-12 mt-3">
+      <div className="row ">
+        <div className="deals col-xl-9 col-lg-8 col-sm-12 mt-3">
           <div className="deals__header">
             <h1 className="deals__title">Siêu sale trong tuần</h1>
           </div>
-          <div className="deals__list bg-white row">
+          <div className="deals__body bg-white">
             <div
               data-time="00:00"
               className="deals__countdown"
@@ -137,17 +137,19 @@ const DealProduct = () => {
                 <span className="word">Giây</span>
               </div>
             </div>
-            {dealProductList.map((product) => (
-              <div
-                key={product.id}
-                className="col col-xxl-6 col-xl-6 col-lg-6 col-12"
-              >
-                <ProductItem key={product.id} product={product} />
-              </div>
-            ))}
+            <div className="row deals__list">
+              {dealProductList.map((product) => (
+                <div
+                  key={product.id}
+                  className="col col-xxl-6 col-xl-6 col-lg-6 col-12"
+                >
+                  <ProductItem key={product.id} product={product} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="top-selling col-lg-3 col-sm-12 mt-3">
+        <div className="top-selling col-xl-3 col-lg-4 col-sm-12 mt-3">
           <div className="top-selling__header">
             <h1 className="top-selling__title">BÁN CHẠY NHẤT</h1>
           </div>
