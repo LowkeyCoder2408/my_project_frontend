@@ -17,6 +17,7 @@ import Login from '../pages/User/Login';
 import Register from '../pages/User/Register';
 import Test from '../pages/User/Test';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
+import Wishlist from '../pages/Wishlist';
 // Layouts
 // import { HeaderOnly } from '../components/GlobalStyles/Layout';
 
@@ -100,6 +101,11 @@ const publicRoutes = [
   {
     path: '/check-out/status',
     component: CheckoutStatus,
+    layout: 'default',
+  },
+  {
+    path: '/wish-list',
+    component: Wishlist,
     layout: 'default',
   },
   {

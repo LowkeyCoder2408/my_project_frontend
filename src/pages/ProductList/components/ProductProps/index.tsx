@@ -247,9 +247,6 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             <div
               title="Yêu thích"
               style={{
-                border: isFavoriteProduct
-                  ? '1px solid rgb(255, 66, 79)'
-                  : '1px solid #000',
                 backgroundColor: isFavoriteProduct
                   ? 'rgb(255, 66, 79)'
                   : '#fff',
@@ -268,9 +265,6 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             </div>
             <div
               title="Thêm vào giỏ"
-              style={{
-                border: '1px solid #000',
-              }}
               onClick={() => handleAddAProductToCart(props.product)}
               className="product__item-quick-link-item"
             >

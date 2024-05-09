@@ -5,6 +5,8 @@ import {
   faBell,
   faCartShopping,
   faExchange,
+  faHeart,
+  faList,
   faMoneyBill,
   faSignOut,
   faUser,
@@ -22,6 +24,10 @@ import { Avatar, Button } from '@mui/material';
 import { useConfirm } from 'material-ui-confirm';
 import { toast } from 'react-toastify';
 import { useCartItem } from '../../../../../utils/CartItemContext';
+import FavoriteProductModel from '../../../../../models/FavoriteProductModel';
+import { useEffect, useState } from 'react';
+import { getFavoriteProductsByCustomerId } from '../../../../../api/FavoriteProductAPI';
+import WishlistProps from './components/WishlistProps';
 
 function Information() {
   const customerId = getUserIdByToken();
@@ -29,6 +35,20 @@ function Information() {
   const navigate = useNavigate();
   const confirm = useConfirm();
   const { cartList } = useCartItem();
+  const [favoriteProductList, setFavoriteProductList] = useState<
+    FavoriteProductModel[]
+  >([]);
+
+  useEffect(() => {
+    getFavoriteProductsByCustomerId(customerId)
+      .then((result) => {
+        console.log(result.favoriteProductList);
+        setFavoriteProductList(result.favoriteProductList);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [favoriteProductList]);
 
   return (
     <div className="container-fluid bg-dark text-white">
@@ -55,15 +75,6 @@ function Information() {
             </div>
           ) : (
             <div className="mobile-center col-md-6 col-sm-6 col-xs-12 d-flex justify-content-end align-items-center text-center-mobile text-end py-3 gap-3">
-              {/* <Link to={'/shopping-cart'}> */}
-              {/* <FontAwesomeIcon
-                  style={{ color: '#fff', width: '20px', height: '20px' }}
-                  className="me-3"
-                  icon={faCartShopping as IconProp}
-                />
-                <span className="badge rounded-pill badge-notification bg-danger">
-                  0
-                </span> */}
               <Link to={'/shopping-cart'} className="information__cart">
                 <div className="information__cart-wrap">
                   <FontAwesomeIcon
@@ -74,6 +85,20 @@ function Information() {
                   {cartList.length > 0 && (
                     <span className="information__cart-notice text-white">
                       {cartList.length}
+                    </span>
+                  )}
+                </div>
+              </Link>
+              <Link to={'/wish-list'} className="information__cart">
+                <div className="information__cart-wrap">
+                  <FontAwesomeIcon
+                    style={{ color: '#fff', width: '20px', height: '20px' }}
+                    className="me-3"
+                    icon={faHeart as IconProp}
+                  />
+                  {favoriteProductList.length > 0 && (
+                    <span className="information__cart-notice text-white">
+                      {favoriteProductList.length}
                     </span>
                   )}
                   {/* <div className="information__cart-list">
@@ -87,195 +112,31 @@ function Information() {
                     </p>
 
                     <h4 className="information__cart-heading">
-                      Sản phẩm đã thêm
+                      Sản phẩm yêu thích
                     </h4>
                     <ul className="information__cart-list-item">
-                      <li className="information__cart-item">
-                        <img
-                          src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
-                          alt=""
-                          className="information__cart-img"
+                      {favoriteProductList.map((favoriteProduct, index) => (
+                        <WishlistProps
+                          key={index}
+                          favoriteProduct={favoriteProduct}
                         />
-                        <div className="information__cart-item-info">
-                          <div className="information__cart-item-head">
-                            <h5 className="information__cart-item-name">
-                              Áo Bóng Đá Barca mẫu mới 2024 - Vải thái chuẩn áo
-                              đáu phom 43-90kg
-                            </h5>
-                            <div className="information__cart-item-price-wrap">
-                              <span className="information__cart-item-price">
-                                179.000đ
-                              </span>
-                              <span className="information__cart-item-multiply">
-                                x
-                              </span>
-                              <span className="information__cart-item-qnt">
-                                22
-                              </span>
-                            </div>
-                          </div>
-                          <div className="information__cart-item-body">
-                            <span className="information__cart-item-description">
-                              Phân loại hàng: UNISEX
-                            </span>
-                            <span className="information__cart-item-remove">
-                              Xóa
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="information__cart-item">
-                        <img
-                          src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
-                          alt=""
-                          className="information__cart-img"
-                        />
-                        <div className="information__cart-item-info">
-                          <div className="information__cart-item-head">
-                            <h5 className="information__cart-item-name">
-                              Móc Khóa Kim Loại In Nổi 2 Mặt Các Đội Bóng Đá
-                              Trên Thế Giới
-                            </h5>
-                            <div className="information__cart-item-price-wrap">
-                              <span className="information__cart-item-price">
-                                25.000đ
-                              </span>
-                              <span className="information__cart-item-multiply">
-                                x
-                              </span>
-                              <span className="information__cart-item-qnt">
-                                4
-                              </span>
-                            </div>
-                          </div>
-                          <div className="information__cart-item-body">
-                            <span className="information__cart-item-description">
-                              Phân loại hàng: BẠC
-                            </span>
-                            <span className="information__cart-item-remove">
-                              Xóa
-                            </span>
-                          </div>
-                        </div>
-                      </li>
+                      ))}
                     </ul>
-                    <Link
-                      to={'/shopping-cart'}
-                      className="information__cart-view-cart"
-                    >
-                      <button className="information__cart-view-cart-btn btn btn-primary">
-                        Xem giỏ hàng
-                      </button>
-                    </Link>
                   </div> */}
                 </div>
               </Link>
-              <div className="information__notify">
-                <div className="information__notify-wrap">
+              {/* <Link to={} className="information__wishlist">
+                <div className="information__wishlist-wrap">
                   <FontAwesomeIcon
                     style={{ color: '#fff', width: '20px', height: '20px' }}
                     className="me-3"
-                    icon={faBell as IconProp}
+                    icon={faHeart as IconProp}
                   />
-                  <span className="information__notify-notice">
+                  <span className="information__wishlist-notice">
                     {customerId}
                   </span>
-                  {/* <div className="information__notify-list">
-                    <img
-                      src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
-                      alt=""
-                      className="information__notify-no-notify-img"
-                    />
-                    <p className="information__notify-list-no-notify-msg">
-                      Chưa có sản phẩm
-                    </p>
-
-                    <h4 className="information__notify-heading">
-                      Sản phẩm đã thêm
-                    </h4>
-                    <ul className="information__notify-list-item">
-                      <li className="information__notify-item">
-                        <img
-                          src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
-                          alt=""
-                          className="information__notify-img"
-                        />
-                        <div className="information__notify-item-info">
-                          <div className="information__notify-item-head">
-                            <h5 className="information__notify-item-name">
-                              Áo Bóng Đá Barca mẫu mới 2024 - Vải thái chuẩn áo
-                              đáu phom 43-90kg
-                            </h5>
-                            <div className="information__notify-item-price-wrap">
-                              <span className="information__notify-item-price">
-                                179.000đ
-                              </span>
-                              <span className="information__notify-item-multiply">
-                                x
-                              </span>
-                              <span className="information__notify-item-qnt">
-                                22
-                              </span>
-                            </div>
-                          </div>
-                          <div className="information__notify-item-body">
-                            <span className="information__notify-item-description">
-                              Phân loại hàng: UNISEX
-                            </span>
-                            <span className="information__notify-item-remove">
-                              Xóa
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-
-                      <li className="information__notify-item">
-                        <img
-                          src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
-                          alt=""
-                          className="information__notify-img"
-                        />
-                        <div className="information__notify-item-info">
-                          <div className="information__notify-item-head">
-                            <h5 className="information__notify-item-name">
-                              Móc Khóa Kim Loại In Nổi 2 Mặt Các Đội Bóng Đá
-                              Trên Thế Giới
-                            </h5>
-                            <div className="information__notify-item-price-wrap">
-                              <span className="information__notify-item-price">
-                                25.000đ
-                              </span>
-                              <span className="information__notify-item-multiply">
-                                x
-                              </span>
-                              <span className="information__notify-item-qnt">
-                                4
-                              </span>
-                            </div>
-                          </div>
-                          <div className="information__notify-item-body">
-                            <span className="information__notify-item-description">
-                              Phân loại hàng: BẠC
-                            </span>
-                            <span className="information__notify-item-remove">
-                              Xóa
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                    <Link
-                      to={'/shopping-notify'}
-                      className="information__notify-view-notify"
-                    >
-                      <button className="information__notify-view-notify-btn btn btn-primary">
-                        Xem tất cả thông báo
-                      </button>
-                    </Link>
-                  </div> */}
                 </div>
-              </div>
+              </div> */}
               <div>{getFullNameByToken()}</div>
               {/* <!-- Avatar --> */}
               <Avatar
@@ -310,6 +171,27 @@ function Information() {
                       />
                       Thông tin cá nhân
                     </button>
+                  </li>
+
+                  <li
+                    style={{
+                      fontSize: '15px',
+                      padding: '4px 6px',
+                      color: '#666',
+                    }}
+                  >
+                    <Link to={'/wish-list'}>
+                      <button
+                        className="dropdown-item d-flex gap-3 align-items-center"
+                        type="button"
+                      >
+                        <FontAwesomeIcon
+                          style={{ width: '12px', height: '12px' }}
+                          icon={faList as IconProp}
+                        />
+                        Sản phẩm yêu thích
+                      </button>
+                    </Link>
                   </li>
                   <li
                     style={{
@@ -396,37 +278,6 @@ function Information() {
                   </li>
                 </ul>
               </div>
-              {/* <div className="dropdown">
-                <ul
-                  className="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="navbarDropdownMenuAvatar"
-                >
-                  <li>
-                    <Link to={'/profile'} className="dropdown-item">
-                      Thông tin cá nhân
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/my-favorite-books">
-                      Sách yêu thích của tôi
-                    </Link>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        // setTotalCart(0);
-                        logout(navigate);
-                        // setLoggedIn(false);
-                        // setCartList([]);
-                      }}
-                    >
-                      Đăng xuất
-                    </a>
-                  </li>
-                </ul>
-              </div> */}
             </div>
           )}
         </div>
