@@ -13,7 +13,7 @@ export const CheckoutSuccess = () => {
           style={{ width: '300px' }}
         />
         <h2 className="mt-5 mb-3 text-center text-success">
-          Thanh toán thành công
+          Mua hàng thành công
         </h2>
         <p className="mb-4 text-center">
           Cảm ơn bạn đã tin tưởng vào sản phẩm của chúng tôi!
