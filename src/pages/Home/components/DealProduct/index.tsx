@@ -109,7 +109,7 @@ const DealProduct = () => {
   return (
     <div className="container ">
       <div className="row ">
-        <div className="deals col-xl-9 col-lg-8 col-sm-12 mt-3">
+        <div className="deals col-xxl-9 col-lg-8 col-sm-12 mt-3">
           <div className="deals__header">
             <h1 className="deals__title">Siêu sale trong tuần</h1>
           </div>
@@ -149,7 +149,7 @@ const DealProduct = () => {
             </div>
           </div>
         </div>
-        <div className="top-selling col-xl-3 col-lg-4 col-sm-12 mt-3">
+        <div className="top-selling col-xxl-3 col-lg-4 col-sm-12 mt-3">
           <div className="top-selling__header">
             <h1 className="top-selling__title">BÁN CHẠY NHẤT</h1>
           </div>

@@ -1,5 +1,9 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faBagShopping, faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBagShopping,
+  faCartShopping,
+  faStar,
+} from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
@@ -24,11 +28,8 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
   const navigation = useNavigate();
 
   const [newestProducts, setNewestProducts] = useState<ProductModel[]>([]);
-  const [hottestProducts, setHottestProducts] = useState<ProductModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isInNewestProducts, setIsInNewestProducts] = useState<boolean>(false);
-  const [isInHottestProducts, setIsInHottestProducts] =
-    useState<boolean>(false);
 
   useEffect(() => {
     getNewestProducts(12)
@@ -43,8 +44,29 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
       })
       .catch((error) => {
         setLoading(false);
-        toast.error('Lấy danh sách sản phẩm mới không thành công!');
+        toast.error('Lấy danh sản phẩm sản phẩm mới không thành công!');
       });
+  }, []);
+
+  // Lấy tất cả sản phẩm yêu thích của người dùng đã đăng nhập ra
+  useEffect(() => {
+    const customerId = getUserIdByToken();
+    if (isToken()) {
+      fetch(
+        backendEndpoint +
+          `/favorite-product/get-favorite-product/${customerId}`,
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('data: ', data);
+          if (data.includes(props.product.id)) {
+            setIsFavoriteProduct(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
 
   const handleAddAProductToCart = async (newProduct: ProductModel) => {
@@ -86,7 +108,7 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             'content-type': 'application/json',
           },
           body: JSON.stringify(request),
-        }).catch((err) => console.log(err));
+        }).catch((error) => console.log(error));
         // Thông báo toast
         toast.success('Thêm vào giỏ hàng thành công');
       } else {
@@ -140,6 +162,72 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
     setTotalCart(cartList.length);
   };
 
+  useEffect(() => {
+    console.log('Có thích id: ', props.product.id, isFavoriteProduct);
+  }, [isFavoriteProduct]);
+
+  // Xử lý chức năng yêu sản phẩm
+  const handleFavoriteProduct = async (newProduct: ProductModel) => {
+    if (!isToken()) {
+      toast.info('Bạn phải đăng nhập để sử dụng chức năng này');
+      // navigation('/login');
+      return;
+    }
+
+    const customerId = getUserIdByToken();
+
+    if (!isFavoriteProduct) {
+      const token = localStorage.getItem('token');
+      fetch(backendEndpoint + `/favorite-product/add-favorite-product`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: props.product.id,
+          customerId: customerId,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            toast.success('Đã thêm vào danh sách sản phẩm yêu thích!');
+          } else {
+            toast.error(
+              'Thêm vào danh sách sản phẩm yêu thích không thành công!',
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Lỗi:', error);
+        });
+    } else {
+      const token = localStorage.getItem('token');
+      fetch(backendEndpoint + `/favorite-product/delete-favorite-product`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: props.product.id,
+          customerId: customerId,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            toast.success('Đã xóa khỏi danh sách sản phẩm yêu thích!');
+          } else {
+            toast.error(
+              'Xóa khỏi danh sách sản phẩm yêu thích không thành công!',
+            );
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+    setIsFavoriteProduct(!isFavoriteProduct);
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -156,15 +244,37 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
             />
           </Link>
           <div className="product__item-quick-link">
-            <div title="Yêu thích" className="product__item-quick-link-item">
-              <FontAwesomeIcon icon={faHeart as IconProp} />
+            <div
+              title="Yêu thích"
+              style={{
+                border: isFavoriteProduct
+                  ? '1px solid rgb(255, 66, 79)'
+                  : '1px solid #000',
+                backgroundColor: isFavoriteProduct
+                  ? 'rgb(255, 66, 79)'
+                  : '#fff',
+              }}
+              onClick={() => {
+                handleFavoriteProduct(props.product);
+              }}
+              className="product__item-quick-link-item"
+            >
+              <FontAwesomeIcon
+                style={{
+                  color: isFavoriteProduct ? '#fff' : '#000',
+                }}
+                icon={faHeart as IconProp}
+              />
             </div>
             <div
               title="Thêm vào giỏ"
+              style={{
+                border: '1px solid #000',
+              }}
               onClick={() => handleAddAProductToCart(props.product)}
               className="product__item-quick-link-item"
             >
-              <FontAwesomeIcon icon={faBagShopping as IconProp} />
+              <FontAwesomeIcon icon={faCartShopping as IconProp} />
             </div>
           </div>
           {props.product.discountPercent &&

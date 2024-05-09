@@ -75,6 +75,13 @@
   border-radius: 5px;
 }
 
+/* Tablet */
+@media (max-width: 991.98px) {
+  .top-selling__list {
+    padding: 20px 0;
+  }
+}
+
 /* Mobile */
 @media screen and (max-width: 767.98px) {
   .deals__header {

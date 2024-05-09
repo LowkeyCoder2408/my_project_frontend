@@ -24,6 +24,7 @@
   width: 60px;
   border: 1px solid #d4d4d4;
   border-radius: 3px;
+  object-fit: contain;
 }
 
 .long-width-product__info__collection {
@@ -92,4 +93,28 @@
 .long-width-product-progress-value {
   background-color: rgb(37, 37, 37);
   height: 100%;
+}
+
+@media (max-width: 991.98px) {
+  .long-width-product {
+    height: auto;
+    padding: 8px 30px;
+    gap: 20px;
+  }
+  .long-width-product__img {
+    height: 80px;
+    width: 80px;
+  }
+  .long-width-product__info__rate {
+    margin-top: 10px;
+  }
+
+  .long-width-product__info {
+    flex: 1;
+  }
+
+  .long-width-product__icon {
+    justify-content: initial;
+    width: auto;
+  }
 }

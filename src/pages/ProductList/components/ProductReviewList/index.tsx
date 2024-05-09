@@ -51,7 +51,7 @@ const ProductReviewList = (props: ProductReviewListProps) => {
         setIsLoading(false);
         setError(error.message);
       });
-  }, [reviewsList]);
+  }, []);
 
   useEffect(() => {
     const customerId = getUserIdByToken();
@@ -63,7 +63,7 @@ const ProductReviewList = (props: ProductReviewListProps) => {
       .catch((error) => {
         console.log(error);
       });
-  }, [reviewsList]);
+  }, []);
 
   if (isLoading) {
     return <Loader />;
