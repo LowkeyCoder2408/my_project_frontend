@@ -20,6 +20,7 @@ import { backendEndpoint } from '../../../../utils/Constant';
 
 interface ProductPropsInterface {
   product: ProductModel;
+  isShowQuickLink?: boolean;
 }
 
 const ProductProps: React.FC<ProductPropsInterface> = (props) => {
@@ -236,41 +237,48 @@ const ProductProps: React.FC<ProductPropsInterface> = (props) => {
     <div className="product__item-wrapper">
       <div className="product__item">
         <div className="product__item-thumb">
-          <Link to={`/product/${props.product.alias}`}>
+          <Link
+            to={`/product/${props.product.alias}`}
+            title="Xem chi tiết sản phẩm"
+          >
             <img
               src={props.product.mainImage}
               alt=""
               className="product__item-img"
             />
           </Link>
-          <div className="product__item-quick-link">
-            <div
-              title="Yêu thích"
-              style={{
-                backgroundColor: isFavoriteProduct
-                  ? 'rgb(255, 66, 79)'
-                  : '#fff',
-              }}
-              onClick={() => {
-                handleFavoriteProduct(props.product);
-              }}
-              className="product__item-quick-link-item"
-            >
-              <FontAwesomeIcon
+          {props.isShowQuickLink === false ? (
+            <></>
+          ) : (
+            <div className="product__item-quick-link">
+              <div
+                title={isFavoriteProduct ? 'Bỏ thích' : 'Yêu thích'}
                 style={{
-                  color: isFavoriteProduct ? '#fff' : '#000',
+                  backgroundColor: isFavoriteProduct
+                    ? 'rgb(255, 66, 79)'
+                    : '#fff',
                 }}
-                icon={faHeart as IconProp}
-              />
+                onClick={() => {
+                  handleFavoriteProduct(props.product);
+                }}
+                className="product__item-quick-link-item"
+              >
+                <FontAwesomeIcon
+                  style={{
+                    color: isFavoriteProduct ? '#fff' : '#000',
+                  }}
+                  icon={faHeart as IconProp}
+                />
+              </div>
+              <div
+                title="Thêm vào giỏ"
+                onClick={() => handleAddAProductToCart(props.product)}
+                className="product__item-quick-link-item"
+              >
+                <FontAwesomeIcon icon={faCartShopping as IconProp} />
+              </div>
             </div>
-            <div
-              title="Thêm vào giỏ"
-              onClick={() => handleAddAProductToCart(props.product)}
-              className="product__item-quick-link-item"
-            >
-              <FontAwesomeIcon icon={faCartShopping as IconProp} />
-            </div>
-          </div>
+          )}
           {props.product.discountPercent &&
             props.product.discountPercent > 0 && (
               <div className="box-label">

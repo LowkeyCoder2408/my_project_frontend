@@ -27,7 +27,7 @@ import { useCartItem } from '../../../../../utils/CartItemContext';
 import FavoriteProductModel from '../../../../../models/FavoriteProductModel';
 import { useEffect, useState } from 'react';
 import { getFavoriteProductsByCustomerId } from '../../../../../api/FavoriteProductAPI';
-import WishlistProps from './components/WishlistProps';
+import WishlistProps from '../../../../../pages/Wishlist/components/WishlistProps';
 
 function Information() {
   const customerId = getUserIdByToken();
@@ -75,7 +75,11 @@ function Information() {
             </div>
           ) : (
             <div className="mobile-center col-md-6 col-sm-6 col-xs-12 d-flex justify-content-end align-items-center text-center-mobile text-end py-3 gap-3">
-              <Link to={'/shopping-cart'} className="information__cart">
+              <Link
+                to={'/shopping-cart'}
+                title="Giỏ hàng của bạn"
+                className="information__cart"
+              >
                 <div className="information__cart-wrap">
                   <FontAwesomeIcon
                     style={{ color: '#fff', width: '20px', height: '20px' }}
@@ -89,7 +93,11 @@ function Information() {
                   )}
                 </div>
               </Link>
-              <Link to={'/wish-list'} className="information__cart">
+              <Link
+                to={'/wish-list'}
+                title="Sản phẩm yêu thích"
+                className="information__cart"
+              >
                 <div className="information__cart-wrap">
                   <FontAwesomeIcon
                     style={{ color: '#fff', width: '20px', height: '20px' }}

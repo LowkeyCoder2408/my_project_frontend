@@ -16,6 +16,7 @@ import EnableAccount from '../pages/User/EnableAccount';
 import Login from '../pages/User/Login';
 import Register from '../pages/User/Register';
 import Test from '../pages/User/Test';
+import Error403 from '../pages/ValidatePage/Error403';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
 import Wishlist from '../pages/Wishlist';
 // Layouts
@@ -116,6 +117,12 @@ const publicRoutes = [
   {
     path: '/test',
     component: Test,
+    layout: 'default',
+  },
+
+  {
+    path: '/403-error',
+    component: Error403,
     layout: 'default',
   },
   {

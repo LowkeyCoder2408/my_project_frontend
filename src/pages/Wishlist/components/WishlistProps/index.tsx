@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import FavoriteProductModel from '../../../../../../../models/FavoriteProductModel';
-import { getUserIdByToken } from '../../../../../../../utils/JwtService';
-import ProductModel from '../../../../../../../models/ProductModel';
-import { getProductByFavoriteProductId } from '../../../../../../../api/ProductAPI';
-import ProductProps from '../../../../../../../pages/ProductList/components/ProductProps';
+import FavoriteProductModel from '../../../../models/FavoriteProductModel';
+import { getUserIdByToken } from '../../../../utils/JwtService';
+import ProductModel from '../../../../models/ProductModel';
+import { getProductByFavoriteProductId } from '../../../../api/ProductAPI';
+import ProductProps from '../../../ProductList/components/ProductProps';
 
 interface WishlistPropsProps {
   favoriteProduct: FavoriteProductModel;
@@ -23,7 +23,9 @@ function WishlistProps(props: WishlistPropsProps) {
       });
   }, []);
 
-  return <>{product && <ProductProps product={product} />}</>;
+  return (
+    <>{product && <ProductProps isShowQuickLink={false} product={product} />}</>
+  );
 }
 
 export default WishlistProps;

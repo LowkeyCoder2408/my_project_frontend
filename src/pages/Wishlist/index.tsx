@@ -3,7 +3,7 @@ import FavoriteProductModel from '../../models/FavoriteProductModel';
 import { getFavoriteProductsByCustomerId } from '../../api/FavoriteProductAPI';
 import { getUserIdByToken } from '../../utils/JwtService';
 import ProductProps from '../ProductList/components/ProductProps';
-import WishlistProps from '../../components/GlobalStyles/Layout/components/Information/components/WishlistProps';
+import WishlistProps from './components/WishlistProps';
 import { Link } from 'react-router-dom';
 
 function Wishlist() {
