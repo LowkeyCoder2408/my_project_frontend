@@ -71,7 +71,7 @@ function ProductReviewItem(props: ProductReviewItemProps) {
     event.stopPropagation();
     const token = localStorage.getItem('token');
     confirm({
-      title: <span style={{ fontSize: '20px' }}>XÓA SẢN PHẨM</span>,
+      title: <span style={{ fontSize: '20px' }}>XÓA ĐÁNH GIÁ SẢN PHẨM</span>,
       description: (
         <span style={{ fontSize: '16px' }}>
           Bạn có chắc chắn rằng sẽ xóa đánh giá này?
@@ -118,7 +118,7 @@ function ProductReviewItem(props: ProductReviewItemProps) {
     >
       {customerReview?.id === props.review.id && (
         <div className="product-details__review-your-rating">
-          ** Đánh giá của bạn
+          Đánh giá của bạn
         </div>
       )}
       <div className="product-details__review__avatar-wrap">

@@ -74,7 +74,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Chiều dài
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.length} cm
+                  {props.product.length} mm
                 </td>
               </tr>
             )}
@@ -86,7 +86,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Chiều rộng
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.width} cm
+                  {props.product.width} mm
                 </td>
               </tr>
             )}
@@ -98,7 +98,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Chiều cao
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.height} cm
+                  {props.product.height} mm
                 </td>
               </tr>
             )}
@@ -110,7 +110,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Chiều dài x chiều rộng
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.length} cm x {props.product.width} cm
+                  {props.product.length} mm x {props.product.width} mm
                 </td>
               </tr>
             )}
@@ -122,7 +122,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Chiều dài x chiều cao
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.length} cm x {props.product.height} cm
+                  {props.product.length} mm x {props.product.height} mm
                 </td>
               </tr>
             )}
@@ -134,7 +134,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Chiều rộng x chiều cao
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.width} cm x {props.product.height} cm
+                  {props.product.width} mm x {props.product.height} mm
                 </td>
               </tr>
             )}
@@ -146,8 +146,8 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                   Kích thước
                 </td>
                 <td style={{ width: '60%', paddingLeft: '20px' }}>
-                  {props.product.length} cm x {props.product.width} cm x{' '}
-                  {props.product.height} cm
+                  {props.product.length} mm x {props.product.width} mm x{' '}
+                  {props.product.height} mm
                 </td>
               </tr>
             )}
@@ -157,7 +157,7 @@ function ProductSpecifications(props: ProductSpecificationsProps) {
                 Trọng lượng
               </td>
               <td style={{ width: '60%', paddingLeft: '20px' }}>
-                {props.product.weight} g
+                {props.product.weight} kg
               </td>
             </tr>
           )}

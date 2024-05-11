@@ -51,7 +51,7 @@ const ProductReviewList = (props: ProductReviewListProps) => {
         setIsLoading(false);
         setError(error.message);
       });
-  }, []);
+  }, [reviewsList]);
 
   useEffect(() => {
     const customerId = getUserIdByToken();

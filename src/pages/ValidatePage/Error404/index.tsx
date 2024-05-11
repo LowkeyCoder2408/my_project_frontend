@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../ErrorPage/ErrorPage.css';
+import '../../ValidatePage/ErrorPage.css';
 import { Link } from 'react-router-dom';
 
 const Error404 = () => {
@@ -9,13 +9,10 @@ const Error404 = () => {
         <h2 className="header" data-text="404">
           404
         </h2>
-        <h4 data-text="Opps! Page not found">Opps! Page not found</h4>
-        <p>
-          Sorry, the page you're looking for doesn't exist. If you think
-          something is broken, report a problem.
-        </p>
+        <h4 data-text="Opps! Trang không tồn tại">Opps! Trang không tồn tại</h4>
+        <p>Xin lỗi, trang bạn đang tìm kiếm không tồn tại.</p>
         <div className="btns">
-          <Link to={'/'}>return home</Link>
+          <Link to={'/'}>về trang chủ</Link>
         </div>
       </div>
     </div>

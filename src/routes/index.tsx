@@ -1,4 +1,5 @@
 // Pages
+import { useLocation } from 'react-router-dom';
 import AboutUs from '../pages/AboutUs';
 import ProductForm from '../pages/Admin/ProductForm';
 import CheckoutStatus from '../pages/Checkout/components/CheckoutStatus';
@@ -17,12 +18,13 @@ import Login from '../pages/User/Login';
 import Register from '../pages/User/Register';
 import Test from '../pages/User/Test';
 import Error403 from '../pages/ValidatePage/Error403';
+import Error404 from '../pages/ValidatePage/Error404';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
 import Wishlist from '../pages/Wishlist';
-// Layouts
-// import { HeaderOnly } from '../components/GlobalStyles/Layout';
 
-// Public accession
+// const location = useLocation();
+// const isAdminPath = location.pathname.startsWith('/admin');
+
 const publicRoutes = [
   {
     path: '/',
@@ -119,7 +121,6 @@ const publicRoutes = [
     component: Test,
     layout: 'default',
   },
-
   {
     path: '/403-error',
     component: Error403,
@@ -128,6 +129,11 @@ const publicRoutes = [
   {
     path: '/admin/product-form',
     component: ProductForm,
+    layout: 'default',
+  },
+  {
+    path: '*',
+    component: Error404,
     layout: 'default',
   },
 ];

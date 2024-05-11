@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Information.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBell,
   faCartShopping,
   faExchange,
   faHeart,
@@ -109,28 +108,6 @@ function Information() {
                       {favoriteProductList.length}
                     </span>
                   )}
-                  {/* <div className="information__cart-list">
-                    <img
-                      src="https://res.cloudinary.com/dgdn13yur/image/upload/v1708102716/Testinomial_2_hzv7yq.png"
-                      alt=""
-                      className="information__cart-no-cart-img"
-                    />
-                    <p className="information__cart-list-no-cart-msg">
-                      Chưa có sản phẩm
-                    </p>
-
-                    <h4 className="information__cart-heading">
-                      Sản phẩm yêu thích
-                    </h4>
-                    <ul className="information__cart-list-item">
-                      {favoriteProductList.map((favoriteProduct, index) => (
-                        <WishlistProps
-                          key={index}
-                          favoriteProduct={favoriteProduct}
-                        />
-                      ))}
-                    </ul>
-                  </div> */}
                 </div>
               </Link>
               {/* <Link to={} className="information__wishlist">
@@ -181,7 +158,7 @@ function Information() {
                     </button>
                   </li>
 
-                  <li
+                  {/* <li
                     style={{
                       fontSize: '15px',
                       padding: '4px 6px',
@@ -200,7 +177,7 @@ function Information() {
                         Sản phẩm yêu thích
                       </button>
                     </Link>
-                  </li>
+                  </li> */}
                   <li
                     style={{
                       fontSize: '15px',
