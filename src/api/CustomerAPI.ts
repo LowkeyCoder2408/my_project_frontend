@@ -44,3 +44,29 @@ export async function getCustomerByReviewId(
 
   return getCustomer(endpoint);
 }
+
+export async function findDistinctCustomers(): Promise<CustomerModel[]> {
+  try {
+    // Xác định endpoint
+    const endpoint: string =
+      backendEndpoint + '/order/search/findDistinctCustomers';
+
+    // Gửi yêu cầu đến endpoint và lấy dữ liệu trả về
+    const response = await myRequest(endpoint);
+
+    // Trích xuất danh sách khách hàng từ response
+    const customers = response._embedded.customers;
+
+    // Xử lý dữ liệu trả về thành mảng các đối tượng CustomerModel
+    const distinctCustomers: CustomerModel[] = customers.map(
+      (customer: CustomerModel) => {
+        return customer;
+      },
+    );
+
+    return distinctCustomers;
+  } catch (error) {
+    console.error('Lỗi khi tìm khách hàng duy nhất:', error);
+    throw error;
+  }
+}

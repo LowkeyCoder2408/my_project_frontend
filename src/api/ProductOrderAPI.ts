@@ -1,4 +1,5 @@
 import CartItemModel from '../models/CartItemModel';
+import CustomerModel from '../models/CustomerModel';
 import OrderModel from '../models/OrderModel';
 import { backendEndpoint } from '../utils/Constant';
 import { myRequest } from './MyRequest';
@@ -86,4 +87,39 @@ export async function getOrderById(idOrder: number): Promise<OrderModel> {
   };
 
   return order;
+}
+
+export async function calculateTotalAmountByCustomers(
+  customers: CustomerModel[],
+  top: number,
+): Promise<{ customerId: number; totalAmount: number }[]> {
+  try {
+    // Tính tổng số tiền của từng khách hàng
+    const promises = customers.map(async (customer: CustomerModel) => {
+      const endpoint =
+        backendEndpoint +
+        `/order/search/calculateTotalAmountByCustomerId?customerId=${customer.id}`;
+      const response = await myRequest(endpoint);
+      return {
+        customerId: customer.id,
+        totalAmount: response,
+      };
+    });
+
+    const results = await Promise.all(promises);
+
+    // Sắp xếp kết quả theo totalAmount giảm dần
+    results.sort((a, b) => b.totalAmount - a.totalAmount);
+
+    // Lấy top khách hàng
+    const topResults = results.slice(0, top);
+
+    return topResults;
+  } catch (error) {
+    console.error(
+      'Lỗi trong quá trình tính tổng số tiền cho mỗi khách hàng:',
+      error,
+    );
+    throw error;
+  }
 }
