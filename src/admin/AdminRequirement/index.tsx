@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 
 export interface JwtPayload {
   id: any;
-  role: string;
+  roles: string[];
   avatar: string;
   fullName: string;
   email: string;
@@ -30,11 +30,11 @@ const AdminRequirement = <P extends object>(
       const decodedToken = jwtDecode(token) as JwtPayload;
 
       // Lấy thông tin từ token đó
-      const role = decodedToken.role;
+      const roles = decodedToken.roles;
 
       // Kiểm tra quyền
-      if (role !== 'Quản trị hệ thống') {
-        navigate('/error-403');
+      if (roles.length === 1 && roles.includes('Khách hàng')) {
+        navigate('/403-error');
       }
     }, [navigate]);
 

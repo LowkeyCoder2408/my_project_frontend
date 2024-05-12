@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { JwtPayload } from '../../pages/Admin/AdminRequirement';
+import { JwtPayload } from '../../admin/AdminRequirement';
 export function isTokenExpired(token: string) {
   const decodedToken = jwtDecode(token);
 
@@ -58,7 +58,7 @@ export function getRoleByToken() {
   const token = localStorage.getItem('token');
   if (token) {
     const decodedToken = jwtDecode(token) as JwtPayload;
-    return decodedToken.role;
+    return decodedToken.roles;
   }
 }
 

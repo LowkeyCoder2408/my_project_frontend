@@ -7,6 +7,15 @@
   --default-layout-header-height: 60px;
   --default-layout-width: 1150px;
   --text-color: #333;
+  /* BG */
+  --main-bg: #2a3447;
+  --soft-bg: #384256;
+  --dark-bg: #222b3c;
+
+  /* TEXT */
+  --main-color: white;
+  --soft-color: #ddd;
+  --dark-color: #2a3447;
 }
 
 * {
@@ -37,4 +46,9 @@ input,
 a[href] {
   color: var(--text-color);
   text-decoration: none;
+}
+
+.main {
+  background-color: #2a3447;
+  color: #fff;
 }

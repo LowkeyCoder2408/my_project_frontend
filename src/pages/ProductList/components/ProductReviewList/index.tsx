@@ -63,7 +63,7 @@ const ProductReviewList = (props: ProductReviewListProps) => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [reviewsList]);
 
   if (isLoading) {
     return <Loader />;

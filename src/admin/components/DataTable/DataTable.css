@@ -1,0 +1,45 @@
+.dataTable {
+    height: 710px;
+}
+
+.dataTable__dataGrid {
+    background: white;
+    padding: 20px;
+}
+
+.dataTable__dataGrid .MuiDataGrid-toolbarContainer {
+    flex-direction: row-reverse;
+}
+
+.dataTable__dataGrid img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.dataTable__action {
+    display: flex;
+    gap: 15px;
+}
+
+.dataTable__action img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 1400px) {
+}
+
+@media screen and (max-width: 1200px) {
+}
+
+@media screen and (max-width: 1024px) {
+}
+
+@media screen and (max-width: 768px) {
+}
+
+@media screen and (max-width: 480px) {
+}

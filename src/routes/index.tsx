@@ -1,7 +1,6 @@
 // Pages
 import { useLocation } from 'react-router-dom';
 import AboutUs from '../pages/AboutUs';
-import ProductForm from '../pages/Admin/ProductForm';
 import CheckoutStatus from '../pages/Checkout/components/CheckoutStatus';
 import Contact from '../pages/Contact';
 import ExchangeReturnRefundPolicy from '../pages/ExchangeReturnRefundPolicy';
@@ -21,6 +20,9 @@ import Error403 from '../pages/ValidatePage/Error403';
 import Error404 from '../pages/ValidatePage/Error404';
 import WarrantyPolicy from '../pages/WarrantyPolicy';
 import Wishlist from '../pages/Wishlist';
+import { AdminLayout } from '../components/GlobalStyles/Layout';
+import { Fragment } from 'react';
+import Dashboard from '../admin/pages/Dashboard';
 
 // const location = useLocation();
 // const isAdminPath = location.pathname.startsWith('/admin');
@@ -127,18 +129,24 @@ const publicRoutes = [
     layout: 'default',
   },
   {
-    path: '/admin/product-form',
-    component: ProductForm,
-    layout: 'default',
+    path: '*',
+    component: Error404,
+    layout: 'none',
+  },
+];
+
+// Login as admin to access
+const privateRoutes: any[] = [
+  {
+    path: '/admin/dashboard',
+    component: Dashboard,
+    layout: 'admin',
   },
   {
     path: '*',
     component: Error404,
-    layout: 'default',
+    layout: 'none',
   },
 ];
-
-// Login to access
-const privateRoutes: any[] = [];
 
 export { privateRoutes, publicRoutes };

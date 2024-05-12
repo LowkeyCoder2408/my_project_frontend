@@ -4,6 +4,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './Header.css';
 import CategoryModel from '../../../../../models/CategoryModel';
 import { getAllCategories } from '../../../../../api/CategoryAPI';
+import { getRoleByToken } from '../../../../../utils/JwtService';
 
 interface HeaderProps {
   keyword: string;
@@ -11,6 +12,7 @@ interface HeaderProps {
 }
 
 function Header({ keyword, setKeyword }: HeaderProps) {
+  const userRoles = getRoleByToken();
   const pathname = useLocation();
   const navLinksRef = useRef<HTMLDivElement>(null);
   const [categoryList, setCategoryList] = useState<CategoryModel[]>([]);
@@ -200,9 +202,19 @@ function Header({ keyword, setKeyword }: HeaderProps) {
                 <li className="links-list-item">
                   <Link to={'/faq'}>HỎI & ĐÁP</Link>
                 </li>
-                <li className="links-list-item">
-                  <Link to={'/contact'}>LIÊN HỆ</Link>
-                </li>
+                {userRoles &&
+                userRoles.length === 1 &&
+                userRoles.includes('Khách hàng') ? (
+                  <li className="links-list-item">
+                    <Link to={'/contact'}>LIÊN HỆ</Link>
+                  </li>
+                ) : (
+                  userRoles && (
+                    <li className="links-list-item">
+                      <Link to={'/admin/dashboard'}>TRANG QUẢN TRỊ</Link>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
             <div className="search-box" ref={searchBoxRef}>

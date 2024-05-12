@@ -7,8 +7,8 @@ import {
   useLocation,
   Navigate, // Thêm Navigate từ react-router-dom
 } from 'react-router-dom';
-import { publicRoutes } from './routes';
-import { DefaultLayout } from './components/GlobalStyles/Layout';
+import { privateRoutes, publicRoutes } from './routes';
+import { AdminLayout, DefaultLayout } from './components/GlobalStyles/Layout';
 import ScrollToTop from './components/GlobalStyles/Layout/components/ScrollToTop';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,41 +27,78 @@ function MyRoutes() {
         <ConfirmProvider>
           <ScrollToTop />
           <div className="App">
-            <Routes>
-              {publicRoutes.map((route, index) => {
-                const Page = route.component;
-                if (route.layout === 'default') {
-                  return (
-                    <Route
-                      key={index}
-                      path={route.path}
-                      element={
-                        <DefaultLayout
-                          keyword={keyword}
-                          setKeyword={setKeyword}
-                        >
-                          <Page keyword={keyword} />
-                        </DefaultLayout>
-                      }
-                    />
-                  );
-                } else if (route.layout === 'none') {
-                  return (
-                    <Route
-                      key={index}
-                      path={route.path}
-                      element={
-                        <Fragment>
-                          <Page keyword={keyword} />
-                        </Fragment>
-                      }
-                    />
-                  );
-                }
-              })}
-              {/* Thêm Route cho trang 404 */}
-              <Route path="*" element={<Navigate to="*" />} />
-            </Routes>
+            {!isAdminPath && (
+              <Routes>
+                {publicRoutes.map((route, index) => {
+                  const Page = route.component;
+                  if (route.layout === 'default') {
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <DefaultLayout
+                            keyword={keyword}
+                            setKeyword={setKeyword}
+                          >
+                            <Page keyword={keyword} />
+                          </DefaultLayout>
+                        }
+                      />
+                    );
+                  } else if (route.layout === 'none') {
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Fragment>
+                            <Page keyword={keyword} />
+                          </Fragment>
+                        }
+                      />
+                    );
+                  }
+                })}
+                {/* Thêm Route cho trang 404 */}
+                <Route path="*" element={<Navigate to="*" />} />
+              </Routes>
+            )}
+            {isAdminPath && (
+              <Routes>
+                {privateRoutes.map((route, index) => {
+                  const Page = route.component;
+                  if (route.layout === 'admin') {
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <AdminLayout>
+                            <Page />
+                          </AdminLayout>
+                        }
+                      />
+                    );
+                  } else if (route.layout === 'none') {
+                    return (
+                      <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                          <Fragment>
+                            <Page />
+                          </Fragment>
+                        }
+                      />
+                    );
+                  }
+                })}
+                {isAdminPath && (
+                  <Route path="*" element={<Navigate to="*" />} />
+                )}
+              </Routes>
+            )}
           </div>
           <ToastContainer
             theme="light"

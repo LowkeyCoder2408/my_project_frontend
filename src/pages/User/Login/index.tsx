@@ -5,7 +5,7 @@ import { backendEndpoint } from '../../../utils/Constant';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../../utils/AuthContext';
 import { jwtDecode } from 'jwt-decode';
-import { JwtPayload } from '../../Admin/AdminRequirement';
+import { JwtPayload } from '../../../admin/AdminRequirement';
 import CartItemModel from '../../../models/CartItemModel';
 import { getCartAllByIdUser } from '../../../api/CartItemAPI';
 import { useCartItem } from '../../../utils/CartItemContext';
