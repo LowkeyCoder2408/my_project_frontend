@@ -12,7 +12,6 @@ import './Single.css';
 type Props = {
   id: number;
   img?: string;
-  title: string;
   info: object;
   chart?: {
     dataKeys: { name: string; color: string }[];
@@ -28,7 +27,6 @@ const Single = (props: Props) => {
         <div className="single__info">
           <div className="single__topInfo">
             {props.img && <img src={props.img} alt="" />}
-            <h1>{props.title}</h1>
             <button>Cập Nhật</button>
           </div>
           <div className="single__details">

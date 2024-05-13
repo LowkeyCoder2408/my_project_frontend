@@ -23,6 +23,12 @@ import Wishlist from '../pages/Wishlist';
 import { AdminLayout } from '../components/GlobalStyles/Layout';
 import { Fragment } from 'react';
 import Dashboard from '../admin/pages/Dashboard';
+import Users from '../admin/pages/Users';
+import Products from '../admin/pages/Products';
+import Customers from '../admin/pages/Customers';
+import User from '../admin/pages/User';
+import Customer from '../admin/pages/Customer';
+import Orders from '../admin/pages/Orders';
 
 // const location = useLocation();
 // const isAdminPath = location.pathname.startsWith('/admin');
@@ -140,6 +146,36 @@ const privateRoutes: any[] = [
   {
     path: '/admin/dashboard',
     component: Dashboard,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/view-users',
+    component: Users,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/view-customers',
+    component: Customers,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/view-products',
+    component: Products,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/view-orders',
+    component: Orders,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/users/:id',
+    element: <User />,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/customers/:id',
+    element: <Customer />,
     layout: 'admin',
   },
   {

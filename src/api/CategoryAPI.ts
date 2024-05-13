@@ -35,7 +35,9 @@ export async function getCategoryByProductId(
   id: number,
 ): Promise<ResultInterface> {
   const endpoint = backendEndpoint + `/product/${id}/category`;
-  return getCategories(endpoint);
+  const response = await myRequest(endpoint);
+
+  return { category: response, categoryList: response };
 }
 
 export async function getCategoryByProductAlias(

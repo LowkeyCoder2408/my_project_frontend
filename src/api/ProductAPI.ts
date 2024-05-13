@@ -55,6 +55,11 @@ async function getProducts(url: string): Promise<ResultInterface> {
   };
 }
 
+export async function getAllProductsNoFilter(): Promise<ResultInterface> {
+  const url = backendEndpoint + '/product?size=1000';
+  return getProducts(url);
+}
+
 export async function getAllProducts(
   numberOfProductPerPage: number,
   page: number,

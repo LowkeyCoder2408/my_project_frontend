@@ -7,6 +7,31 @@ async function getCustomer(endpoint: string): Promise<CustomerModel> {
   return response;
 }
 
+export async function getAllCustomers(): Promise<CustomerModel[]> {
+  try {
+    // Xác định endpoint để lấy tất cả khách hàng
+    const endpoint: string = backendEndpoint + '/customer';
+
+    // Gửi yêu cầu đến endpoint và lấy dữ liệu trả về
+    const response = await myRequest(endpoint);
+
+    // Trích xuất danh sách khách hàng từ response
+    const customers = response._embedded.customers;
+
+    // Xử lý dữ liệu trả về thành mảng các đối tượng CustomerModel
+    const allCustomers: CustomerModel[] = customers.map(
+      (customer: CustomerModel) => {
+        return customer;
+      },
+    );
+
+    return allCustomers;
+  } catch (error) {
+    console.error('Lỗi khi lấy danh sách khách hàng:', error);
+    throw error;
+  }
+}
+
 export async function getCustomerById(id: any): Promise<CustomerModel> {
   const endpoint = backendEndpoint + `/customer/${id}`;
   const responseCustomer = await myRequest(endpoint);

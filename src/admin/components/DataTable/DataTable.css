@@ -1,32 +1,33 @@
 .dataTable {
-    height: 710px;
+  height: 710px;
 }
 
 .dataTable__dataGrid {
-    background: white;
-    padding: 20px;
+  background: white;
+  padding: 20px;
+  margin-top: 0 !important;
 }
 
 .dataTable__dataGrid .MuiDataGrid-toolbarContainer {
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 }
 
 .dataTable__dataGrid img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .dataTable__action {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .dataTable__action img {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 1400px) {

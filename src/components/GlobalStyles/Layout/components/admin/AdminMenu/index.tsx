@@ -14,9 +14,9 @@ export const menu = [
       },
       {
         id: 2,
-        title: 'Hồ Sơ',
-        url: '/users/1',
-        icon: 'user.svg',
+        title: 'Mua sắm',
+        url: '/',
+        icon: 'product.svg',
       },
     ],
   },
@@ -26,8 +26,8 @@ export const menu = [
     listItems: [
       {
         id: 1,
-        title: 'Người dùng',
-        url: '/admin/view-users',
+        title: 'Khách hàng',
+        url: '/admin/view-customers',
         icon: 'user.svg',
       },
       {

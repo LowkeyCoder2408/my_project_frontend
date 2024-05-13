@@ -48,7 +48,9 @@ export async function getBrandByProductId(
   id: number,
 ): Promise<ResultInterface> {
   const endpoint = backendEndpoint + `/product/${id}/brand`;
-  return getBrands(endpoint);
+  const response = await myRequest(endpoint);
+
+  return { brand: response, brandList: response };
 }
 
 export async function getBrandByAlias(

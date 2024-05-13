@@ -1,8 +1,8 @@
-.users {
+.customers {
   width: 100%;
 }
 
-.users__info {
+.customers__info {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10,7 +10,7 @@
   margin-bottom: 20px;
 }
 
-.users__info button {
+.customers__info button {
   width: 34px;
   height: 34px;
   border-radius: 10px;
@@ -18,7 +18,7 @@
 }
 
 @media screen and (max-width: 480px) {
-  .users__heading {
+  .customers__heading {
     font-size: 24px;
   }
 }
