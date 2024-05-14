@@ -2,6 +2,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './AdminLayout.css';
 import AdminNavbar from '../components/admin/AdminNavbar';
 import AdminMenu from '../components/admin/AdminMenu';
+import { useEffect } from 'react';
+import { getRoleByToken, isToken } from '../../../../utils/JwtService';
+import { useNavigate } from 'react-router-dom';
 
 const queryClient = new QueryClient();
 

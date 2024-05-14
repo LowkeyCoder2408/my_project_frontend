@@ -35,43 +35,6 @@ export const barChartBoxRevenue = {
   ],
 };
 
-export const barChartBoxVisit = {
-  title: 'TỔNG LƯỢT TRUY CẬP',
-  color: '#FF8042',
-  link: '/admin/view-customers',
-  dataKey: 'truy cập',
-  chartData: [
-    {
-      name: 'Chủ Nhật',
-      'truy cập': 4000,
-    },
-    {
-      name: 'Thứ Hai',
-      'truy cập': 3000,
-    },
-    {
-      name: 'Thứ Ba',
-      'truy cập': 2000,
-    },
-    {
-      name: 'Thứ Tư',
-      'truy cập': 2780,
-    },
-    {
-      name: 'Thứ Năm',
-      'truy cập': 1890,
-    },
-    {
-      name: 'Thứ Sáu',
-      'truy cập': 2390,
-    },
-    {
-      name: 'Thứ Bảy',
-      'truy cập': 3490,
-    },
-  ],
-};
-
 export const singleUser = {
   id: 1,
   title: 'Seven Coder',

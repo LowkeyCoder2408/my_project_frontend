@@ -7,3 +7,14 @@
   font-size: 20px;
   margin-bottom: 20px;
 }
+
+.MuiChartsLegend-mark {
+  width: 15px !important;
+  height: 16px !important;
+  /* height: 15px !important;
+  border-radius: 50px !important; */
+}
+
+.MuiChartsLegend-series text tspan {
+  font-size: 1.2rem !important;
+}

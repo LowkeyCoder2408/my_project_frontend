@@ -8,6 +8,8 @@ import { getAllUsers } from '../../../api/UserAPI';
 import { format } from 'date-fns';
 import RoleModel from '../../../models/RoleModel';
 import { getRoleByUserId } from '../../../api/RoleAPI';
+import { useNavigate } from 'react-router-dom';
+import { getRoleByToken, isToken } from '../../../utils/JwtService';
 // import { useQuery } from "@tanstack/react-query";
 
 const RoleCell = ({ userId }: { userId: number }) => {
@@ -75,16 +77,18 @@ const columns: GridColDef[] = [
 
 const Users = () => {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // TEST THE API
-
-  // const { isLoading, data } = useQuery({
-  //   queryKey: ["allusers"],
-  //   queryFn: () =>
-  //     fetch("http://localhost:8800/api/users").then(
-  //       (res) => res.json()
-  //     ),
-  // });
+  useEffect(() => {
+    if (
+      !isToken() ||
+      (getRoleByToken()?.length === 1 &&
+        getRoleByToken()?.includes('Khách hàng'))
+    ) {
+      navigate('/403-error');
+      return;
+    }
+  }, []);
 
   const [users, setUsers] = useState<UserModel[]>([]);
 

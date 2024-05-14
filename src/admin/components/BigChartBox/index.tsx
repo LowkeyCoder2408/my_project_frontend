@@ -1,101 +1,97 @@
-import {
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { LineChart } from '@mui/x-charts/LineChart';
 import './BigChartBox.css';
+import { useEffect, useState } from 'react';
+import { backendEndpoint } from '../../../utils/Constant';
+import { calculateTotalAmountByMonths } from '../../../api/ProductOrderAPI';
 
-const data = [
-  {
-    name: 'Chủ Nhật',
-    'cuốn sách': 4000,
-    'quần áo': 2400,
-    'điện tử': 2400,
-  },
-  {
-    name: 'Hai',
-    'cuốn sách': 3000,
-    'quần áo': 1398,
-    'điện tử': 2210,
-  },
-  {
-    name: 'Ba',
-    'cuốn sách': 2000,
-    'quần áo': 9800,
-    'điện tử': 2290,
-  },
-  {
-    name: 'Tư',
-    'cuốn sách': 2780,
-    'quần áo': 3908,
-    'điện tử': 2000,
-  },
-  {
-    name: 'Năm',
-    'cuốn sách': 1890,
-    'quần áo': 4800,
-    'điện tử': 2181,
-  },
-  {
-    name: 'Sáu',
-    'cuốn sách': 2390,
-    'quần áo': 3800,
-    'điện tử': 2500,
-  },
-  {
-    name: 'Bảy',
-    'cuốn sách': 3490,
-    'quần áo': 4300,
-    'điện tử': 2100,
-  },
-];
+const currentMonth = new Date().getMonth() + 1;
+
+const orderDistinctMonthsArray = Array.from(
+  { length: currentMonth },
+  (_, i) => i + 1,
+);
 
 const BigChartBox = () => {
+  const [totalAmountByMonth, setTotalAmountByMonth] = useState<
+    { month: number; totalAmount: number }[]
+  >([]);
+  const [orderDistinctMonths, setOrderDistinctMonths] = useState<number[]>([]);
+
+  useEffect(() => {
+    const fetchOrderDistinctMonths = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(
+          backendEndpoint + '/order/distinct-months',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setOrderDistinctMonths(data);
+      } catch (error) {
+        console.error('Error fetching distinct months:', error);
+      }
+    };
+
+    fetchOrderDistinctMonths();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const totalAmounts = await calculateTotalAmountByMonths(
+          orderDistinctMonths,
+        );
+        setTotalAmountByMonth(totalAmounts);
+      } catch (error) {
+        console.error('Lỗi khi lấy top khách hàng:', error);
+      }
+    }
+    fetchData();
+  }, [orderDistinctMonths]);
+
+  const totalAmountsData = orderDistinctMonthsArray.map((month) => {
+    const monthData = totalAmountByMonth.find((item) => item.month === month);
+    return monthData ? monthData.totalAmount / 1000000 : 0;
+  });
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="bigChartBox">
-      <h1 className="bigChartBox__title">PHÂN TÍCH DOANH THU</h1>
-      <div className="bigChartBox__chart">
-        {' '}
-        <ResponsiveContainer width="99%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="điện tử"
-              stackId="1"
-              stroke="#8884d8"
-              fill="#8884d8"
-            />
-            <Area
-              type="monotone"
-              dataKey="quần áo"
-              stackId="1"
-              stroke="#82ca9d"
-              fill="#82ca9d"
-            />
-            <Area
-              type="monotone"
-              dataKey="cuốn sách"
-              stackId="1"
-              stroke="#ffc658"
-              fill="#ffc658"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+      <h1 className="bigChartBox__title">
+        DOANH THU THEO THÁNG (năm {currentYear})
+      </h1>
+
+      <LineChart
+        xAxis={[
+          {
+            data: orderDistinctMonthsArray,
+            tickMinStep: 1,
+            label: 'Tháng',
+          },
+        ]}
+        series={[
+          {
+            data: totalAmountsData,
+            area: true,
+            color: 'gold',
+            label: 'triệu đồng',
+          },
+        ]}
+        height={300}
+        margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
+        grid={{ vertical: true, horizontal: true }}
+      />
     </div>
   );
 };

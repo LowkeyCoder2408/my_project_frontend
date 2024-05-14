@@ -11,6 +11,8 @@ import { getBrandByProductId } from '../../../api/BrandAPI';
 import BrandModel from '../../../models/BrandModel';
 import CategoryModel from '../../../models/CategoryModel';
 import { getCategoryByProductId } from '../../../api/CategoryAPI';
+import { useNavigate } from 'react-router-dom';
+import { getRoleByToken, isToken } from '../../../utils/JwtService';
 
 const BrandCell = ({ productId }: { productId: number }) => {
   const [brand, setBrand] = useState<BrandModel | null>(null);
@@ -121,6 +123,19 @@ const columns: GridColDef[] = [
 
 const Products = () => {
   const [products, setProducts] = useState<ProductModel[]>([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      !isToken() ||
+      (getRoleByToken()?.length === 1 &&
+        getRoleByToken()?.includes('Khách hàng'))
+    ) {
+      navigate('/403-error');
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     getAllProductsNoFilter()

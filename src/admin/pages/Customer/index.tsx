@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Legend,
   Line,
@@ -7,6 +9,7 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts';
+import { getRoleByToken, isToken } from '../../../utils/JwtService';
 
 const Customer = () => {
   const singleCustomer = {
@@ -89,6 +92,19 @@ const Customer = () => {
       },
     ],
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      !isToken() ||
+      (getRoleByToken()?.length === 1 &&
+        getRoleByToken()?.includes('Khách hàng'))
+    ) {
+      navigate('/403-error');
+      return;
+    }
+  }, []);
 
   return (
     <div className="user">

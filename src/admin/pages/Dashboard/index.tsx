@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { barChartBoxRevenue, barChartBoxVisit } from '../../../data';
 import BarChartBox from '../../components/BarChartBox';
 import BigChartBox from '../../components/BigChartBox';
 import ChartBox from '../../components/ChartBox';
@@ -14,12 +13,28 @@ import { getAllOrders } from '../../../api/ProductOrderAPI';
 import OrderModel from '../../../models/OrderModel';
 import UserModel from '../../../models/UserModel';
 import { getAllUsers } from '../../../api/UserAPI';
+import { getRoleByToken, isToken } from '../../../utils/JwtService';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../../pages/ProductList/components/Loader';
+import { barChartBoxRevenue } from '../../../data';
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState<CustomerModel[]>([]);
   const [products, setProducts] = useState<ProductModel[]>([]);
   const [orders, setOrders] = useState<OrderModel[]>([]);
   const [users, setUsers] = useState<UserModel[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      !isToken() ||
+      (getRoleByToken()?.length === 1 &&
+        getRoleByToken()?.includes('Khách hàng'))
+    ) {
+      navigate('/403-error');
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -123,6 +138,13 @@ const Dashboard = () => {
       { name: 'Thứ Sáu', 'doanh thu': 500 },
       { name: 'Thứ Bảy', 'doanh thu': 450 },
     ],
+  };
+
+  const barChartBoxVisit = {
+    title: 'TRẠNG THÁI ĐƠN HÀNG',
+    color: '#FF8042',
+    link: '/admin/view-customers',
+    dataKey: 'truy cập',
   };
 
   return (

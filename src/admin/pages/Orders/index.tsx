@@ -11,6 +11,8 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FadeModal } from '../../../utils/FadeModal';
 import OrderModal from '../../../pages/MyOrder/components/OrderModal';
 import OrderTrack from '../../../pages/MyOrder/components/OrderTrack';
+import { getRoleByToken, isToken } from '../../../utils/JwtService';
+import { useNavigate } from 'react-router-dom';
 
 const Orders = () => {
   // Tạo biến để lấy tất cả data đơn hàng
@@ -26,6 +28,19 @@ const Orders = () => {
   const handleCloseOrderModal = () => setOpenOrderModal(false);
   const handleOpenOrderTrackModal = () => setOpenOrderTrackModal(true);
   const handleCloseOrderTrackModal = () => setOpenOrderTrackModal(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      !isToken() ||
+      (getRoleByToken()?.length === 1 &&
+        getRoleByToken()?.includes('Khách hàng'))
+    ) {
+      navigate('/403-error');
+      return;
+    }
+  }, []);
 
   const columns: GridColDef[] = [
     {

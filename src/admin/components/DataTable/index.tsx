@@ -10,20 +10,6 @@ type Props = {
 };
 
 const DataTable = (props: Props) => {
-  // TEST THE API
-
-  // const queryClient = useQueryClient();
-  // // const mutation = useMutation({
-  // //   mutationFn: (id: number) => {
-  // //     return fetch(`http://localhost:8800/api/${props.slug}/${id}`, {
-  // //       method: "delete",
-  // //     });
-  // //   },
-  // //   onSuccess: ()=>{
-  // //     queryClient.invalidateQueries([`all${props.slug}`]);
-  // //   }
-  // // });
-
   const handleDelete = (id: number) => {
     //delete the item
     // mutation.mutate(id)
@@ -31,11 +17,11 @@ const DataTable = (props: Props) => {
 
   const actionColumn: GridColDef = {
     field: 'action',
-    headerName: 'Hoạt Động',
+    headerName: 'Các thao tác',
     width: 100,
     renderCell: (params) => {
       return (
-        <div className="dataTable__action">
+        <div className="dataTable__action f-flex justify-content-center">
           <Link to={`/${props.slug}/${params.row.id}`}>
             <img src="/view.svg" alt="" />
           </Link>

@@ -29,6 +29,7 @@ import Customers from '../admin/pages/Customers';
 import User from '../admin/pages/User';
 import Customer from '../admin/pages/Customer';
 import Orders from '../admin/pages/Orders';
+import Categories from '../admin/pages/Categories';
 
 // const location = useLocation();
 // const isAdminPath = location.pathname.startsWith('/admin');
@@ -132,7 +133,7 @@ const publicRoutes = [
   {
     path: '/403-error',
     component: Error403,
-    layout: 'default',
+    layout: 'none',
   },
   {
     path: '*',
@@ -169,18 +170,28 @@ const privateRoutes: any[] = [
     layout: 'admin',
   },
   {
-    path: '/admin/users/:id',
+    path: '/admin/view-categories',
+    component: Categories,
+    layout: 'admin',
+  },
+  {
+    path: '/admin/view-users/:id',
     element: <User />,
     layout: 'admin',
   },
   {
-    path: '/admin/customers/:id',
+    path: '/admin/view-customers/:id',
     element: <Customer />,
     layout: 'admin',
   },
   {
     path: '*',
     component: Error404,
+    layout: 'none',
+  },
+  {
+    path: '/403-error',
+    component: Error403,
     layout: 'none',
   },
 ];

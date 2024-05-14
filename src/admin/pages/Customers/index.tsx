@@ -6,6 +6,8 @@ import Add from '../../components/Add';
 import CustomerModel from '../../../models/CustomerModel';
 import { getAllCustomers } from '../../../api/CustomerAPI';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import { getRoleByToken, isToken } from '../../../utils/JwtService';
 // import { useQuery } from "@tanstack/react-query";
 
 const columns: GridColDef[] = [
@@ -78,6 +80,18 @@ const Customers = () => {
   // });
 
   const [customers, setCustomers] = useState<CustomerModel[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      !isToken() ||
+      (getRoleByToken()?.length === 1 &&
+        getRoleByToken()?.includes('Khách hàng'))
+    ) {
+      navigate('/403-error');
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     getAllCustomers()

@@ -123,3 +123,32 @@ export async function calculateTotalAmountByCustomers(
     throw error;
   }
 }
+
+export async function calculateTotalAmountByMonths(
+  months: number[],
+): Promise<{ month: number; totalAmount: number }[]> {
+  try {
+    const currentYear = new Date().getFullYear();
+    // Tính tổng số tiền của từng tháng
+    const promises = months.map(async (month: number) => {
+      const endpoint =
+        backendEndpoint +
+        `/order/search/calculateTotalAmountByMonth?month=${month}&year=${currentYear}`;
+      const totalAmount = await myRequest(endpoint);
+      return {
+        month: month,
+        totalAmount: totalAmount,
+      };
+    });
+
+    const results = await Promise.all(promises);
+
+    return results;
+  } catch (error) {
+    console.error(
+      'Lỗi trong quá trình tính tổng số tiền cho mỗi khách hàng:',
+      error,
+    );
+    throw error;
+  }
+}

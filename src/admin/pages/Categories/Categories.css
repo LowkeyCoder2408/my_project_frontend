@@ -1,0 +1,24 @@
+.categories {
+  width: 100%;
+}
+
+.categories__info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.categories__info button {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+  .categories__heading {
+    font-size: 24px;
+  }
+}
