@@ -22,3 +22,14 @@
     font-size: 24px;
   }
 }
+
+.dataTable__action {
+  display: flex;
+  gap: 15px;
+}
+
+.dataTable__action img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}

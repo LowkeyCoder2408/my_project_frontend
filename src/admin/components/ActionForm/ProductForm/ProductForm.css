@@ -1,0 +1,32 @@
+.form-selector .MuiTextField-root {
+  margin-top: 6px !important;
+}
+
+.form-selector
+  .MuiTextField-root
+  .MuiInputLabel-standard.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root {
+  margin-top: -3px;
+}
+
+.css-nz481w-MuiInputBase-input-MuiInput-input {
+  font-size: 1.6rem !important;
+  font-weight: 500 !important;
+  display: flex;
+  align-items: center;
+}
+
+.MuiInputLabel-root.MuiInputLabel-formControl {
+  font-size: 1.6rem !important;
+}
+
+.form-selector .css-1k23hlb-MuiButtonBase-root-MuiButton-root {
+  width: 230px !important;
+  background-color: #4b4b4b !important;
+  border-color: #000;
+  color: #fff !important;
+  font-size: 1.4rem;
+  text-transform: none !important;
+  padding: 0;
+  padding-left: 10px;
+  margin-right: 20px;
+}

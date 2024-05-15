@@ -15,33 +15,33 @@ const DataTable = (props: Props) => {
     // mutation.mutate(id)
   };
 
-  const actionColumn: GridColDef = {
-    field: 'action',
-    headerName: 'Các thao tác',
-    width: 100,
-    renderCell: (params) => {
-      return (
-        <div className="dataTable__action f-flex justify-content-center">
-          <Link to={`/${props.slug}/${params.row.id}`}>
-            <img src="/view.svg" alt="" />
-          </Link>
-          <div
-            className="dataTable__delete"
-            onClick={() => handleDelete(params.row.id)}
-          >
-            <img src="/delete.svg" alt="" />
-          </div>
-        </div>
-      );
-    },
-  };
+  // const actionColumn: GridColDef = {
+  //   field: 'action',
+  //   headerName: 'Các thao tác',
+  //   width: 100,
+  //   renderCell: (params) => {
+  //     return (
+  //       <div className="dataTable__action f-flex justify-content-center">
+  //         <Link to={`/${props.slug}/${params.row.id}`}>
+  //           <img src="/view.svg" alt="" />
+  //         </Link>
+  //         <div
+  //           className="dataTable__delete"
+  //           onClick={() => handleDelete(params.row.id)}
+  //         >
+  //           <img src="/delete.svg" alt="" />
+  //         </div>
+  //       </div>
+  //     );
+  //   },
+  // };
 
   return (
     <div className="dataTable">
       <DataGrid
         className="dataTable__dataGrid"
         rows={props.rows}
-        columns={[...props.columns, actionColumn]}
+        columns={[...props.columns]}
         initialState={{
           pagination: {
             paginationModel: {
