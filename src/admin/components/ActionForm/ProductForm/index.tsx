@@ -459,7 +459,6 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
               <div className="row">
                 <div className="col col-xxl-3">
                   <TextField
-                    required
                     fullWidth
                     type="text"
                     id="standard-required"
@@ -477,7 +476,6 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
                 </div>
                 <div className="col col-xxl-3">
                   <TextField
-                    required
                     fullWidth
                     type="text"
                     id="standard-required"
@@ -498,7 +496,6 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
                 </div>
                 <div className="col col-xxl-3">
                   <TextField
-                    required
                     fullWidth
                     type="text"
                     id="standard-required"
@@ -516,7 +513,6 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
                 </div>
                 <div className="col col-xxl-3">
                   <TextField
-                    required
                     fullWidth
                     type="text"
                     id="standard-required"
@@ -534,7 +530,6 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
                 </div>
                 <div className="col col-xxl-6">
                   <TextField
-                    required
                     fullWidth
                     type="text"
                     id="standard-required"

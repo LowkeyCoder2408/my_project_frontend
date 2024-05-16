@@ -1,8 +1,6 @@
 import './LongWidthProduct.css';
 import ProductModel from '../../../../../../models/ProductModel';
 import ProductRating from '../../../../../ProductList/components/ProductDetail/components/ProductRating';
-import { useEffect, useState } from 'react';
-import { getBrandByAlias } from '../../../../../../api/BrandAPI';
 import { Link } from 'react-router-dom';
 
 interface LongWidthProductProps {
@@ -10,13 +8,11 @@ interface LongWidthProductProps {
 }
 
 const LongWidthProduct = (props: LongWidthProductProps) => {
-  const [productList, setProductList] = useState<ProductModel[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
-
   const percentageSold =
     props.product.soldQuantity && props.product.quantity
-      ? (props.product.soldQuantity / props.product.quantity) * 100
+      ? (props.product.soldQuantity /
+          (props.product.quantity + props.product.soldQuantity)) *
+        100
       : 0;
   return (
     <Link
@@ -34,7 +30,6 @@ const LongWidthProduct = (props: LongWidthProductProps) => {
         <div className="long-width-product__info__collection-name">
           {props.product.name}
         </div>
-        {/* <span className="count"> (Đã bán: {props.product.soldQuantity})</span> */}
 
         {props.product.ratingCount !== undefined &&
         props.product.ratingCount > 0 ? (
@@ -49,7 +44,9 @@ const LongWidthProduct = (props: LongWidthProductProps) => {
               </div>
             )}
             <div className="long-width-product-progress-quantity">
-              Đã bán: {props.product.soldQuantity}/{props.product.quantity}
+              Đã bán: {props.product.soldQuantity ?? 0}/
+              {(props.product.quantity ?? 0) +
+                (props.product.soldQuantity ?? 0)}
             </div>
           </div>
         ) : (
@@ -58,7 +55,9 @@ const LongWidthProduct = (props: LongWidthProductProps) => {
               (Chưa có đánh giá)
             </div>
             <div className="long-width-product-progress-quantity">
-              Đã bán: {props.product.soldQuantity}/{props.product.quantity}
+              Đã bán: {props.product.soldQuantity ?? 0}/
+              {(props.product.quantity ?? 0) +
+                (props.product.soldQuantity ?? 0)}
             </div>
           </div>
         )}
