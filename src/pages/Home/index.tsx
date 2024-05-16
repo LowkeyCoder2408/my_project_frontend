@@ -1,4 +1,5 @@
 import CartItemModel from '../../models/CartItemModel';
+import FacebookMsg from '../FacebookMsg';
 import Carousel from './components/Carousel';
 import Category from './components/Category';
 import DealProduct from './components/DealProduct';
@@ -19,6 +20,7 @@ function Home() {
       <NewestProduct />
       <SlideShow />
       <Testinomial />
+      <FacebookMsg />
     </div>
   );
 }
