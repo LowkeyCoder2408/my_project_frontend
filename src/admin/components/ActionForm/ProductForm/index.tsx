@@ -17,7 +17,6 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import ProductImageModel from '../../../../models/ProductImageModel';
 import { CloudUpload } from '@mui/icons-material';
 import BrandModel from '../../../../models/BrandModel';
 import { getAllBrands, getBrandByAlias } from '../../../../api/BrandAPI';
@@ -49,6 +48,7 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
     mainImage: '',
     categoryId: NaN,
     brandId: NaN,
+    relatedImages: [],
   });
 
   const [brandsList, setBrandsList] = useState<BrandModel[] | null>([]);
@@ -57,10 +57,9 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
     [],
   );
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [mainImage, setMainImage] = useState('');
-  const [relatedImages, setRelatedImages] = useState<ProductImageModel[]>([]);
-
-  //   const [mainImageFile, setMainImageFile] = useState<File | null>(null);
+  // const [mainImage, setMainImage] = useState('');
+  // const [relatedImages, setRelatedImages] = useState<ProductImageModel[]>([]);
+  const [relatedImagesUrls, setRelatedImagesUrls] = useState<string[]>([]);
 
   // Convert file to Base64
   const getBase64 = (file: File): Promise<string | null> => {
@@ -89,7 +88,15 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
     };
 
     fetchData();
-  }, []);
+  });
+
+  // useEffect(() => {
+  //   const urls = relatedImages
+  //     .map((image) => image.url)
+  //     .filter((url) => url !== undefined) as string[];
+  //   setRelatedImagesUrls(urls);
+  //   setProduct({ ...product, relatedImages: urls });
+  // }, [relatedImages]);
 
   useEffect(() => {
     if (product.alias) {
@@ -99,49 +106,58 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
         getAllImageByAlias(product.alias),
       ])
         .then(([brandResponse, categoryResponse, allImagesResponse]) => {
+          const brandId = brandResponse.brand ? brandResponse.brand.id : 0;
+          const categoryId = categoryResponse.category
+            ? categoryResponse.category.id
+            : 0;
+          const relatedImages = allImagesResponse;
+
           if (brandResponse.brand !== null) {
             setBrandId(brandResponse.brand.id);
           }
           if (categoryResponse.category !== null) {
             setCategoryId(categoryResponse.category.id);
           }
-          setRelatedImages(allImagesResponse);
+          const urls = relatedImages
+            .map((image) => image.url)
+            .filter((url) => url !== undefined) as string[];
+          setRelatedImagesUrls(urls);
+
+          setProduct((prevProduct) => ({
+            ...prevProduct,
+            brandId,
+            categoryId,
+            relatedImages: urls,
+          }));
         })
         .catch((error) => {
           console.log(error);
         });
     }
-  }, [product, props.id]);
-
-  useEffect(() => {
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      brandId: brandId || 0,
-      categoryId: categoryId || 0,
-    }));
-  }, [categoryId, brandId]);
+  }, [product.alias]);
 
   // Lấy dữ liệu khi update
   useEffect(() => {
     if (props.option === 'update') {
       getProductById(props.id).then((response) => {
         setProduct(response as ProductModel);
-        setMainImage(response?.mainImage as string);
+        // setMainImage(response?.mainImage as string);
 
         if (response?.alias) {
           getAllImageByAlias(response.alias).then((imageResponse) => {
-            setRelatedImages(imageResponse);
+            const urls = imageResponse
+              .map((image) => image.url)
+              .filter((url) => url !== undefined) as string[];
+            setRelatedImagesUrls(urls);
+            setProduct((prevProduct) => ({
+              ...prevProduct,
+              relatedImages: urls,
+            }));
           });
         }
       });
     }
   }, [props.option, props.id]);
-
-  useEffect(() => {
-    getAllCategories().then((response) => {
-      setCategoriesList(response.categoryList);
-    });
-  }, [props.option]);
 
   useEffect(() => console.log('product', product), [product]);
 
@@ -188,20 +204,21 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
               mainImage: '',
               categoryId: NaN,
               brandId: NaN,
+              relatedImages: [],
             });
-            setMainImage('');
-            setRelatedImages([]);
+            // setMainImage('');
+            setRelatedImagesUrls([]);
             props.handleCloseModal();
             props.option === 'add'
               ? toast.success('Thêm sản phẩm thành công')
               : toast.success('Cập nhật sản phẩm thành công');
           } else {
-            toast.error('Gặp lỗi trong quá trình xử lý sản phẩm');
+            toast.error('Gặp lỗi trong quá trình xử lý sản phẩm (ảnh quá lớn)');
           }
         })
         .catch((error) => {
           console.log(error);
-          toast.error('Gặp lỗi trong quá trình xử lý sản phẩm');
+          toast.error('Gặp lỗi trong quá trình xử lý sản phẩm (ảnh quá lớn)');
         }),
       {
         pending: 'Vui lòng đợi trong giây lát ...',
@@ -215,19 +232,15 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
     if (inputElement.files && inputElement.files.length > 0) {
       const selectedFile = inputElement.files[0];
 
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        // const mainImageBase64 = e.target?.result as string;
-        setProduct({
-          ...product,
-          mainImage: URL.createObjectURL(selectedFile),
-        });
-        setMainImage(URL.createObjectURL(selectedFile));
-        // setMainImageFile(selectedFile);
-      };
-
-      // Đọc tệp dưới dạng chuỗi base64
-      reader.readAsDataURL(selectedFile);
+      getBase64(selectedFile).then((base64) => {
+        if (base64) {
+          setProduct({
+            ...product,
+            mainImage: base64,
+          });
+          // setMainImage(URL.createObjectURL(selectedFile));
+        }
+      });
     }
   }
 
@@ -237,37 +250,23 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
     const inputElement = event.target as HTMLInputElement;
 
     if (inputElement.files && inputElement.files.length > 0) {
-      const newPreviewImages = [...relatedImages];
+      const newPreviewImages = [...relatedImagesUrls];
 
       if (newPreviewImages.length + inputElement.files.length > 5) {
         toast.warning('Bạn chỉ được tải lên tối đa 5 ảnh');
         return;
       }
 
-      // Duyệt qua từng file đã chọn
       for (let i = 0; i < inputElement.files.length; i++) {
         const selectedFile = inputElement.files[i];
 
-        const reader = new FileReader();
-
-        // Xử lý sự kiện khi tệp đã được đọc thành công
-        reader.onload = (e: any) => {
-          // e.target.result chính là chuỗi base64
-          const thumbnailBase64 = e.target?.result as string;
-
-          //   setProduct((prevProduct) => ({
-          //     ...prevProduct,
-          //     relatedImg: [...(prevProduct.relatedImg || []), thumbnailBase64],
-          //   }));
-
-          //   newPreviewImages.push(URL.createObjectURL(selectedFile));
-
-          // Cập nhật trạng thái với mảng mới
-          setRelatedImages(newPreviewImages);
-        };
-
-        // Đọc tệp dưới dạng chuỗi base64
-        reader.readAsDataURL(selectedFile);
+        getBase64(selectedFile).then((base64) => {
+          if (base64) {
+            newPreviewImages.push(base64);
+            setRelatedImagesUrls(newPreviewImages);
+            setProduct({ ...product, relatedImages: newPreviewImages });
+          }
+        });
       }
     }
   }
@@ -599,7 +598,7 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
                 alt=""
               />
             </Button>
-            <img src={mainImage} alt="" width={100} />
+            <img src={product.mainImage} alt="" width={100} />
           </div>
           <div className="my-5">
             <Button
@@ -618,14 +617,14 @@ export const ProductForm: React.FC<ProductFormProps> = (props) => {
                 alt=""
               />
             </Button>
-            {relatedImages.map((relatedImage, index) => (
-              <img key={index} src={relatedImage.url} alt="" width={100} />
+            {relatedImagesUrls.map((relatedImage, index) => (
+              <img key={index} src={relatedImage} alt="" width={100} />
             ))}
-            {relatedImages.length > 0 && (
+            {relatedImagesUrls.length > 0 && (
               <Button
                 onClick={() => {
-                  setRelatedImages([]);
-                  // setProduct({ ...product, relatedImg: [] });
+                  setRelatedImagesUrls([]);
+                  setProduct({ ...product, relatedImages: [] });
                 }}
               >
                 Xoá tất cả

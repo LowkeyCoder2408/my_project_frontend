@@ -45,6 +45,7 @@ async function getProducts(url: string): Promise<ResultInterface> {
       reviewCount: responseData[key].reviewCount,
       ratingCount: responseData[key].ratingCount,
       averageRating: responseData[key].averageRating,
+      relatedImages: responseData[key].relatedImages,
     });
   }
 
@@ -189,6 +190,7 @@ export async function getProductById(
         brandId: productData.brandId,
         reviewCount: productData.reviewCount,
         ratingCount: productData.ratingCount,
+        relatedImages: productData.relatedImages,
         averageRating: productData.averageRating,
       };
     } else {
@@ -238,6 +240,7 @@ export async function getProductByAlias(
         reviewCount: productData.reviewCount,
         ratingCount: productData.ratingCount,
         averageRating: productData.averageRating,
+        relatedImages: productData.relatedImages,
       };
     } else {
       throw new Error('Sản phẩm không tồn tại');

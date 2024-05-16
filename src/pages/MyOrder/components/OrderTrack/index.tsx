@@ -5,6 +5,7 @@ import './OrderTrack.css';
 import OrderTrackModel from '../../../../models/OrderTrackModel';
 import { getOrderTracksByOrderId } from '../../../../api/ProductOrderTrackAPI';
 import { format } from 'date-fns';
+import { orderStatusDescriptions } from '../../../../models/OrderStatus';
 
 interface OrderTrackProps {
   order?: OrderModel;
@@ -45,7 +46,12 @@ function OrderTrack(props: OrderTrackProps) {
                   "HH':'mm':'ss, 'ngày' dd/MM/yyyy",
                 )}{' '}
                 (tình trạng đơn hàng đã được thay đổi thành{' '}
-                <strong>{orderTrack.status}</strong>)
+                <strong>
+                  {orderTrack.status
+                    ? orderStatusDescriptions[orderTrack.status]
+                    : ''}
+                </strong>
+                )
               </em>
             </li>
           ))}

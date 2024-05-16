@@ -1,7 +1,3 @@
-import BrandModel from './BrandModel';
-import CategoryModel from './CategoryModel';
-import ProductImageModel from './ProductImageModel';
-
 class ProductModel {
   id: number;
   name?: string;
@@ -27,6 +23,7 @@ class ProductModel {
   reviewCount?: number;
   ratingCount?: number;
   averageRating?: number;
+  relatedImages: string[];
 
   constructor(
     id: number,
@@ -53,6 +50,7 @@ class ProductModel {
     reviewCount: number,
     ratingCount: number,
     averageRating: number,
+    relatedImages: string[],
   ) {
     this.id = id;
     this.name = name;
@@ -78,6 +76,7 @@ class ProductModel {
     this.reviewCount = reviewCount;
     this.ratingCount = ratingCount;
     this.averageRating = averageRating;
+    this.relatedImages = relatedImages;
   }
 }
 

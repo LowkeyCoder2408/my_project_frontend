@@ -14,6 +14,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getRoleByToken, isToken } from '../../../utils/JwtService';
 import { FadeModal } from '../../../utils/FadeModal';
 import { ProductForm } from '../../components/ActionForm/ProductForm';
+import { useConfirm } from 'material-ui-confirm';
+import { backendEndpoint } from '../../../utils/Constant';
+import { toast } from 'react-toastify';
 
 const BrandCell = ({ productId }: { productId: number }) => {
   const [brand, setBrand] = useState<BrandModel | null>(null);
@@ -53,9 +56,59 @@ const Products = () => {
   const [id, setId] = useState<number>(0);
   const [option, setOption] = useState('');
 
+  const confirm = useConfirm();
+
   useEffect(() => {
     console.log(id, option);
   }, [id, option]);
+
+  const handleDelete = async (productId: number) => {
+    try {
+      confirm({
+        title: <span style={{ fontSize: '20px' }}>XÓA SẢN PHẨM</span>,
+        description: (
+          <span style={{ fontSize: '16px' }}>
+            Bạn có chắc chắn rằng sẽ xóa sản phẩm này?
+          </span>
+        ),
+        confirmationText: <span style={{ fontSize: '15px' }}>Đồng ý</span>,
+        cancellationText: <span style={{ fontSize: '15px' }}>Huỷ</span>,
+      })
+        .then(() => {
+          if (isToken()) {
+            const token = localStorage.getItem('token');
+
+            const endpoint = `/product/${productId}`;
+            fetch(backendEndpoint + endpoint, {
+              method: 'DELETE',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            })
+              .then((response) => {
+                if (response.ok) {
+                  toast.success('Xóa sản phẩm thành công!');
+                } else {
+                  toast.error(
+                    'Không thể xóa do tồn tại đơn hàng của sản phẩm này!',
+                  );
+                }
+              })
+              .catch((error) => {
+                toast.error('Gặp lỗi trong quá trình xóa sản phẩm!');
+              });
+          } else {
+            toast.error('Bạn cần đăng nhập để thực hiện chức năng này!');
+            return;
+          }
+        })
+        .catch(() => {});
+    } catch (error) {
+      console.log(error);
+      toast.error('Đã xảy ra lỗi khi xóa sản phẩm!');
+    }
+  };
 
   // Data của bảng
   const columns: GridColDef[] = [
@@ -147,7 +200,7 @@ const Products = () => {
             />
             <div
               className="dataTable__delete"
-              // onClick={() => handleDelete(params.row.id)}
+              onClick={() => handleDelete(params.row.id)}
             >
               <img src="/delete.svg" alt="" />
             </div>

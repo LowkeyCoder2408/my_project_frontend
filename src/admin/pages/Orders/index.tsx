@@ -13,6 +13,7 @@ import OrderModal from '../../../pages/MyOrder/components/OrderModal';
 import OrderTrack from '../../../pages/MyOrder/components/OrderTrack';
 import { getRoleByToken, isToken } from '../../../utils/JwtService';
 import { useNavigate } from 'react-router-dom';
+import OrderForm from '../../components/ActionForm/OrderForm';
 
 const Orders = () => {
   // Tạo biến để lấy tất cả data đơn hàng
@@ -23,7 +24,13 @@ const Orders = () => {
   const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
   const [openOrderTrackModal, setOpenOrderTrackModal] =
     useState<boolean>(false);
-
+  const [openOrderTrackEditModal, setOpenOrderTrackEditModal] = useState(false);
+  const handleOpenOrderTrackEditModal = () => {
+    setOpenOrderTrackEditModal(true);
+  };
+  const handleCloseOrderTrackEditModal = () => {
+    setOpenOrderTrackEditModal(false);
+  };
   const handleOpenOrderModal = () => setOpenOrderModal(true);
   const handleCloseOrderModal = () => setOpenOrderModal(false);
   const handleOpenOrderTrackModal = () => setOpenOrderTrackModal(true);
@@ -206,6 +213,15 @@ const Orders = () => {
                 icon={faEye as IconProp}
               />
             </div>
+            <img
+              src="/view.svg"
+              alt=""
+              onClick={() => {
+                // setOption('update');
+                setId(Number(item.id));
+                handleOpenOrderTrackEditModal();
+              }}
+            />
             <div
               style={{
                 cursor: 'pointer',
@@ -239,7 +255,7 @@ const Orders = () => {
       .catch((error) => {
         console.log('Lỗi khi lấy đơn hàng: ', error);
       });
-  }, [id]);
+  }, [id, order]);
 
   useEffect(() => {
     getAllOrders()
@@ -258,7 +274,7 @@ const Orders = () => {
         // setLoading(false);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [order]);
 
   return (
     <div className="container">
@@ -288,6 +304,13 @@ const Orders = () => {
         handleClose={handleCloseOrderTrackModal}
       >
         {order && <OrderTrack order={order} />}
+      </FadeModal>
+      <FadeModal
+        open={openOrderTrackEditModal}
+        handleOpen={handleOpenOrderTrackEditModal}
+        handleClose={handleCloseOrderTrackEditModal}
+      >
+        {order && <OrderForm order={order} />}
       </FadeModal>
     </div>
   );
